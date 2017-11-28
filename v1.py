@@ -1,9 +1,5 @@
 import pygame
 from pygame.locals import *
-import sys
-sys.path.append('C:/Users/Desktop/swigwin-3.0.12')
-
-from example import *
 
 class Piece:
     def __init__(self,position,color):
