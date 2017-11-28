@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 
+#petite modification
 class Piece:
     def __init__(self,position,color):
         self.position=position
