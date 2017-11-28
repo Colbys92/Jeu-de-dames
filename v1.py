@@ -1,7 +1,9 @@
 import pygame
 from pygame.locals import *
 
+
 #petite modif cote master
+
 class Piece:
     def __init__(self,position,color):
         self.position=position
