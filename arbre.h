@@ -3,30 +3,26 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
+using namespace std;
 
 
 
-class Move{
-    int start;
-    int arrival;
-    int kills;
-    Move(int s, int a, int k){
-        start = s;
-        arrival = a;
-        kill = k;
-    }
-    int Start() {return start;}
-    int Arrival() {return arrival;}
-    int Kills() {return kills;}
+// Déclaration des classes pour les utiliser après :
+class Piece;
+class Man;
+class King;
+class Board;
+class Move;
 
-};
 
-class Piece{
-protected:
+
+class Piece {
+ protected:
     int position;
     std::string color;
-
-public :
+public:
+    //Defined Function :
     Piece(int pos, std::string col){
         position = pos;
         color = col;
@@ -34,83 +30,33 @@ public :
     int getPosition(){
         return position;
     }
+    void setPosition(int pos){position = pos;}
     std::string Color(){return color;}
     virtual bool IsMan() const =0;
     virtual bool IsKing() const {return !IsMan();}
-    virtual void killFreeMove(Board& B,Move* possibleMoves);
-    virtual void killingMove(Board& B, Move* possibleMoves);
+    virtual void killFreeMove(Board* B, Move* possibleMoves);
+    virtual void killingMove(Board* B, Move* possibleMoves);
 };
-
 
 class Man : public Piece {
     virtual bool IsMan() const { return true;}
-    virtual void killFreeMove(Board& B,vector<Move> possibleMoves){
-        int positionValue=0;
-        if(position%10<5){
-            positionValue=1;
-        }
-        if(color == "white"){
-            if(position%10!=4 && !B.isManHere(position-5+positionValue)){
-                possibleMoves.push_back(Move(position,position-5+positionValue,0));
-            }
-            if(!B.isManHere(position-5+positionValue)){
-                possibleMoves.push_back(Move(position,position-6+positionValue,0));
-            }
-        }
-        if(color == "black"){
-            if(position%10!=4 && !B.isManHere(position+5+positionValue)){
-                possibleMoves.push_back(Move(position,position+5+positionValue,0));
-            }
-            if(!B.isManHere(position+4+positionValue)){
-                possibleMoves.push_back(Move(position,position+4+positionValue,0));
-            }
-        }
-    }
-    virtual void killingMove(Board& B,vector<Move> possibleMoves){
-        int positionValue=0;
-        if(position%10<5){
-            positionValue=1;
-        }
-
-
-
-        // En haut à droite
-        if(position%10!=4 && position%10!=9
-                && B.isManHere(position-5+positionValue)
-                && B.isManHere(position-9)
-                && B.getPiece(B.index_man_here(position-5+positionValue)).color()!=color){
-            possibleMoves.push_back(Move(position,position-9,1));
-
-        }
-        // En haut à gauche
-        if(position%10!=5 && position%10!=0
-                && B.isManHere(position-6+positionValue)
-                && B.isManHere(position-11)
-                && B.getPiece(B.index_man_here(position-6+positionValue)).color()!=color){
-            possibleMoves.push_back(Move(position,position-11,1));
-
-        }
-        // En bas à droite
-        if(position%10!=4 && position%10!=9
-                && B.isManHere(position+5+positionValue)
-                && B.isManHere(position+11)
-                && B.getPiece(B.index_man_here(position+5+positionValue)).color()!=color){
-            possibleMoves.push_back(Move(position,position+11,1));
-
-        }
-        // En bas à gauche
-        if(position%10!=5 && position%10!=0
-                && B.isManHere(position+4+positionValue)
-                && B.isManHere(position+9)
-                && B.getPiece(B.index_man_here(position+4+positionValue)).color()!=color){
-            possibleMoves.push_back(Move(position,position+9,1));
-
-        }
-    }
+    virtual void killFreeMove(Board& B,vector<Move> possibleMoves);
+    virtual void killingMove(Board& B, vector<Move> possibleMoves);
 };
 
-class King : public Piece {
-    virtual bool IsMan() const {return false;}
+class Move{
+public:
+    int start;
+    int arrival;
+    int kills;
+    Move(int s, int a, int k){
+        start = s;
+        arrival = a;
+        kills = k;
+    }
+    int Start() {return start;}
+    int Arrival() {return arrival;}
+    int Kills() {return kills;}
 
 };
 
@@ -123,7 +69,7 @@ public :
             pieces.push_back(Man(i,"white"));
         }
         for(int i=30; i<50;i++){
-            pieces.push_back(Man(i,"Black"));
+            pieces.push_back(Man(i,"black"));
         }
     }
     int index_man_here(int pos){
@@ -139,7 +85,86 @@ public :
         }
         return false;
     }
-    Piece getPiece(int index){
-        return pieces[index];
+    Piece* getPiece(int index){
+        return &pieces[index];
     }
 };
+
+
+class King : public Piece {
+    virtual bool IsMan() const {return false;}
+
+};
+
+
+void Man::killFreeMove(Board& B,vector<Move> possibleMoves){
+    int positionValue=0;
+    if(position%10<5){
+        positionValue=1;
+    }
+    if(color == "white"){
+        if(position%10!=4 && !B.isManHere(position-5+positionValue)){
+            possibleMoves.push_back(Move(position,position-5+positionValue,0));
+        }
+        if(!B.isManHere(position-5+positionValue)){
+            possibleMoves.push_back(Move(position,position-6+positionValue,0));
+        }
+    }
+    if(color == "black"){
+        if(position%10!=4 && !B.isManHere(position+5+positionValue)){
+            possibleMoves.push_back(Move(position,position+5+positionValue,0));
+        }
+        if(!B.isManHere(position+4+positionValue)){
+            possibleMoves.push_back(Move(position,position+4+positionValue,0));
+        }
+    }
+}
+
+void Man::killingMove(Board& B, vector<Move> possibleMoves){
+    int positionValue=0;
+    if(position%10<5){
+        positionValue=1;
+    }
+
+
+    // En haut à droite
+    if(position%10!=4 && position%10!=9
+            && B.isManHere(position-5+positionValue)
+            && B.isManHere(position-9)
+            && B.getPiece(B.index_man_here(position-5+positionValue))->color()!=color){
+        possibleMoves.push_back(Move(position,position-9,1));
+
+    }
+    // En haut à gauche
+    if(position%10!=5 && position%10!=0
+            && B.isManHere(position-6+positionValue)
+            && B.isManHere(position-11)
+            && B.getPiece(B.index_man_here(position-6+positionValue))->color()!=color){
+        possibleMoves.push_back(Move(position,position-11,1));
+
+    }
+    // En bas à droite
+    if(position%10!=4 && position%10!=9
+            && B.isManHere(position+5+positionValue)
+            && B.isManHere(position+11)
+            && B.getPiece(B.index_man_here(position+5+positionValue))->color()!=color){
+        possibleMoves.push_back(Move(position,position+11,1));
+
+    }
+    // En bas à gauche
+    if(position%10!=5 && position%10!=0
+            && B.isManHere(position+4+positionValue)
+            && B.isManHere(position+9)
+            && B.getPiece(B.index_man_here(position+4+positionValue))->color()!=color){
+        possibleMoves.push_back(Move(position,position+9,1));
+    }
+};
+
+
+
+
+
+
+
+
+
