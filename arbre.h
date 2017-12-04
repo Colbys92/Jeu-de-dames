@@ -23,28 +23,29 @@ protected:
     std::string color;
 public:
     //Defined Function :
+    virtual ~Piece(){}
     Piece(int pos, std::string col){
         position = pos;
         color = col;
     }
-    virtual int getPosition(){
+    int getPosition(){
         return position;
     }
     void setPosition(int pos){position = pos;}
     std::string Color(){return color;}
     virtual bool IsMan() const =0;
     virtual bool IsKing() const {return !IsMan();}
-    virtual void killFreeMove(Board* B, Move* possibleMoves);
-    virtual void killingMove(Board* B, Move* possibleMoves);
+    virtual void killFreeMove(Board& B, vector<Move> &possibleMoves) =0;
+    virtual void killingMove(Board& B, vector<Move> &possibleMoves)=0;
 };
 
 class Man : public Piece {
-    Man(int pos, std::string col) : Piece(position,col){
-
-    };
+public:
+    ~Man(){}
+    Man(int pos, std::string col) : Piece(pos,col){}
     virtual bool IsMan() const { return true;}
-    virtual void killFreeMove(Board& B,vector<Move> possibleMoves);
-    virtual void killingMove(Board& B, vector<Move> possibleMoves);
+    virtual void killFreeMove(Board& B,vector<Move> &possibleMoves);
+    virtual void killingMove(Board& B, vector<Move> &possibleMoves);
 };
 
 class Move{
@@ -65,35 +66,36 @@ public:
 
 
 class Board{
-    std::vector<Piece> pieces;
+    std::vector<Piece*> pieces;
 public :
     Board();
     int index_man_here(int pos){
 
         for(int i=0; i<pieces.size(); i++){
-            if (pieces[i].getPosition()==pos)   return i;
+            if (pieces[i]->getPosition()==pos)   return i;
         }
         return -1;
     }
     int isManHere(int pos){
         for(int i=0; i<pieces.size(); i++){
-            if (pieces[i].getPosition()==pos and pieces[i].IsMan())   return true;
+            if (pieces[i]->getPosition()==pos and pieces[i]->IsMan())   return true;
         }
         return false;
     }
     Piece* getPiece(int index){
-        return &pieces[index];
+        return pieces[index];
     }
 };
 
 
-class King : public Piece {
-    virtual bool IsMan() const {return false;}
+//class King : public Piece {
+//    ~King();
+//    virtual bool IsMan() const {return false;}
 
-};
+//};
 
 
-void Man::killFreeMove(Board& B,vector<Move> possibleMoves){
+void Man::killFreeMove(Board& B,vector<Move>& possibleMoves){
     int positionValue=0;
     if(position%10<5){
         positionValue=1;
@@ -116,7 +118,7 @@ void Man::killFreeMove(Board& B,vector<Move> possibleMoves){
     }
 }
 
-void Man::killingMove(Board& B, vector<Move> possibleMoves){
+void Man::killingMove(Board& B, vector<Move>& possibleMoves){
     int positionValue=0;
     if(position%10<5){
         positionValue=1;
@@ -126,7 +128,7 @@ void Man::killingMove(Board& B, vector<Move> possibleMoves){
     // En haut à droite
     if(position%10!=4 && position%10!=9
             && B.isManHere(position-5+positionValue)
-            && B.isManHere(position-9)
+            && !B.isManHere(position-9)
             && B.getPiece(B.index_man_here(position-5+positionValue))->Color()!=color){
         possibleMoves.push_back(Move(position,position-9,1));
 
@@ -134,7 +136,7 @@ void Man::killingMove(Board& B, vector<Move> possibleMoves){
     // En haut à gauche
     if(position%10!=5 && position%10!=0
             && B.isManHere(position-6+positionValue)
-            && B.isManHere(position-11)
+            && !B.isManHere(position-11)
             && B.getPiece(B.index_man_here(position-6+positionValue))->Color()!=color){
         possibleMoves.push_back(Move(position,position-11,1));
 
@@ -142,7 +144,7 @@ void Man::killingMove(Board& B, vector<Move> possibleMoves){
     // En bas à droite
     if(position%10!=4 && position%10!=9
             && B.isManHere(position+5+positionValue)
-            && B.isManHere(position+11)
+            && !B.isManHere(position+11)
             && B.getPiece(B.index_man_here(position+5+positionValue))->Color()!=color){
         possibleMoves.push_back(Move(position,position+11,1));
 
@@ -150,18 +152,18 @@ void Man::killingMove(Board& B, vector<Move> possibleMoves){
     // En bas à gauche
     if(position%10!=5 && position%10!=0
             && B.isManHere(position+4+positionValue)
-            && B.isManHere(position+9)
+            && !B.isManHere(position+9)
             && B.getPiece(B.index_man_here(position+4+positionValue))->Color()!=color){
         possibleMoves.push_back(Move(position,position+9,1));
     }
-};
+}
 
 Board::Board(){
     for(int i=0; i<20; i++){
-        pieces.push_back(Man(i,"white"));
+        pieces.push_back(new Man(i,"black"));
     }
     for(int i=30; i<50;i++){
-        pieces.push_back(Man(i,"black"));
+        pieces.push_back(new Man(i,"white"));
     }
 }
 
