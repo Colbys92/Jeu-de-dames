@@ -1,0 +1,11 @@
+Matthieu :
+Interfacage swiggé
+Interaction avec l'utilisateur
+========>Jeu 1vs 1
+Hugo :
+Coup possible pour les dames
+Fonction selectionner(voir python)
+========>alphabêta
+
+Victor : 
+Affichage
