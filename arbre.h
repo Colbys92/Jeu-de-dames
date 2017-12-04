@@ -18,7 +18,7 @@ class Move;
 
 
 class Piece {
- protected:
+protected:
     int position;
     std::string color;
 public:
@@ -27,7 +27,7 @@ public:
         position = pos;
         color = col;
     }
-    int getPosition(){
+    virtual int getPosition(){
         return position;
     }
     void setPosition(int pos){position = pos;}
@@ -39,6 +39,9 @@ public:
 };
 
 class Man : public Piece {
+    Man(int pos, std::string col) : Piece(position,col){
+
+    };
     virtual bool IsMan() const { return true;}
     virtual void killFreeMove(Board& B,vector<Move> possibleMoves);
     virtual void killingMove(Board& B, vector<Move> possibleMoves);
@@ -64,14 +67,7 @@ public:
 class Board{
     std::vector<Piece> pieces;
 public :
-    Board(){
-        for(int i=0; i<20; i++){
-            pieces.push_back(Man(i,"white"));
-        }
-        for(int i=30; i<50;i++){
-            pieces.push_back(Man(i,"black"));
-        }
-    }
+    Board();
     int index_man_here(int pos){
 
         for(int i=0; i<pieces.size(); i++){
@@ -131,7 +127,7 @@ void Man::killingMove(Board& B, vector<Move> possibleMoves){
     if(position%10!=4 && position%10!=9
             && B.isManHere(position-5+positionValue)
             && B.isManHere(position-9)
-            && B.getPiece(B.index_man_here(position-5+positionValue))->color()!=color){
+            && B.getPiece(B.index_man_here(position-5+positionValue))->Color()!=color){
         possibleMoves.push_back(Move(position,position-9,1));
 
     }
@@ -139,7 +135,7 @@ void Man::killingMove(Board& B, vector<Move> possibleMoves){
     if(position%10!=5 && position%10!=0
             && B.isManHere(position-6+positionValue)
             && B.isManHere(position-11)
-            && B.getPiece(B.index_man_here(position-6+positionValue))->color()!=color){
+            && B.getPiece(B.index_man_here(position-6+positionValue))->Color()!=color){
         possibleMoves.push_back(Move(position,position-11,1));
 
     }
@@ -147,7 +143,7 @@ void Man::killingMove(Board& B, vector<Move> possibleMoves){
     if(position%10!=4 && position%10!=9
             && B.isManHere(position+5+positionValue)
             && B.isManHere(position+11)
-            && B.getPiece(B.index_man_here(position+5+positionValue))->color()!=color){
+            && B.getPiece(B.index_man_here(position+5+positionValue))->Color()!=color){
         possibleMoves.push_back(Move(position,position+11,1));
 
     }
@@ -155,12 +151,19 @@ void Man::killingMove(Board& B, vector<Move> possibleMoves){
     if(position%10!=5 && position%10!=0
             && B.isManHere(position+4+positionValue)
             && B.isManHere(position+9)
-            && B.getPiece(B.index_man_here(position+4+positionValue))->color()!=color){
+            && B.getPiece(B.index_man_here(position+4+positionValue))->Color()!=color){
         possibleMoves.push_back(Move(position,position+9,1));
     }
 };
 
-
+Board::Board(){
+    for(int i=0; i<20; i++){
+        pieces.push_back(Man(i,"white"));
+    }
+    for(int i=30; i<50;i++){
+        pieces.push_back(Man(i,"black"));
+    }
+}
 
 
 
