@@ -6,7 +6,21 @@
 #include <vector>
 using namespace std;
 
+// Constant globale en position value =0:
 
+// 1 Case :
+
+int NW1 =-6;
+int NE1 =-5;
+int SE1 =+5;
+int SW1 =+4;
+
+// 2 Cases :
+
+int NW2 = -11;
+int NE2 = -9;
+int SE2 = 11;
+int SW2 = 9;
 
 // Déclaration des classes pour les utiliser après :
 class Piece;
@@ -50,18 +64,15 @@ public:
 
 class Move{
 private:
-    int start;
-    int arrival;
+    vector<int> path;
     int kills;
 public:
     Move() {
-        start=-1;
-        arrival=-1;
         kills=-1;
     }
     Move(int s, int a, int k){
-        start = s;
-        arrival = a;
+        path.push_back(s);
+        path.push_back(a);
         kills = k;
     }
     int getStart() {return start;}
@@ -89,23 +100,38 @@ public :
         }
         return -1;
     }
-    int isManHere(int pos){
+    bool isManHere(int pos){
         for(int i=0; i<pieces.size(); i++){
             if (pieces[i]->getPosition()==pos && pieces[i]->isMan())   return true;
         }
         return false;
     }
+    bool isKingHere(int pos){
+        for(int i=0; i<pieces.size(); i++){
+            if (pieces[i]->getPosition()==pos && pieces[i]->isKing())   return true;
+        }
+        return false;
+    }
+
+    bool isPieceHere(int pos){
+        return(isKingHere(pos) || isManHere(pos));
+    }
+
     Piece* getPiece(int index){
         return pieces[index];
     }
 };
 
 
-//class King : public Piece {
-//    ~King();
-//    virtual bool isMan() const {return false;}
+class King : public Piece {
+public :
+      ~King();
+      virtual bool isMan() const {return false;}
+      King(int pos, std::string col) : Piece(pos,col){}
+      virtual void killFreeMove(Board& B,vector<Move> &possibleMoves);
+      virtual void killingMove(Board& B, vector<Move> &possibleMoves);
 
-//};
+};
 
 
 
