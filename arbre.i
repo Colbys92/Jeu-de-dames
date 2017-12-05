@@ -1,5 +1,6 @@
 %module arbre
-
+%include <std_vector.i>
+%include <std_string.i>
 
 
 %{
@@ -53,9 +54,10 @@ public:
 	int index_man_here(int);
 	int isManHere(int);
 	Piece* getPiece(int);
+	int nbPieces() const;
 };
 
-%include "std_vector.i"
+
 namespace std {
 	%template(VectorMove) vector<Move>;
 };

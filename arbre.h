@@ -98,6 +98,9 @@ public :
     Piece* getPiece(int index){
         return pieces[index];
     }
+    int nbPieces() const {
+        return pieces.size();
+    }
 };
 
 

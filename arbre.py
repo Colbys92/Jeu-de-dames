@@ -95,6 +95,70 @@ except __builtin__.Exception:
         pass
     _newclass = 0
 
+class SwigPyIterator(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, SwigPyIterator, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, SwigPyIterator, name)
+
+    def __init__(self, *args, **kwargs):
+        raise AttributeError("No constructor defined - class is abstract")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _arbre.delete_SwigPyIterator
+    __del__ = lambda self: None
+
+    def value(self):
+        return _arbre.SwigPyIterator_value(self)
+
+    def incr(self, n=1):
+        return _arbre.SwigPyIterator_incr(self, n)
+
+    def decr(self, n=1):
+        return _arbre.SwigPyIterator_decr(self, n)
+
+    def distance(self, x):
+        return _arbre.SwigPyIterator_distance(self, x)
+
+    def equal(self, x):
+        return _arbre.SwigPyIterator_equal(self, x)
+
+    def copy(self):
+        return _arbre.SwigPyIterator_copy(self)
+
+    def next(self):
+        return _arbre.SwigPyIterator_next(self)
+
+    def __next__(self):
+        return _arbre.SwigPyIterator___next__(self)
+
+    def previous(self):
+        return _arbre.SwigPyIterator_previous(self)
+
+    def advance(self, n):
+        return _arbre.SwigPyIterator_advance(self, n)
+
+    def __eq__(self, x):
+        return _arbre.SwigPyIterator___eq__(self, x)
+
+    def __ne__(self, x):
+        return _arbre.SwigPyIterator___ne__(self, x)
+
+    def __iadd__(self, n):
+        return _arbre.SwigPyIterator___iadd__(self, n)
+
+    def __isub__(self, n):
+        return _arbre.SwigPyIterator___isub__(self, n)
+
+    def __add__(self, n):
+        return _arbre.SwigPyIterator___add__(self, n)
+
+    def __sub__(self, *args):
+        return _arbre.SwigPyIterator___sub__(self, *args)
+    def __iter__(self):
+        return self
+SwigPyIterator_swigregister = _arbre.SwigPyIterator_swigregister
+SwigPyIterator_swigregister(SwigPyIterator)
+
 class Piece(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, Piece, name, value)
@@ -210,74 +274,13 @@ class Board(_object):
 
     def getPiece(self, arg2):
         return _arbre.Board_getPiece(self, arg2)
+
+    def nbPieces(self):
+        return _arbre.Board_nbPieces(self)
     __swig_destroy__ = _arbre.delete_Board
     __del__ = lambda self: None
 Board_swigregister = _arbre.Board_swigregister
 Board_swigregister(Board)
-
-class SwigPyIterator(_object):
-    __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, SwigPyIterator, name, value)
-    __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, SwigPyIterator, name)
-
-    def __init__(self, *args, **kwargs):
-        raise AttributeError("No constructor defined - class is abstract")
-    __repr__ = _swig_repr
-    __swig_destroy__ = _arbre.delete_SwigPyIterator
-    __del__ = lambda self: None
-
-    def value(self):
-        return _arbre.SwigPyIterator_value(self)
-
-    def incr(self, n=1):
-        return _arbre.SwigPyIterator_incr(self, n)
-
-    def decr(self, n=1):
-        return _arbre.SwigPyIterator_decr(self, n)
-
-    def distance(self, x):
-        return _arbre.SwigPyIterator_distance(self, x)
-
-    def equal(self, x):
-        return _arbre.SwigPyIterator_equal(self, x)
-
-    def copy(self):
-        return _arbre.SwigPyIterator_copy(self)
-
-    def next(self):
-        return _arbre.SwigPyIterator_next(self)
-
-    def __next__(self):
-        return _arbre.SwigPyIterator___next__(self)
-
-    def previous(self):
-        return _arbre.SwigPyIterator_previous(self)
-
-    def advance(self, n):
-        return _arbre.SwigPyIterator_advance(self, n)
-
-    def __eq__(self, x):
-        return _arbre.SwigPyIterator___eq__(self, x)
-
-    def __ne__(self, x):
-        return _arbre.SwigPyIterator___ne__(self, x)
-
-    def __iadd__(self, n):
-        return _arbre.SwigPyIterator___iadd__(self, n)
-
-    def __isub__(self, n):
-        return _arbre.SwigPyIterator___isub__(self, n)
-
-    def __add__(self, n):
-        return _arbre.SwigPyIterator___add__(self, n)
-
-    def __sub__(self, *args):
-        return _arbre.SwigPyIterator___sub__(self, *args)
-    def __iter__(self):
-        return self
-SwigPyIterator_swigregister = _arbre.SwigPyIterator_swigregister
-SwigPyIterator_swigregister(SwigPyIterator)
 
 class VectorMove(_object):
     __swig_setmethods__ = {}
