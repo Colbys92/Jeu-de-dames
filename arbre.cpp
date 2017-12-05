@@ -144,8 +144,6 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
             isSecondPiece = B.isPieceHere(currentPosition);
         }
     }
-
-
 }
 
 
