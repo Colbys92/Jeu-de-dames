@@ -146,9 +146,12 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
     }
 }
 
+void Man::select(Board& B, vector<Move> &possibleMoves){
+    vector<Move> moveToAdd;
+    Move currentMove;
+    Man.killFreeMove(moveToAdd);
 
-
-
+}
 
 void Man::killFreeMove(Board& B,vector<Move>& possibleMoves){
     int positionValue=0;

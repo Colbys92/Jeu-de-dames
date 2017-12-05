@@ -51,6 +51,7 @@ public:
     virtual bool isKing() const {return !isMan();}
     virtual void killFreeMove(Board& B, vector<Move> &possibleMoves) =0;
     virtual void killingMove(Board& B, vector<Move> &possibleMoves)=0;
+    virtual void select(Board& B,vector<Move> &possibleMoves)=0;
 };
 
 class Man : public Piece {
@@ -60,6 +61,7 @@ public:
     virtual bool isMan() const { return true;}
     virtual void killFreeMove(Board& B,vector<Move> &possibleMoves);
     virtual void killingMove(Board& B, vector<Move> &possibleMoves);
+    virtual void select(Board& B, vector<Move> &possibleMoves);
 };
 
 class Move{
