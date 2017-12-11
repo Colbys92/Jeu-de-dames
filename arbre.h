@@ -4,16 +4,17 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <map>
 using namespace std;
 
 // Constant globale en position value =0:
 
 // 1 Case :
 
-int NW1 =-6;
-int NE1 =-5;
-int SE1 =+5;
-int SW1 =+4;
+int NW =-6;
+int NE =-5;
+int SE =+5;
+int SW =+4;
 
 // 2 Cases :
 
@@ -42,6 +43,10 @@ public:
         position = pos;
         color = col;
     }
+    Piece(const Piece& p){
+        position = p.position;
+        color = p.color;
+    }
     int getPosition(){
         return position;
     }
@@ -52,16 +57,19 @@ public:
     virtual void killFreeMove(Board& B, vector<Move> &possibleMoves) =0;
     virtual void killingMove(Board& B, vector<Move> &possibleMoves)=0;
     virtual void select(Board& B,vector<Move> &possibleMoves)=0;
+    virtual Piece* clone()=0;
 };
 
 class Man : public Piece {
 public:
     ~Man(){}
     Man(int pos, std::string col) : Piece(pos,col){}
+    Man(const Man& m) : Piece(m.position, m.color){}
     virtual bool isMan() const { return true;}
     virtual void killFreeMove(Board& B,vector<Move> &possibleMoves);
     virtual void killingMove(Board& B, vector<Move> &possibleMoves);
     virtual void select(Board& B, vector<Move> &possibleMoves);
+    virtual Piece* clone();
 };
 
 class Move{
@@ -72,14 +80,19 @@ public:
     Move() {
         kills=-1;
     }
+    Move(const Move& m);
     Move(int s, int a, int k){
         path.push_back(s);
         path.push_back(a);
         kills = k;
     }
-    int getStart() {return start;}
-    int getArrival() {return arrival;}
+    void operator=(const Move& m);
+    bool operator<(const Move& m) const;
+    int getStart() {return path[0];}
+    int getArrival() {return path[path.size()-1];}
     int getKills() {return kills;}
+    vector<int> getPath() const {return path;}
+    Move extendMove(Move m); //Can only extend with one elementary move (path.size()=2)
 
 };
 
@@ -88,18 +101,21 @@ class Board{
     std::vector<Piece*> pieces;
 public :
     Board() {
-    for(int i=0; i<20; i++){
-        pieces.push_back(new Man(i,"black"));
+        for(int i=0; i<20; i++){
+            pieces.push_back(new Man(i,"black"));
+        }
+        for(int i=30; i<50;i++){
+            pieces.push_back(new Man(i,"white"));
+        }
     }
-    for(int i=30; i<50;i++){
-        pieces.push_back(new Man(i,"white"));
-    }
-}
+    Board(const Board& b);
+    void operator=(const Board& b);
     int index_man_here(int pos){
 
         for(int i=0; i<pieces.size(); i++){
             if (pieces[i]->getPosition()==pos)   return i;
         }
+        cerr<<"No piece found at position "<<pos<<endl;
         return -1;
     }
     bool isManHere(int pos){
@@ -118,10 +134,15 @@ public :
     bool isPieceHere(int pos){
         return(isKingHere(pos) || isManHere(pos));
     }
+    void playMove(const Move& m);
+    void killAt(int pos);
 
     Piece* getPiece(int index){
         return pieces[index];
     }
+
+    map<int,vector<Move> > playableMoves();
+
 };
 
 
@@ -130,8 +151,11 @@ public :
       ~King();
       virtual bool isMan() const {return false;}
       King(int pos, std::string col) : Piece(pos,col){}
+      King(const King& k) : Piece(k.position, k.color){}
       virtual void killFreeMove(Board& B,vector<Move> &possibleMoves);
       virtual void killingMove(Board& B, vector<Move> &possibleMoves);
+      virtual Piece* clone();
+      virtual void select(Board& b, vector<Move> &possibleMoves){}
 
 };
 
