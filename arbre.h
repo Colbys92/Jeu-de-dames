@@ -90,7 +90,8 @@ public:
     bool operator<(const Move& m) const;
     int getStart() {return path[0];}
     int getArrival() {return path[path.size()-1];}
-    int getKills() {return kills;}
+    //int getKills() {return kills;}
+    int getKills() const {return kills;}
     vector<int> getPath() const {return path;}
     Move extendMove(Move m); //Can only extend with one elementary move (path.size()=2)
 
