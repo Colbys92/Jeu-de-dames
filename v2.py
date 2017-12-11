@@ -82,12 +82,16 @@ if __name__ == "__main__":
     board=Board()
     plateau=PyBoard(board)
     # plateau.this.getPiece(0).setPosition(27)
-    plateau.this.getPiece(30).setPosition(23)
-    plateau.this.getPiece(31).setPosition(28)
     plateau.display(window)
     compteur=0
+    possibleMoves=VectorMove()
     couleurs=["white","black"]
     run=True
+    plateau.this.getPiece(23).setPosition(29)
+    plateau.this.getPiece(28).killFreeMove(plateau,possibleMoves)
+    for move in possibleMoves:
+        print(move.getStart())
+        print(move.getArrival())
     while(plateau.this.nbPieces()>0 and run):
         moves=plateau.this.playableMoves(couleurs[compteur])
         played=False
