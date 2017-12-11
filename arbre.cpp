@@ -212,7 +212,6 @@ void Man::select(Board& b, vector<Move> &possibleMoves){
         while(size!=0){
             currentMove = moveToAdd.front();
             //We play virtually the current move on the board
-
             virtualBoard.playMove(currentMove);
             //We compute the follow up move to the current move in complementrayMove
             virtualBoard.getPiece(virtualBoard.index_man_here(currentMove.getArrival()))->killingMove(virtualBoard, complementaryMove);
@@ -447,6 +446,12 @@ void Board::playMove(const Move &m) {
                 }
             }
             pieces[index_man_here(m.getPath()[i])]->setPosition(m.getPath()[i+1]);
+            if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="white" && arrival<5){
+                turnToKing(arrival);
+            }
+            if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="black" && arrival>=45){
+                turnToKing(arrival);
+            }
         }
     }
 
