@@ -351,6 +351,13 @@ void Board::playMove(const Move &m) {
     }
 }
 
+void Board::turnToKing(int pos){
+    int index=index_man_here(pos);
+    string color=getPiece(index)->Color();
+    delete pieces[index];
+    pieces[index]=new King(pos,color);
+}
+
 map<int,vector<Move> > Board::playableMoves() {
     vector<Move> possibleMoves;
     map<int,vector<Move> > playableMoves;

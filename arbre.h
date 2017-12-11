@@ -11,17 +11,17 @@ using namespace std;
 
 // 1 Case :
 
-int NW =-6;
-int NE =-5;
-int SE =+5;
-int SW =+4;
+const int NW =-6;
+const int NE =-5;
+const int SE =+5;
+const int SW =+4;
 
 // 2 Cases :
 
-int NW2 = -11;
-int NE2 = -9;
-int SE2 = 11;
-int SW2 = 9;
+const int NW2 = -11;
+const int NE2 = -9;
+const int SE2 = 11;
+const int SW2 = 9;
 
 // Déclaration des classes pour les utiliser après :
 class Piece;
@@ -140,6 +140,7 @@ public :
     Piece* getPiece(int index){
         return pieces[index];
     }
+    void turnToKing(int pos);
 
 
     map<int,vector<Move> > playableMoves();

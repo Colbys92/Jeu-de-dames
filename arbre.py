@@ -191,6 +191,12 @@ class Piece(_object):
 
     def killingMove(self, arg2, arg3):
         return _arbre.Piece_killingMove(self, arg2, arg3)
+
+    def select(self, arg2, arg3):
+        return _arbre.Piece_select(self, arg2, arg3)
+
+    def clone(self):
+        return _arbre.Piece_clone(self)
 Piece_swigregister = _arbre.Piece_swigregister
 Piece_swigregister(Piece)
 
@@ -222,6 +228,12 @@ class Man(Piece):
 
     def killingMove(self, arg2, arg3):
         return _arbre.Man_killingMove(self, arg2, arg3)
+
+    def select(self, arg2, arg3):
+        return _arbre.Man_select(self, arg2, arg3)
+
+    def clone(self):
+        return _arbre.Man_clone(self)
 Man_swigregister = _arbre.Man_swigregister
 Man_swigregister(Man)
 
@@ -232,12 +244,15 @@ class Move(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, Move, name)
     __repr__ = _swig_repr
 
-    def __init__(self, arg2, arg3, arg4):
-        this = _arbre.new_Move(arg2, arg3, arg4)
+    def __init__(self, *args):
+        this = _arbre.new_Move(*args)
         try:
             self.this.append(this)
         except __builtin__.Exception:
             self.this = this
+
+    def __lt__(self, arg2):
+        return _arbre.Move___lt__(self, arg2)
 
     def getStart(self):
         return _arbre.Move_getStart(self)
@@ -247,6 +262,12 @@ class Move(_object):
 
     def getKills(self):
         return _arbre.Move_getKills(self)
+
+    def getPath(self):
+        return _arbre.Move_getPath(self)
+
+    def extendMove(self, arg2):
+        return _arbre.Move_extendMove(self, arg2)
     __swig_destroy__ = _arbre.delete_Move
     __del__ = lambda self: None
 Move_swigregister = _arbre.Move_swigregister
@@ -259,8 +280,8 @@ class Board(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, Board, name)
     __repr__ = _swig_repr
 
-    def __init__(self):
-        this = _arbre.new_Board()
+    def __init__(self, *args):
+        this = _arbre.new_Board(*args)
         try:
             self.this.append(this)
         except __builtin__.Exception:
@@ -272,15 +293,64 @@ class Board(_object):
     def isManHere(self, arg2):
         return _arbre.Board_isManHere(self, arg2)
 
+    def isKingHere(self, arg2):
+        return _arbre.Board_isKingHere(self, arg2)
+
+    def isPieceHere(self, arg2):
+        return _arbre.Board_isPieceHere(self, arg2)
+
+    def playMove(self, arg2):
+        return _arbre.Board_playMove(self, arg2)
+
+    def killAt(self, arg2):
+        return _arbre.Board_killAt(self, arg2)
+
     def getPiece(self, arg2):
         return _arbre.Board_getPiece(self, arg2)
 
-    def nbPieces(self):
-        return _arbre.Board_nbPieces(self)
+    def playableMoves(self):
+        return _arbre.Board_playableMoves(self)
     __swig_destroy__ = _arbre.delete_Board
     __del__ = lambda self: None
 Board_swigregister = _arbre.Board_swigregister
 Board_swigregister(Board)
+
+class King(Piece):
+    __swig_setmethods__ = {}
+    for _s in [Piece]:
+        __swig_setmethods__.update(getattr(_s, '__swig_setmethods__', {}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, King, name, value)
+    __swig_getmethods__ = {}
+    for _s in [Piece]:
+        __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
+    __getattr__ = lambda self, name: _swig_getattr(self, King, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _arbre.new_King(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_destroy__ = _arbre.delete_King
+    __del__ = lambda self: None
+
+    def isMan(self):
+        return _arbre.King_isMan(self)
+
+    def killFreeMove(self, arg2, arg3):
+        return _arbre.King_killFreeMove(self, arg2, arg3)
+
+    def killingMove(self, arg2, arg3):
+        return _arbre.King_killingMove(self, arg2, arg3)
+
+    def select(self, arg2, arg3):
+        return _arbre.King_select(self, arg2, arg3)
+
+    def clone(self):
+        return _arbre.King_clone(self)
+King_swigregister = _arbre.King_swigregister
+King_swigregister(King)
 
 class VectorMove(_object):
     __swig_setmethods__ = {}
