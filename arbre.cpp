@@ -119,6 +119,7 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
     currentPosition = position+NW+positionValue;
     currentPositionValue= (positionValue+1)%2;
     isPiece = false;
+    isSecondPiece = false;
     while ((currentPosition%10)!=5 && currentPosition>4 && !isPiece){
         isPiece = B.isPieceHere(currentPosition);
         currentPosition = currentPosition+NW+currentPositionValue;
@@ -139,6 +140,7 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
     currentPosition = position+NE+positionValue;
     currentPositionValue= (positionValue+1)%2;
     isPiece = false;
+    isSecondPiece = false;
     while ((currentPosition%10)!=4 && currentPosition>4 && !isPiece){
         isPiece = B.isPieceHere(currentPosition);
         currentPosition = currentPosition+NE+currentPositionValue;
@@ -159,6 +161,7 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
     currentPosition = position+SW+positionValue;
     currentPositionValue= (positionValue+1)%2;
     isPiece = false;
+    isSecondPiece = false;
     while ((currentPosition%10)!=5 && currentPosition<45 && !isPiece){
         isPiece = B.isPieceHere(currentPosition);
         currentPosition = currentPosition+SW+currentPositionValue;
@@ -179,6 +182,7 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
     currentPosition = position+SE+positionValue;
     currentPositionValue= (positionValue+1)%2;
     isPiece = false;
+    isSecondPiece = false;
     while ((currentPosition%10)!=4 && currentPosition<45 && !isPiece){
         isPiece = B.isPieceHere(currentPosition);
         currentPosition = currentPosition+SE+currentPositionValue;
@@ -502,6 +506,38 @@ int main(){
     Board* Plateau = new Board;
     vector<Move> PossibleMoves;
 
+    Plateau->turnToKing(19);
+
+
+
+//    map<int,vector<Move> > P = (*Plateau).playableMoves("black");
+//    for(int i=0; i<19; i++){
+//        for(std::vector<Move>::iterator it=P[i].begin(); it!=P[i].end();it++){
+//            cout << (*it).getStart() << " " << (*it).getArrival()<< endl;
+//        }
+//    }
+
+    cout << "fin" << endl;
+    cout << Plateau->getPiece(23)->getPosition() << endl;
+    cout << Plateau->getPiece(19)->getPosition() << endl;
+
+    Plateau->getPiece(23)->setPosition(23);
+    cout << Plateau->getPiece(23)->getPosition() << endl;
+    Plateau->killAt(32);
+    map<int,vector<Move> > Q = (*Plateau).playableMoves("black");
+    for(int i=0; i<19; i++){
+        for(std::vector<Move>::iterator it=Q[i].begin(); it!=Q[i].end();it++){
+            cout << (*it).getStart() << " " << (*it).getArrival()<< " Kills :" <<(*it).getKills()<< endl;
+        }
+    }
+
+
+//    Plateau->getPiece(19)->killingMove(*Plateau,PossibleMoves);
+
+//    for(std::vector<Move>::iterator it = PossibleMoves.begin(); it<PossibleMoves.end();it++){
+//         cout << (*it).getStart() << " " << (*it).getArrival()<< " Kills : " <<(*it).getKills() << endl;
+//    }
+
 
 
 
@@ -525,11 +561,11 @@ int main(){
 //    }
 
 
-    Plateau->getPiece(23)->setPosition(29);
-    Plateau->getPiece(28)->killFreeMove(*Plateau,PossibleMoves);
-        for(std::vector<Move>::iterator it = PossibleMoves.begin(); it<PossibleMoves.end();it++){
-            cout << (*it).getStart() << " " << (*it).getArrival()<< endl;
-        }
+//    Plateau->getPiece(23)->setPosition(29);
+//    Plateau->getPiece(28)->killFreeMove(*Plateau,PossibleMoves);
+//        for(std::vector<Move>::iterator it = PossibleMoves.begin(); it<PossibleMoves.end();it++){
+//            cout << (*it).getStart() << " " << (*it).getArrival()<< endl;
+//        }
 
 
 
