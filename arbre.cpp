@@ -295,17 +295,17 @@ void Man::killingMove(Board& B, vector<Move>& possibleMoves){
     // Déplacement SE :
     if(position%10!=4 && position%10!=9
             && B.isPieceHere(position+SE+positionValue)
-            && !B.isPieceHere(position+11)
-            && B.getPiece(B.index_man_here(position+5+positionValue))->Color()!=color){
-        possibleMoves.push_back(Move(position,position+11,1));
+            && !B.isPieceHere(position+SE2)
+            && B.getPiece(B.index_man_here(position+SE+positionValue))->Color()!=color){
+        possibleMoves.push_back(Move(position,position+SE2,1));
 
     }
     // Déplacement SW :
     if(position%10!=5 && position%10!=0
-            && B.isPieceHere(position+4+positionValue)
-            && !B.isPieceHere(position+9)
-            && B.getPiece(B.index_man_here(position+4+positionValue))->Color()!=color){
-        possibleMoves.push_back(Move(position,position+9,1));
+            && B.isPieceHere(position+SW+positionValue)
+            && !B.isPieceHere(position+SW2)
+            && B.getPiece(B.index_man_here(position+SW+positionValue))->Color()!=color){
+        possibleMoves.push_back(Move(position,position+SW2,1));
     }
 }
 
@@ -498,8 +498,8 @@ int main(){
     Board* Plateau = new Board;
     vector<Move> PossibleMoves;
 
-<<<<<<< HEAD
-    Plateau->getPiece()
+
+
 
 //    Plateau->getPiece(1)->setPosition(26);
 //    Plateau->getPiece(2)->setPosition(29);
@@ -520,15 +520,12 @@ int main(){
 //        }
 //    }
 
-    Plateau->getPiece(3)->setPosition(27);
-    Plateau->getPiece(22)->setPosition(24);
-    map<int,vector<Move> > m=Plateau->playableMoves("white");
-    for(map<int,vector<Move> >::iterator it=m.begin();it!=m.end();it++) {
-        for(vector<Move>::iterator it2=it->second.begin();it2!=it->second.end();it2++) {
-            cout<<it->first<<" "<<it2->getStart()<<" "<<it2->getArrival()<<endl;
+
+    Plateau->getPiece(23)->setPosition(29);
+    Plateau->getPiece(28)->killFreeMove(*Plateau,PossibleMoves);
+        for(std::vector<Move>::iterator it = PossibleMoves.begin(); it<PossibleMoves.end();it++){
+            cout << (*it).getStart() << " " << (*it).getArrival()<< endl;
         }
-    }
-=======
 
 
 
@@ -540,12 +537,9 @@ int main(){
 //    cout <<Plateau->getPiece(24)->isMan()<<endl;
 //    cout << Plateau->getPiece(24)->getPosition() << endl;
 //    Plateau->getPiece(24)->killFreeMove(*Plateau,PossibleMoves);
-   for(vector<Move>::iterator it=PossibleMoves.begin(); it!=PossibleMoves.end(); it++){
-        cout << it->getStart() << " : " << it->getArrival() << endl;
-   }
 
 
->>>>>>> MethodKing
+
 
     return 0;
 }
