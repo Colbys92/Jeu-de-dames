@@ -160,7 +160,7 @@ public :
       virtual void killFreeMove(Board& B,vector<Move> &possibleMoves);
       virtual void killingMove(Board& B, vector<Move> &possibleMoves);
       virtual Piece* clone();
-      virtual void select(Board& b, vector<Move> &possibleMoves){}
+      virtual void select(Board& b, vector<Move> &possibleMoves);
 
 };
 
