@@ -1,7 +1,9 @@
 Matthieu :
-Interfacage swiggé
-Interaction avec l'utilisateur
-========>Jeu 1vs 1
+-permettre différentes résolutions pour le GUI (passer par des constantes)
+-modifier les classes (les faire hériter des classes c++)
+-réfléchir a base de données (peut on en trouver sur le net)
+-jeu en ligne (1v1) ?
+
 Hugo :
 Coup possible pour les dames
 Fonction selectionner(voir python)

@@ -25,6 +25,23 @@ class PyMan:
 class PyBoard:
     def __init__(self,board):
         self.this=board
+    def playTurn(self,window,color):
+        moves=self.this.playableMoves(color)
+        choiceMade=False
+        
+        while(not choiceMade):
+            self.display(window)
+            displayMovablePieces(moves,window)
+            (x,y)=pygame.mouse.get_pos()
+            pos=coordToPos(x,y)
+            if(pos in moves.keys()):
+                for square in moves[pos]:
+                    highlightSquare(square.getArrival(),(0,0,255),window)
+            
+            
+            
+            
+        
     def display(self,window):
         pygame.draw.rect(window,(255,255,255),Rect(262,109,500,500),1)
         for i in range(10):
@@ -36,7 +53,14 @@ class PyBoard:
         pygame.draw.rect(window,(255,255,255),Rect(262,109,500,500),1)
         for i in range(self.this.nbPieces()):
             PyMan(self.this.getPiece(i)).display(window)
-            
+
+def coordToPos(x,y):
+    i=(x-262)//50
+    j=(y-109)//50
+    if (i+j)%2==1:
+        return(5*j+i//2)
+    else: return -1
+
 def highlightSquare(position,color,window):
     increment=0
     if(position%10<5):
@@ -49,8 +73,8 @@ def displayMovablePieces(m,window):
     for pos in m.keys():
         highlightSquare(pos,(0,255,0),window)
 
-        
-            
+
+
 if __name__ == "__main__":
     pygame.init()
     window=pygame.display.set_mode((1024,768))
@@ -63,9 +87,43 @@ if __name__ == "__main__":
     plateau.display(window)
     compteur=0
     couleurs=["white","black"]
-    m=plateau.this.playableMoves(couleurs[compteur])
-    displayMovablePieces(m,window)
-    pygame.display.flip()
+    run=True
+    while(plateau.this.nbPieces()>0 and run):
+        moves=plateau.this.playableMoves(couleurs[compteur])
+        played=False
+        chosenPiece=-1
+        while(not played):
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    run=False
+                    played=True
+                    choiceMade=True
+                    break
+                elif event.type == MOUSEBUTTONDOWN and event.button==1:
+                    pos=coordToPos(event.pos[0],event.pos[1])
+                    if chosenPiece==-1 and pos in moves.keys():
+                        chosenPiece=pos
+                        for square in moves[pos]:
+                            highlightSquare(square.getArrival(),(255,0,0),window)
+                    elif chosenPiece!=-1 and pos not in map(Move.getArrival,moves[chosenPiece]):
+                        chosenPiece=-1
+                        plateau.display(window)
+                        displayMovablePieces(moves,window)
+                    elif chosenPiece!=-1:
+                        plateau.this.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)])
+                        plateau.display(window)
+                        played=True
+            if(chosenPiece==-1):
+                plateau.display(window)
+                displayMovablePieces(moves,window)
+                (x,y)=pygame.mouse.get_pos()
+                pos=coordToPos(x,y)
+                if(pos in moves.keys()):
+                    for square in moves[pos]:
+                        highlightSquare(square.getArrival(),(0,0,255),window)
+            pygame.display.flip()
+        compteur=1-compteur
+    pygame.quit()
     
         
     
