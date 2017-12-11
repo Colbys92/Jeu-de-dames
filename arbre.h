@@ -141,6 +141,7 @@ public :
         return pieces[index];
     }
 
+
     map<int,vector<Move> > playableMoves();
 };
 

@@ -312,6 +312,12 @@ void Board::operator=(const Board& b){
     }
 }
 
+void Board::turnToKing(int pos){
+    int index=index_man_here(pos);
+    string color=getPiece(index)->Color();
+    delete pieces[index];
+    pieces[pieces.begin()+index]=new King(pos,color);
+}
 void Board::killAt(int pos) {
     int index=index_man_here(pos);
     delete pieces[index];
@@ -377,23 +383,25 @@ int main(){
     Board* Plateau = new Board;
     vector<Move> PossibleMoves;
 
-    Plateau->getPiece(1)->setPosition(26);
-    Plateau->getPiece(2)->setPosition(29);
-//    Plateau->getPiece(21)->killingMove(*Plateau,PossibleMoves);
-//    cout<<PossibleMoves[0].getKills()<<endl;
-//    cout<<PossibleMoves.size()<<endl;
-//    Plateau->getPiece(11)->setPosition(16);
-//    Plateau->getPiece(0)->killFreeMove(*Plateau,PossibleMoves);
-//    for(std::vector<Move>::iterator it = PossibleMoves.begin(); it<PossibleMoves.end();it++){
-//        cout << (*it).start << " " << (*it).arrival<< endl;
+    Plateau->getPiece()
+
+//    Plateau->getPiece(1)->setPosition(26);
+//    Plateau->getPiece(2)->setPosition(29);
+////    Plateau->getPiece(21)->killingMove(*Plateau,PossibleMoves);
+////    cout<<PossibleMoves[0].getKills()<<endl;
+////    cout<<PossibleMoves.size()<<endl;
+////    Plateau->getPiece(11)->setPosition(16);
+////    Plateau->getPiece(0)->killFreeMove(*Plateau,PossibleMoves);
+////    for(std::vector<Move>::iterator it = PossibleMoves.begin(); it<PossibleMoves.end();it++){
+////        cout << (*it).start << " " << (*it).arrival<< endl;
+////    }
+//    Plateau->getPiece(3)->setPosition(27);
+//    Plateau->getPiece(22)->setPosition(24);
+//    map<int,vector<Move> > m=Plateau->playableMoves();
+//    for(map<int,vector<Move> >::iterator it=m.begin();it!=m.end();it++) {
+//        for(vector<Move>::iterator it2=it->second.begin();it2!=it->second.end();it2++) {
+//            cout<<it->first<<" "<<it2->getStart()<<" "<<it2->getArrival()<<endl;
+//        }
 //    }
-    Plateau->getPiece(3)->setPosition(27);
-    Plateau->getPiece(22)->setPosition(24);
-    map<int,vector<Move> > m=Plateau->playableMoves();
-    for(map<int,vector<Move> >::iterator it=m.begin();it!=m.end();it++) {
-        for(vector<Move>::iterator it2=it->second.begin();it2!=it->second.end();it2++) {
-            cout<<it->first<<" "<<it2->getStart()<<" "<<it2->getArrival()<<endl;
-        }
-    }
     return 0;
 }
