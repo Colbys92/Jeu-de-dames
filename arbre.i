@@ -35,7 +35,7 @@ public:
 	virtual bool isMan() const;
 	virtual void killFreeMove(Board&,std::vector<Move>&);
 	virtual void killingMove(Board&,std::vector<Move>&);
-	virtual void select(Board&,vector<Move>&);
+	virtual void select(Board&,std::vector<Move>&);
 	virtual Piece* clone();
 };
 
@@ -51,7 +51,7 @@ public:
     int getStart();
     int getArrival();
     int getKills();
-    vector<int> getPath() const;
+    std::vector<int> getPath() const;
     Move extendMove(Move);
 
 };
@@ -71,7 +71,7 @@ public:
 	void killAt(int);
 	Piece* getPiece(int);
 	int nbPieces() const;
-	map<int, vector<Move> > playableMoves(string);
+	std::map<int, std::vector<Move> > playableMoves(std::string);
 };
 
 struct King : public Piece {
@@ -82,7 +82,7 @@ public:
 	virtual bool isMan() const;
 	virtual void killFreeMove(Board&,std::vector<Move>&);
 	virtual void killingMove(Board&,std::vector<Move>&);
-	virtual void select(Board&,vector<Move>&);
+	virtual void select(Board&,std::vector<Move>&);
 	virtual Piece* clone();
 
 };
@@ -90,4 +90,5 @@ public:
 
 namespace std {
 	%template(VectorMove) vector<Move>;
+	%template(map_int_moves) map<int,vector<Move> >;
 };

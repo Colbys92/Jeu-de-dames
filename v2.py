@@ -36,6 +36,19 @@ class PyBoard:
         pygame.draw.rect(window,(255,255,255),Rect(262,109,500,500),1)
         for i in range(self.this.nbPieces()):
             PyMan(self.this.getPiece(i)).display(window)
+            
+def highlightSquare(position,color,window):
+    increment=0
+    if(position%10<5):
+        increment+=50
+    i=(position%5)
+    j=position//5
+    pygame.draw.rect(window,color,Rect(262+i*100+increment,109+j*50,50,50),3)
+
+def displayMovablePieces(m,window):
+    for pos in m.keys():
+        highlightSquare(pos,(0,255,0),window)
+
         
             
 if __name__ == "__main__":
@@ -43,7 +56,15 @@ if __name__ == "__main__":
     window=pygame.display.set_mode((1024,768))
     window.fill((0,0,0))
     board=Board()
-    PyBoard(board).display(window)
+    plateau=PyBoard(board)
+    # plateau.this.getPiece(0).setPosition(27)
+    plateau.this.getPiece(30).setPosition(23)
+    plateau.this.getPiece(31).setPosition(28)
+    plateau.display(window)
+    compteur=0
+    couleurs=["white","black"]
+    m=plateau.this.playableMoves(couleurs[compteur])
+    displayMovablePieces(m,window)
     pygame.display.flip()
     
         

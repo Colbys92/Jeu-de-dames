@@ -209,14 +209,10 @@ class Man(Piece):
     for _s in [Piece]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, Man, name)
-    __repr__ = _swig_repr
 
-    def __init__(self, arg2, arg3):
-        this = _arbre.new_Man(arg2, arg3)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
+    def __init__(self, *args, **kwargs):
+        raise AttributeError("No constructor defined - class is abstract")
+    __repr__ = _swig_repr
     __swig_destroy__ = _arbre.delete_Man
     __del__ = lambda self: None
 
@@ -327,14 +323,10 @@ class King(Piece):
     for _s in [Piece]:
         __swig_getmethods__.update(getattr(_s, '__swig_getmethods__', {}))
     __getattr__ = lambda self, name: _swig_getattr(self, King, name)
-    __repr__ = _swig_repr
 
-    def __init__(self, *args):
-        this = _arbre.new_King(*args)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
+    def __init__(self, *args, **kwargs):
+        raise AttributeError("No constructor defined - class is abstract")
+    __repr__ = _swig_repr
     __swig_destroy__ = _arbre.delete_King
     __del__ = lambda self: None
 
@@ -467,6 +459,121 @@ class VectorMove(_object):
     __del__ = lambda self: None
 VectorMove_swigregister = _arbre.VectorMove_swigregister
 VectorMove_swigregister(VectorMove)
+
+class map_int_moves(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, map_int_moves, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, map_int_moves, name)
+    __repr__ = _swig_repr
+
+    def iterator(self):
+        return _arbre.map_int_moves_iterator(self)
+    def __iter__(self):
+        return self.iterator()
+
+    def __nonzero__(self):
+        return _arbre.map_int_moves___nonzero__(self)
+
+    def __bool__(self):
+        return _arbre.map_int_moves___bool__(self)
+
+    def __len__(self):
+        return _arbre.map_int_moves___len__(self)
+    def __iter__(self):
+        return self.key_iterator()
+    def iterkeys(self):
+        return self.key_iterator()
+    def itervalues(self):
+        return self.value_iterator()
+    def iteritems(self):
+        return self.iterator()
+
+    def __getitem__(self, key):
+        return _arbre.map_int_moves___getitem__(self, key)
+
+    def __delitem__(self, key):
+        return _arbre.map_int_moves___delitem__(self, key)
+
+    def has_key(self, key):
+        return _arbre.map_int_moves_has_key(self, key)
+
+    def keys(self):
+        return _arbre.map_int_moves_keys(self)
+
+    def values(self):
+        return _arbre.map_int_moves_values(self)
+
+    def items(self):
+        return _arbre.map_int_moves_items(self)
+
+    def __contains__(self, key):
+        return _arbre.map_int_moves___contains__(self, key)
+
+    def key_iterator(self):
+        return _arbre.map_int_moves_key_iterator(self)
+
+    def value_iterator(self):
+        return _arbre.map_int_moves_value_iterator(self)
+
+    def __setitem__(self, *args):
+        return _arbre.map_int_moves___setitem__(self, *args)
+
+    def asdict(self):
+        return _arbre.map_int_moves_asdict(self)
+
+    def __init__(self, *args):
+        this = _arbre.new_map_int_moves(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+
+    def empty(self):
+        return _arbre.map_int_moves_empty(self)
+
+    def size(self):
+        return _arbre.map_int_moves_size(self)
+
+    def swap(self, v):
+        return _arbre.map_int_moves_swap(self, v)
+
+    def begin(self):
+        return _arbre.map_int_moves_begin(self)
+
+    def end(self):
+        return _arbre.map_int_moves_end(self)
+
+    def rbegin(self):
+        return _arbre.map_int_moves_rbegin(self)
+
+    def rend(self):
+        return _arbre.map_int_moves_rend(self)
+
+    def clear(self):
+        return _arbre.map_int_moves_clear(self)
+
+    def get_allocator(self):
+        return _arbre.map_int_moves_get_allocator(self)
+
+    def count(self, x):
+        return _arbre.map_int_moves_count(self, x)
+
+    def erase(self, *args):
+        return _arbre.map_int_moves_erase(self, *args)
+
+    def find(self, x):
+        return _arbre.map_int_moves_find(self, x)
+
+    def lower_bound(self, x):
+        return _arbre.map_int_moves_lower_bound(self, x)
+
+    def upper_bound(self, x):
+        return _arbre.map_int_moves_upper_bound(self, x)
+    __swig_destroy__ = _arbre.delete_map_int_moves
+    __del__ = lambda self: None
+map_int_moves_swigregister = _arbre.map_int_moves_swigregister
+map_int_moves_swigregister(map_int_moves)
 
 # This file is compatible with both classic and new-style classes.
 
