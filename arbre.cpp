@@ -57,9 +57,11 @@ void King::killFreeMove(Board& B, vector<Move>& possibleMoves){
     int currentPosition;
     int currentPositionValue;
 
+
     // Diagonale NW :
     currentPosition = position;
     currentPositionValue= positionValue;
+
     isPiece = B.isPieceHere(currentPosition+NW+currentPositionValue);
     while (!isPiece && (currentPosition%10)!=5 && currentPosition>4){
         possibleMoves.push_back(Move(position,currentPosition+NW+currentPositionValue,0));
@@ -123,7 +125,7 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
         currentPositionValue= (currentPositionValue+1)%2;
     }
 
-    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+SE+positionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
+    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+SE+currentPositionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
         isSecondPiece = B.isPieceHere(currentPosition);
         while((currentPosition%10)!=5 && currentPosition>4 && !isSecondPiece){
             possibleMoves.push_back(Move(position,currentPosition,1));
@@ -143,7 +145,7 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
         currentPositionValue= (currentPositionValue+1)%2;
     }
 
-    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+SW+positionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
+    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+SW+currentPositionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
         isSecondPiece = B.isPieceHere(currentPosition);
         while((currentPosition%10)!=4 && currentPosition>4 && !isSecondPiece){
             possibleMoves.push_back(Move(position,currentPosition,1));
@@ -163,7 +165,7 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
         currentPositionValue= (currentPositionValue+1)%2;
     }
 
-    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+NE+positionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
+    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+NE+currentPositionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
         isSecondPiece = B.isPieceHere(currentPosition);
         while((currentPosition%10)!=5 && currentPosition<45 && !isSecondPiece){
             possibleMoves.push_back(Move(position,currentPosition,1));
@@ -183,7 +185,7 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
         currentPositionValue= (currentPositionValue+1)%2;
     }
 
-    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+NW+positionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
+    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+NW+currentPositionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
         isSecondPiece = B.isPieceHere(currentPosition);
         while((currentPosition%10)!=5 && currentPosition<45 && !isSecondPiece){
             possibleMoves.push_back(Move(position,currentPosition,1));
@@ -210,7 +212,6 @@ void Man::select(Board& b, vector<Move> &possibleMoves){
         while(size!=0){
             currentMove = moveToAdd.front();
             //We play virtually the current move on the board
-
             virtualBoard.playMove(currentMove);
             //We compute the follow up move to the current move in complementrayMove
             virtualBoard.getPiece(virtualBoard.index_man_here(currentMove.getArrival()))->killingMove(virtualBoard, complementaryMove);
@@ -247,19 +248,23 @@ void Man::killFreeMove(Board& B,vector<Move>& possibleMoves){
         positionValue=1;
     }
     if(color == "white"){
-        if(position%10!=4 && !B.isPieceHere(position-5+positionValue)){
-            possibleMoves.push_back(Move(position,position-5+positionValue,0));
+        //Deplacement NE :
+        if(position%10!=4 && !B.isPieceHere(position+NE+positionValue)){
+            possibleMoves.push_back(Move(position,position+NE+positionValue,0));
         }
-        if(!B.isPieceHere(position-5+positionValue)){
-            possibleMoves.push_back(Move(position,position-6+positionValue,0));
+        // Déplacement NW :
+        if(position%10!=5 && !B.isPieceHere(position+NW+positionValue)){
+            possibleMoves.push_back(Move(position,position+NW+positionValue,0));
         }
     }
     if(color == "black"){
-        if(position%10!=4 && !B.isPieceHere(position+5+positionValue)){
-            possibleMoves.push_back(Move(position,position+5+positionValue,0));
+        // Déplacement SE :
+        if(position%10!=4 && !B.isPieceHere(position+SE+positionValue)){
+            possibleMoves.push_back(Move(position,position+SE+positionValue,0));
         }
-        if(!B.isPieceHere(position+4+positionValue)){
-            possibleMoves.push_back(Move(position,position+4+positionValue,0));
+        // Déplacement SW :
+        if(position%10!=5 && !B.isPieceHere(position+SW+positionValue)){
+            possibleMoves.push_back(Move(position,position+SW+positionValue,0));
         }
     }
 }
@@ -271,31 +276,31 @@ void Man::killingMove(Board& B, vector<Move>& possibleMoves){
     }
 
 
-    // En haut à droite
+    // Déplacement NE :
     if(position%10!=4 && position%10!=9
-            && B.isPieceHere(position-5+positionValue)
-            && !B.isPieceHere(position-9)
-            && B.getPiece(B.index_man_here(position-5+positionValue))->Color()!=color){
-        possibleMoves.push_back(Move(position,position-9,1));
+            && B.isPieceHere(position+NE+positionValue)
+            && !B.isPieceHere(position+NE2)
+            && B.getPiece(B.index_man_here(position+NE+positionValue))->Color()!=color){
+        possibleMoves.push_back(Move(position,position-NE2,1));
 
     }
-    // En haut à gauche
+    // Déplacement NW :
     if(position%10!=5 && position%10!=0
-            && B.isPieceHere(position-6+positionValue)
-            && !B.isPieceHere(position-11)
-            && B.getPiece(B.index_man_here(position-6+positionValue))->Color()!=color){
-        possibleMoves.push_back(Move(position,position-11,1));
+            && B.isPieceHere(position+NW+positionValue)
+            && !B.isPieceHere(position+NW2)
+            && B.getPiece(B.index_man_here(position+NW+positionValue))->Color()!=color){
+        possibleMoves.push_back(Move(position,position+NW2,1));
 
     }
-    // En bas à droite
+    // Déplacement SE :
     if(position%10!=4 && position%10!=9
-            && B.isPieceHere(position+5+positionValue)
+            && B.isPieceHere(position+SE+positionValue)
             && !B.isPieceHere(position+11)
             && B.getPiece(B.index_man_here(position+5+positionValue))->Color()!=color){
         possibleMoves.push_back(Move(position,position+11,1));
 
     }
-    // En bas à gauche
+    // Déplacement SW :
     if(position%10!=5 && position%10!=0
             && B.isPieceHere(position+4+positionValue)
             && !B.isPieceHere(position+9)
@@ -312,12 +317,6 @@ void Board::operator=(const Board& b){
     }
 }
 
-void Board::turnToKing(int pos){
-    int index=index_man_here(pos);
-    string color=getPiece(index)->Color();
-    delete pieces[index];
-    pieces[pieces.begin()+index]=new King(pos,color);
-}
 void Board::killAt(int pos) {
     int index=index_man_here(pos);
     delete pieces[index];
@@ -326,29 +325,136 @@ void Board::killAt(int pos) {
 
 void Board::playMove(const Move &m) {
     //ca ne marche pas avec iterateur, pourquoi ?
-    for(int i=0;i<m.getPath().size()-1;i++) {
-        int depart=m.getPath()[i];
-        int arrivee=m.getPath()[i+1];
-        if(abs(depart-arrivee)>8) {
-            int positionValue=0;
-            if((depart)%10<5){
+//    for(int i=0;i<m.getPath().size()-1;i++) {
+//        int depart=m.getPath()[i];
+//        int arrivee=m.getPath()[i+1];
+//        if(abs(depart-arrivee)>8) {
+//            int positionValue=0;
+//            if((depart)%10<5){
+//                positionValue=1;
+//            }
+//            if(arrivee==depart+NW2) {
+//                killAt(depart + NW+positionValue);
+//            }
+//            else if(arrivee==depart+NE2) {
+//                killAt(depart + NE +positionValue);
+//            }
+//            else if(arrivee==depart+SE2) {
+//                killAt(depart+SE+positionValue);
+//            }
+//            else if(arrivee==depart+SW2) {
+//                killAt(depart+SW+positionValue);
+//            }
+//        }
+//        pieces[index_man_here(depart)]->setPosition(arrivee);
+//    }
+    if(m.getKills()==0){
+        pieces[index_man_here(m.getPath()[0])]->setPosition(m.getPath()[1]);
+
+    }
+    else {
+        for(int i=0;i<m.getPath().size()-1;i++){
+            int start = m.getPath()[i];
+            int arrival = m.getPath()[i+1];
+            //positionValue depuis le départ :
+            int positionValue = 0;
+            if(start%10<5){
                 positionValue=1;
             }
-            if(arrivee==depart+NW2) {
-                killAt(depart + NW+positionValue);
+            //South, North separation :
+            if(arrival-start>0){ // South :
+                int currentPositionWest = start;
+                int currentPositionEst = start;
+                int positionKilledWest = -1;
+                int positionKilledEst = -1;
+
+
+                while(currentPositionEst!=arrival && currentPositionWest!=arrival){// We move following both diagonals searching for a Piece and the arrival
+                    // EST
+                    if((currentPositionEst%10!=4)){
+                        if(isPieceHere(currentPositionEst)){
+                            positionKilledEst=currentPositionEst;
+                        }
+                        currentPositionEst=currentPositionEst+positionValue+SE;
+                    }
+                    //WEST :
+                    if(currentPositionWest%10!=5){
+                        if(isPieceHere(currentPositionWest)){
+                            positionKilledWest=currentPositionWest;
+                        }
+                        currentPositionWest=currentPositionWest+positionValue+SW;
+                    }
+                    // Actualisation of position value :
+                    positionValue=(positionValue+1)%2;
+                }
+
+
+                if(currentPositionEst==arrival){
+                    if (positionKilledEst==-1){
+                        cerr << "Erreur, pas de pion ennemi selon le déplacement selon la diagonale Sud Est" << endl;
+                    }
+
+                    else killAt(positionKilledEst);
+                }
+                else {
+                    if(positionKilledWest==-1){
+                        cerr << "Erreur, pas de pion ennemi selon le déplacement selon la diagonale SudWest" << endl;
+                    }
+                    else killAt(positionKilledWest);
+                }
             }
-            else if(arrivee==depart+NE2) {
-                killAt(depart + NE +positionValue);
+
+            else{//North :
+                int currentPositionWest = start;
+                int currentPositionEst = start;
+                int positionKilledWest = -1;
+                int positionKilledEst = -1;
+
+
+                while(currentPositionEst!=arrival && currentPositionWest!=arrival){// We move following both diagonals searching for a Piece and the arrival
+                    // EST
+                    if((currentPositionEst%10!=4)){
+                        if(isPieceHere(currentPositionEst)){
+                            positionKilledEst=currentPositionEst;
+                        }
+                        currentPositionEst=currentPositionEst+positionValue+NE;
+                    }
+                    //WEST :
+                    if(currentPositionWest%10!=5){
+                        if(isPieceHere(currentPositionWest)){
+                            positionKilledWest=currentPositionWest;
+                        }
+                        currentPositionWest=currentPositionWest+positionValue+NW;
+                    }
+                    // Actualisation of position value :
+                    positionValue=(positionValue+1)%2;
+                }
+
+
+                if(currentPositionEst==arrival){
+                    if (positionKilledEst==-1){
+                        cerr << "Erreur, pas de pion ennemi selon le déplacement selon la diagonale NordEst" << endl;
+                    }
+
+                    else killAt(positionKilledEst);
+                }
+                else {
+                    if(positionKilledWest==-1){
+                        cerr << "Erreur, pas de pion ennemi selon le déplacement selon la diagonale NordWest" << endl;
+                    }
+                    else killAt(positionKilledWest);
+                }
             }
-            else if(arrivee==depart+SE2) {
-                killAt(depart+SE+positionValue);
+            pieces[index_man_here(m.getPath()[i])]->setPosition(m.getPath()[i+1]);
+            if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="white" && arrival<5){
+                turnToKing(arrival);
             }
-            else if(arrivee==depart+SW2) {
-                killAt(depart+SW+positionValue);
+            if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="black" && arrival>=45){
+                turnToKing(arrival);
             }
         }
-        pieces[index_man_here(depart)]->setPosition(arrivee);
     }
+
 }
 
 void Board::turnToKing(int pos){
@@ -392,6 +498,7 @@ int main(){
     Board* Plateau = new Board;
     vector<Move> PossibleMoves;
 
+<<<<<<< HEAD
     Plateau->getPiece()
 
 //    Plateau->getPiece(1)->setPosition(26);
@@ -421,6 +528,24 @@ int main(){
             cout<<it->first<<" "<<it2->getStart()<<" "<<it2->getArrival()<<endl;
         }
     }
+=======
+
+
+
+//    Plateau->getPiece(19)->setPosition(28);
+//    Plateau->turnToKing(32);
+
+
+//    Plateau->turnToKing(34);
+//    cout <<Plateau->getPiece(24)->isMan()<<endl;
+//    cout << Plateau->getPiece(24)->getPosition() << endl;
+//    Plateau->getPiece(24)->killFreeMove(*Plateau,PossibleMoves);
+   for(vector<Move>::iterator it=PossibleMoves.begin(); it!=PossibleMoves.end(); it++){
+        cout << it->getStart() << " : " << it->getArrival() << endl;
+   }
+
+
+>>>>>>> MethodKing
 
     return 0;
 }
