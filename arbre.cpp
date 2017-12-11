@@ -358,7 +358,7 @@ void Board::turnToKing(int pos){
     pieces[index]=new King(pos,color);
 }
 
-map<int,vector<Move> > Board::playableMoves() {
+map<int,vector<Move> > Board::playableMoves(string color) {
     vector<Move> possibleMoves;
     map<int,vector<Move> > playableMoves;
     int maxKills=0;
@@ -370,11 +370,13 @@ map<int,vector<Move> > Board::playableMoves() {
 //        maxKills=max(maxKills,possibleMoves[possibleMoves.size()-1].getKills());
 //    }
     for(int i=0;i<pieces.size();i++) {
-        pieces[i]->select(*this,possibleMoves);
-        if(possibleMoves.size()>0) {
-            maxKills=max(maxKills,possibleMoves[possibleMoves.size()-1].getKills());
-        }
-    }
+    	if(pieces[i]->Color()==color) {
+        	pieces[i]->select(*this,possibleMoves);
+        	if(possibleMoves.size()>0) {
+            	maxKills=max(maxKills,possibleMoves[possibleMoves.size()-1].getKills());
+        	}
+   		}
+	}
 
     for(vector<Move>::iterator it=possibleMoves.begin();it!=possibleMoves.end();it++) {
         if(it->getKills()==maxKills) {
@@ -410,5 +412,15 @@ int main(){
 //            cout<<it->first<<" "<<it2->getStart()<<" "<<it2->getArrival()<<endl;
 //        }
 //    }
+
+    Plateau->getPiece(3)->setPosition(27);
+    Plateau->getPiece(22)->setPosition(24);
+    map<int,vector<Move> > m=Plateau->playableMoves("white");
+    for(map<int,vector<Move> >::iterator it=m.begin();it!=m.end();it++) {
+        for(vector<Move>::iterator it2=it->second.begin();it2!=it->second.end();it2++) {
+            cout<<it->first<<" "<<it2->getStart()<<" "<<it2->getArrival()<<endl;
+        }
+    }
+
     return 0;
 }

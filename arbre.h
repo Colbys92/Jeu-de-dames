@@ -141,9 +141,12 @@ public :
         return pieces[index];
     }
     void turnToKing(int pos);
+    int nbPieces() const{
+        return pieces.size();
+    }
 
 
-    map<int,vector<Move> > playableMoves();
+    map<int,vector<Move> > playableMoves(string color);
 };
 
 
