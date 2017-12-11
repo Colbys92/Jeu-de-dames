@@ -70,7 +70,8 @@ public:
 	void playMove(const Move&);
 	void killAt(int);
 	Piece* getPiece(int);
-	map<int, vector<Move> > playableMoves();
+	int nbPieces() const;
+	map<int, vector<Move> > playableMoves(string);
 };
 
 struct King : public Piece {

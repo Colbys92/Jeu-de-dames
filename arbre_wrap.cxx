@@ -3020,12 +3020,13 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_std__allocatorT_Move_t swig_types[11]
 #define SWIGTYPE_p_std__invalid_argument swig_types[12]
 #define SWIGTYPE_p_std__vectorT_Move_std__allocatorT_Move_t_t swig_types[13]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[14]
-#define SWIGTYPE_p_value_type swig_types[15]
-#define SWIGTYPE_p_vectorT_Move_t swig_types[16]
-#define SWIGTYPE_p_vectorT_int_t swig_types[17]
-static swig_type_info *swig_types[19];
-static swig_module_info swig_module = {swig_types, 18, 0, 0, 0, 0};
+#define SWIGTYPE_p_string swig_types[14]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[15]
+#define SWIGTYPE_p_value_type swig_types[16]
+#define SWIGTYPE_p_vectorT_Move_t swig_types[17]
+#define SWIGTYPE_p_vectorT_int_t swig_types[18]
+static swig_type_info *swig_types[20];
+static swig_module_info swig_module = {swig_types, 19, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -7138,21 +7139,60 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_Board_playableMoves(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_Board_nbPieces(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Board *arg1 = (Board *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:Board_nbPieces",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Board, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Board_nbPieces" "', argument " "1"" of type '" "Board const *""'"); 
+  }
+  arg1 = reinterpret_cast< Board * >(argp1);
+  result = (int)((Board const *)arg1)->nbPieces();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Board_playableMoves(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Board *arg1 = (Board *) 0 ;
+  string arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
   SwigValueWrapper< map< int,vector< Move > > > result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:Board_playableMoves",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:Board_playableMoves",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Board, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Board_playableMoves" "', argument " "1"" of type '" "Board *""'"); 
   }
   arg1 = reinterpret_cast< Board * >(argp1);
-  result = (arg1)->playableMoves();
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_string,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Board_playableMoves" "', argument " "2"" of type '" "string""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Board_playableMoves" "', argument " "2"" of type '" "string""'");
+    } else {
+      string * temp = reinterpret_cast< string * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  result = (arg1)->playableMoves(arg2);
   resultobj = SWIG_NewPointerObj((new map< int,vector< Move > >(static_cast< const map< int,vector< Move > >& >(result))), SWIGTYPE_p_mapT_int_vectorT_Move_t_t, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -9469,6 +9509,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Board_playMove", _wrap_Board_playMove, METH_VARARGS, NULL},
 	 { (char *)"Board_killAt", _wrap_Board_killAt, METH_VARARGS, NULL},
 	 { (char *)"Board_getPiece", _wrap_Board_getPiece, METH_VARARGS, NULL},
+	 { (char *)"Board_nbPieces", _wrap_Board_nbPieces, METH_VARARGS, NULL},
 	 { (char *)"Board_playableMoves", _wrap_Board_playableMoves, METH_VARARGS, NULL},
 	 { (char *)"delete_Board", _wrap_delete_Board, METH_VARARGS, NULL},
 	 { (char *)"Board_swigregister", Board_swigregister, METH_VARARGS, NULL},
@@ -9540,6 +9581,7 @@ static swig_type_info _swigt__p_size_type = {"_p_size_type", "size_type *", 0, 0
 static swig_type_info _swigt__p_std__allocatorT_Move_t = {"_p_std__allocatorT_Move_t", "std::vector< Move >::allocator_type *|std::allocator< Move > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__invalid_argument = {"_p_std__invalid_argument", "std::invalid_argument *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_Move_std__allocatorT_Move_t_t = {"_p_std__vectorT_Move_std__allocatorT_Move_t_t", "std::vector< Move,std::allocator< Move > > *|std::vector< Move > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_string = {"_p_string", "string *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__SwigPyIterator = {"_p_swig__SwigPyIterator", "swig::SwigPyIterator *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_value_type = {"_p_value_type", "value_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_vectorT_Move_t = {"_p_vectorT_Move_t", "vector< Move > *", 0, 0, (void*)0, 0};
@@ -9560,6 +9602,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_std__allocatorT_Move_t,
   &_swigt__p_std__invalid_argument,
   &_swigt__p_std__vectorT_Move_std__allocatorT_Move_t_t,
+  &_swigt__p_string,
   &_swigt__p_swig__SwigPyIterator,
   &_swigt__p_value_type,
   &_swigt__p_vectorT_Move_t,
@@ -9580,6 +9623,7 @@ static swig_cast_info _swigc__p_size_type[] = {  {&_swigt__p_size_type, 0, 0, 0}
 static swig_cast_info _swigc__p_std__allocatorT_Move_t[] = {  {&_swigt__p_std__allocatorT_Move_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__invalid_argument[] = {  {&_swigt__p_std__invalid_argument, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_Move_std__allocatorT_Move_t_t[] = {  {&_swigt__p_std__vectorT_Move_std__allocatorT_Move_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_string[] = {  {&_swigt__p_string, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__SwigPyIterator[] = {  {&_swigt__p_swig__SwigPyIterator, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_value_type[] = {  {&_swigt__p_value_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_vectorT_Move_t[] = {  {&_swigt__p_vectorT_Move_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -9600,6 +9644,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_std__allocatorT_Move_t,
   _swigc__p_std__invalid_argument,
   _swigc__p_std__vectorT_Move_std__allocatorT_Move_t_t,
+  _swigc__p_string,
   _swigc__p_swig__SwigPyIterator,
   _swigc__p_value_type,
   _swigc__p_vectorT_Move_t,

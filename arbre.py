@@ -308,8 +308,11 @@ class Board(_object):
     def getPiece(self, arg2):
         return _arbre.Board_getPiece(self, arg2)
 
-    def playableMoves(self):
-        return _arbre.Board_playableMoves(self)
+    def nbPieces(self):
+        return _arbre.Board_nbPieces(self)
+
+    def playableMoves(self, arg2):
+        return _arbre.Board_playableMoves(self, arg2)
     __swig_destroy__ = _arbre.delete_Board
     __del__ = lambda self: None
 Board_swigregister = _arbre.Board_swigregister
