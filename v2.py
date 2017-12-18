@@ -1,6 +1,7 @@
 #if importing fails :
 #import sys
 #sys.path.append('c:\\users\\matthieu\\documents\\ponts\\2A\\td log\\projet')
+#sys.path.append('D:\\ENPC\\Semestre 3\\ProjetMOPSI\\Projet\\Jeu-de-dames')
 
 
 from arbre import *
@@ -89,6 +90,9 @@ if __name__ == "__main__":
     run=True
     plateau.this.getPiece(23).setPosition(29)
     plateau.this.getPiece(28).killFreeMove(plateau,possibleMoves)
+    for i in range(38,0,-1) :
+        print(i)
+        plateau.this.killAt(plateau.this.getPiece(i).getPosition())
     for move in possibleMoves:
         print(move.getStart())
         print(move.getArrival())
