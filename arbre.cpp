@@ -405,6 +405,15 @@ void Board::playMove(const Move &m) {
 //    }
     if(m.getKills()==0){
         pieces[index_man_here(m.getPath()[0])]->setPosition(m.getPath()[1]);
+        int arrival = m.getPath()[1];
+
+        // Transformation en dame :
+        if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="white" && arrival<5){
+            turnToKing(arrival);
+        }
+        if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="black" && arrival>=45){
+            turnToKing(arrival);
+        }
 
     }
     else {
@@ -500,14 +509,17 @@ void Board::playMove(const Move &m) {
                     else killAt(positionKilledWest);
                 }
             }
-            pieces[index_man_here(m.getPath()[i])]->setPosition(m.getPath()[i+1]);
-            if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="white" && arrival<5){
-                turnToKing(arrival);
-            }
-            if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="black" && arrival>=45){
-                turnToKing(arrival);
-            }
+
+            pieces[index_man_here(m.getPath()[i])]->setPosition(m.getPath()[i+1]); // Déplacement effectif
         }
+        int arrival = m.getPath()[m.getPath().size()-1];
+        if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="white" && arrival<5){
+            turnToKing(arrival);
+        }
+        if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color()=="black" && arrival>=45){
+            turnToKing(arrival);
+        }
+
     }
 
 }
@@ -603,16 +615,16 @@ int main(){
 
     // Test de la transformation en dame :
 
-    for(int i=31; i<50; i++){
-        Plateau->killAt(i);
-    }
-    Plateau->getPiece(20)->setPosition(43);
-    Plateau->getPiece(18)->setPosition(38);
-    map<int,vector<Move> > R = Plateau->playableMoves("black");
-    cout << R[38][0].getStart() << " : "<< R[38][0].getArrival() << endl;
-    Plateau->playMove(R[38][0]);
-    cout << Plateau->isManHere(49) << endl;
-    cout << true << endl;
+//    for(int i=31; i<50; i++){
+//        Plateau->killAt(i);
+//    }
+//    Plateau->getPiece(20)->setPosition(43);
+//    Plateau->getPiece(18)->setPosition(38);
+//    map<int,vector<Move> > R = Plateau->playableMoves("black");
+//    cout << R[38][0].getStart() << " : "<< R[38][0].getArrival() << endl;
+//    Plateau->playMove(R[38][0]);
+//    cout << Plateau->isManHere(49) << endl;
+//    cout << true << endl;
 
 
 
