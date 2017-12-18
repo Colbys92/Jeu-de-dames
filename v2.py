@@ -8,7 +8,7 @@ from pygame.locals import *
 import pygame
 
 
-class PyMan:
+class PyMan(Man):
     def __init__(self,man):
         self.this=man
     def display(self,window):
@@ -87,11 +87,6 @@ if __name__ == "__main__":
     possibleMoves=VectorMove()
     couleurs=["white","black"]
     run=True
-    plateau.this.getPiece(23).setPosition(29)
-    plateau.this.getPiece(28).killFreeMove(plateau,possibleMoves)
-    for move in possibleMoves:
-        print(move.getStart())
-        print(move.getArrival())
     while(plateau.this.nbPieces()>0 and run):
         moves=plateau.this.playableMoves(couleurs[compteur])
         played=False
