@@ -109,6 +109,13 @@ public :
             pieces.push_back(new Man(i,"white"));
         }
     }
+    Board(bool lol) {
+        pieces.push_back(new Man(47,"white"));
+         pieces.push_back(new Man(41,"white"));
+          pieces.push_back(new Man(42,"black"));
+           pieces.push_back(new Man(36,"black"));
+
+    }
     Board(const Board& b);
     void operator=(const Board& b);
     int index_man_here(int pos){
@@ -145,6 +152,8 @@ public :
     int nbPieces() const{
         return pieces.size();
     }
+    float evaluate(float manWeight, float kingWeight, string color);
+    pair<float, Move> bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight);
 
 
     map<int,vector<Move> > playableMoves(string color);

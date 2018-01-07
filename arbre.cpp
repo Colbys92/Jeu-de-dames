@@ -535,8 +535,8 @@ map<int,vector<Move> > Board::playableMoves(string color) {
     vector<Move> possibleMoves;
     map<int,vector<Move> > playableMoves;
     int maxKills=0;
-    //version ci-dessous ne marche pas, pourquoi ?
-//    for(vector<Piece*>::iterator it;it!=pieces.end();it++) {
+//    version ci-dessous ne marche pas, pourquoi ?
+//    for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++) {
 //        cout<<"ici"<<endl;
 //        cout<<(*it)->getPosition()<<endl;
 //        (*it)->select(*this,possibleMoves);
@@ -559,13 +559,105 @@ map<int,vector<Move> > Board::playableMoves(string color) {
     return playableMoves;
 }
 
+float Board::evaluate(float manWeight, float kingWeight, string color) {
+    float value=0;
+    for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++) {
+        if((*it)->Color() == color){
+            value+=((*it)->isMan())?manWeight:kingWeight;
+        }
+        else {
+            value-=((*it)->isMan())?manWeight:kingWeight;
+        }
+    }
+    return value;
+}
+
+std::pair<float,Move> Board::bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight){
+    // Renvoie le cout et le meilleur move, attention utiliser avec profondeur pair car sinon le move n'existe pas
+    Board virtualBoard(*this);
+    Board virtualBoardOpposite;
+    map<int,vector<Move> > currentPlayableMove;
+    map<int,vector<Move> > currentPlayableMoveOpposite;
+    float valueCurrentMove=0;
+    float valueCurrentMoveOpposite=5000;
+    pair<float, Move> bestMoveOpposite;
+    pair<float, Move> bestMove;
+    bestMove.first = valueCurrentMove;
+    bestMoveOpposite.first=valueCurrentMoveOpposite;
+    string colorOpposite;
+    if(color == "white"){
+        colorOpposite="black";
+    }
+    else {
+        colorOpposite="white";
+    }
+
+    if(profondeur>0){
+        for(map<int,vector<Move> >::iterator it1=playableMove.begin(); it1!=playableMove.end(); it1++){
+            for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
+
+                virtualBoard.playMove((*it1).second[playedMove]);
+                currentPlayableMove = virtualBoard.playableMoves(colorOpposite);
+                virtualBoardOpposite=virtualBoard;
+
+
+                for(map<int,vector<Move> >::iterator it=currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
+                    for(int j=0; j<(*it).second.size();j++){
+                        virtualBoardOpposite.playMove((*it).second[j]);
+                        currentPlayableMoveOpposite = virtualBoardOpposite.playableMoves(color);
+
+                        valueCurrentMoveOpposite = virtualBoardOpposite.bestMove(currentPlayableMoveOpposite,color,profondeur-2,manWeight,kingWeight).first;
+
+                        if(bestMoveOpposite.first>valueCurrentMoveOpposite){
+                            bestMoveOpposite.first=valueCurrentMoveOpposite;
+                            bestMoveOpposite.second=(*it).second[j];
+                        }
+                        //Nettoyage des valeurs :
+                        currentPlayableMoveOpposite.clear();
+                        virtualBoardOpposite=virtualBoard;
+                    }
+                }
+
+
+                if(bestMoveOpposite.first<valueCurrentMove){
+                    bestMove.second= (*it1).second[playedMove];
+                    bestMove.first=valueCurrentMove;
+                }
+
+
+
+                // Nettoyage des valeurs :
+                currentPlayableMove.clear();
+                virtualBoard = *this;
+            }
+        }
+
+        return bestMove;
+    }
+    else {
+        bestMove.first=evaluate(manWeight,kingWeight,color);
+        return bestMove;
+
+    }
+}
+
+
 
 int main(){
 
     Board* Plateau = new Board;
     vector<Move> PossibleMoves;
+    Board b(true);
+    Move m=b.bestMove(b.playableMoves("white"),"white",2,1,1).second;
+    b.playMove(m);
+    for(int i=0;i<3;i++) {
+        cout<<b.getPiece(i)->getPosition()<<endl;
+    }
+    std::cout<<b.bestMove(b.playableMoves("white"),"white",2,1,1).first<<endl;
 
-    Plateau->turnToKing(19);
+
+
+
 
 
 // Move sans bouffe, pas d'apparition du King : Problème dans PlayMove ? Select ? PlayableMove ?
