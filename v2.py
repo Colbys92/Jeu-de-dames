@@ -90,47 +90,55 @@ if __name__ == "__main__":
     run=True
     plateau.this.getPiece(23).setPosition(29)
     plateau.this.getPiece(28).killFreeMove(plateau,possibleMoves)
-    for i in range(38,0,-1) :
+    for i in range(36,0,-1) :
         print(i)
         plateau.this.killAt(plateau.this.getPiece(i).getPosition())
-    for move in possibleMoves:
-        print(move.getStart())
-        print(move.getArrival())
-    while(plateau.this.nbPieces()>0 and run):
-        moves=plateau.this.playableMoves(couleurs[compteur])
-        played=False
-        chosenPiece=-1
-        while(not played):
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    run=False
-                    played=True
-                    choiceMade=True
-                    break
-                elif event.type == MOUSEBUTTONDOWN and event.button==1:
-                    pos=coordToPos(event.pos[0],event.pos[1])
-                    if chosenPiece==-1 and pos in moves.keys():
-                        chosenPiece=pos
-                        for square in moves[pos]:
-                            highlightSquare(square.getArrival(),(255,0,0),window)
-                    elif chosenPiece!=-1 and pos not in map(Move.getArrival,moves[chosenPiece]):
-                        chosenPiece=-1
-                        plateau.display(window)
-                        displayMovablePieces(moves,window)
-                    elif chosenPiece!=-1:
-                        plateau.this.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)])
-                        plateau.display(window)
-                        played=True
-            if(chosenPiece==-1):
-                plateau.display(window)
-                displayMovablePieces(moves,window)
-                (x,y)=pygame.mouse.get_pos()
-                pos=coordToPos(x,y)
-                if(pos in moves.keys()):
-                    for square in moves[pos]:
-                        highlightSquare(square.getArrival(),(0,0,255),window)
-            pygame.display.flip()
-        compteur=1-compteur
+        
+    plateau.this.getPiece(0).setPosition(47)
+    plateau.this.getPiece(1).setPosition(41)
+    plateau.this.getPiece(2).setPosition(42)
+    plateau.this.getPiece(3).setPosition(36)
+    print(type(plateau.this.playableMoves("white")))
+
+
+    
+    bestmove = plateau.this.bestMove(plateau.this.playableMoves("white"),"white",2,1,1)
+    print(bestmove.first)
+    # while(plateau.this.nbPieces()>0 and run):
+    #     moves=plateau.this.playableMoves(couleurs[compteur])
+    #     played=False
+    #     chosenPiece=-1
+    #     while(not played):
+    #         for event in pygame.event.get():
+    #             if event.type == QUIT:
+    #                 run=False
+    #                 played=True
+    #                 choiceMade=True
+    #                 break
+    #             elif event.type == MOUSEBUTTONDOWN and event.button==1:
+    #                 pos=coordToPos(event.pos[0],event.pos[1])
+    #                 if chosenPiece==-1 and pos in moves.keys():
+    #                     chosenPiece=pos
+    #                     for square in moves[pos]:
+    #                         highlightSquare(square.getArrival(),(255,0,0),window)
+    #                 elif chosenPiece!=-1 and pos not in map(Move.getArrival,moves[chosenPiece]):
+    #                     chosenPiece=-1
+    #                     plateau.display(window)
+    #                     displayMovablePieces(moves,window)
+    #                 elif chosenPiece!=-1:
+    #                     plateau.this.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)])
+    #                     plateau.display(window)
+    #                     played=True
+    #         if(chosenPiece==-1):
+    #             plateau.display(window)
+    #             displayMovablePieces(moves,window)
+    #             (x,y)=pygame.mouse.get_pos()
+    #             pos=coordToPos(x,y)
+    #             if(pos in moves.keys()):
+    #                 for square in moves[pos]:
+    #                     highlightSquare(square.getArrival(),(0,0,255),window)
+    #         pygame.display.flip()
+    #     compteur=1-compteur
     pygame.quit()
     
         

@@ -608,7 +608,7 @@ std::pair<float,Move> Board::bestMove(map<int, vector<Move> > playableMove,strin
 
                         valueCurrentMoveOpposite = virtualBoardOpposite.bestMove(currentPlayableMoveOpposite,color,profondeur-2,manWeight,kingWeight).first;
 
-                        if(bestMoveOpposite.first>valueCurrentMoveOpposite){
+                        if(bestMoveOpposite.first<valueCurrentMoveOpposite){
                             bestMoveOpposite.first=valueCurrentMoveOpposite;
                             bestMoveOpposite.second=(*it).second[j];
                         }
