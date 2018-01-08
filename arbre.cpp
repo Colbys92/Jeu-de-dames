@@ -619,9 +619,9 @@ std::pair<float,Move> Board::bestMove(map<int, vector<Move> > playableMove,strin
                 }
 
 
-                if(bestMoveOpposite.first<valueCurrentMove){
+                if(bestMoveOpposite.first>bestMove.first){
                     bestMove.second= (*it1).second[playedMove];
-                    bestMove.first=valueCurrentMove;
+                    bestMove.first=bestMoveOpposite.first;
                 }
 
 
@@ -649,7 +649,7 @@ int main(){
     vector<Move> PossibleMoves;
     Board b(true);
     Move m=b.bestMove(b.playableMoves("white"),"white",2,1,1).second;
-    b.playMove(m);
+    cout << b.bestMove(b.playableMoves("white"),"white",2,1,1).first << endl;
     for(int i=0;i<3;i++) {
         cout<<b.getPiece(i)->getPosition()<<endl;
     }
