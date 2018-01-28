@@ -1,6 +1,7 @@
 #include "arbre.h"
 #include <queue>
 #include <algorithm>
+#include "tools.h"
 
 
 //enum Color { white, black };
@@ -56,54 +57,36 @@ void King::killFreeMove(Board& B, vector<Move>& possibleMoves){
     if(position%10<5){
         positionValue=1;
     }
+    vector<int> Orientation1;
+    vector<int> Orientation2;
+    {Orientation1.push_back(NW);
+    Orientation2.push_back(NW2);
+    Orientation1.push_back(NE);
+    Orientation2.push_back(NE2);
+    Orientation1.push_back(SE);
+    Orientation2.push_back(SE2);
+    Orientation1.push_back(SW);
+    Orientation2.push_back(SW2);
+    }
+
     bool isPiece;
+    bool onEdges;
     int currentPosition;
     int currentPositionValue;
+    for(int i=0; i<4;i++){
+        // Diagonale :
+        currentPosition = position;
+        currentPositionValue= positionValue;
+        onEdges = checkEdges(i, currentPosition);
+        isPiece = B.isPieceHere(currentPosition+Orientation1[i]+currentPositionValue);
 
-
-    // Diagonale NW :
-    currentPosition = position;
-    currentPositionValue= positionValue;
-
-    isPiece = B.isPieceHere(currentPosition+NW+currentPositionValue);
-    while (!isPiece && (currentPosition%10)!=5 && currentPosition>4){
-        possibleMoves.push_back(Move(position,currentPosition+NW+currentPositionValue,0));
-        currentPosition = currentPosition+NW+currentPositionValue;
-        currentPositionValue= (currentPositionValue+1)%2; // Changement de ligne de position
-        isPiece = B.isPieceHere(currentPosition+NW+currentPositionValue);
-    }
-
-    // Diagonale NE :
-    currentPosition = position;
-    currentPositionValue= positionValue;
-    isPiece = B.isPieceHere(currentPosition+NE+currentPositionValue);
-    while (!isPiece && (currentPosition%10)!=4 && currentPosition>4){
-        possibleMoves.push_back(Move(position,currentPosition+NE+currentPositionValue,0));
-        currentPosition = currentPosition+NE+currentPositionValue;
-        currentPositionValue= (currentPositionValue+1)%2; // Changement de ligne de position
-        isPiece = B.isPieceHere(currentPosition+NE+currentPositionValue);
-    }
-
-    // Diagonale SE :
-    currentPosition = position;
-    currentPositionValue= positionValue;
-    isPiece = B.isPieceHere(currentPosition+SE+currentPositionValue);
-    while (!isPiece && (currentPosition%10)!=4 && currentPosition<45){
-        possibleMoves.push_back(Move(position,currentPosition+SE+currentPositionValue,0));
-        currentPosition = currentPosition+SE+currentPositionValue;
-        currentPositionValue= (currentPositionValue+1)%2; // Changement de ligne de position
-        isPiece = B.isPieceHere(currentPosition+SE+currentPositionValue);
-    }
-
-    // Diagonale SW :
-    currentPosition = position;
-    currentPositionValue= positionValue;
-    isPiece = B.isPieceHere(currentPosition+SW+currentPositionValue);
-    while (!isPiece && (currentPosition%10)!=5 && currentPosition<45){
-        possibleMoves.push_back(Move(position,currentPosition+SW+currentPositionValue,0));
-        currentPosition = currentPosition+SW+currentPositionValue;
-        currentPositionValue= (currentPositionValue+1)%2; // Changement de ligne de position
-        isPiece = B.isPieceHere(currentPosition+SW+currentPositionValue);
+        while (!isPiece && !onEdges){
+            possibleMoves.push_back(Move(position,currentPosition+Orientation1[i]+currentPositionValue,0));
+            currentPosition = currentPosition+Orientation1[i]+currentPositionValue;
+            currentPositionValue= (currentPositionValue+1)%2; // Changement de ligne de position
+            onEdges = checkEdges(i,currentPosition);
+            isPiece = B.isPieceHere(currentPosition+Orientation1[i]+currentPositionValue);
+        }
     }
 }
 
@@ -113,92 +96,49 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
     if(position%10<5){
         positionValue=1;
     }
+    vector<int> orientation1;
+    vector<int> Orientation2;
+    {Orientation1.push_back(NW);
+    Orientation2.push_back(NW2);
+    Orientation1.push_back(NE);
+    Orientation2.push_back(NE2);
+    Orientation1.push_back(SE);
+    Orientation2.push_back(SE2);
+    Orientation1.push_back(SW);
+    Orientation2.push_back(SW2);
+    }
     bool isPiece;
     bool isSecondPiece;
+    bool onEdges;
     int currentPosition;
     int currentPositionValue;
+    for(int i=0; i<4; i++){
+        //Diagonale i :
+        currentPosition = position;
+        currentPositionValue= positionValue;
+        isSecondPiece = false;
 
-    //Diagonale NW :
-    currentPosition = position+NW+positionValue;
-    currentPositionValue= (positionValue+1)%2;
-    isPiece = false;
-    isSecondPiece = false;
-    while ((currentPosition%10)!=5 && currentPosition>4 && !isPiece){
-        isPiece = B.isPieceHere(currentPosition);
-        currentPosition = currentPosition+NW+currentPositionValue;
-        currentPositionValue= (currentPositionValue+1)%2;
-    }
+        isPiece = B.isPieceHere(currentPosition+orientation1[i]+currentPositionValue);
+        onEdges=checkEdges(i,currentPosition);
 
-    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+SE+currentPositionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
-        isSecondPiece = B.isPieceHere(currentPosition);
-        while((currentPosition%10)!=5 && currentPosition>4 && !isSecondPiece){
-            possibleMoves.push_back(Move(position,currentPosition,1));
-            currentPosition = currentPosition+NW+currentPositionValue;
+        while (!isPiece && !onEdges){
+            currentPosition = currentPosition+orientation1[i]+currentPositionValue;
             currentPositionValue= (currentPositionValue+1)%2;
-            isSecondPiece = B.isPieceHere(currentPosition);
+            onEdges=checkEdges(i,position);
+            isPiece=B.isPieceHere(currentPosition+orientation1[i]+currentPositionValue);
         }
-    }
-
-    //Diagonale NE :
-    currentPosition = position+NE+positionValue;
-    currentPositionValue= (positionValue+1)%2;
-    isPiece = false;
-    isSecondPiece = false;
-    while ((currentPosition%10)!=4 && currentPosition>4 && !isPiece){
-        isPiece = B.isPieceHere(currentPosition);
-        currentPosition = currentPosition+NE+currentPositionValue;
-        currentPositionValue= (currentPositionValue+1)%2;
-    }
-
-    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+SW+currentPositionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
-        isSecondPiece = B.isPieceHere(currentPosition);
-        while((currentPosition%10)!=4 && currentPosition>4 && !isSecondPiece){
-            possibleMoves.push_back(Move(position,currentPosition,1));
-            currentPosition = currentPosition+NE+currentPositionValue;
-            currentPositionValue= (currentPositionValue+1)%2;
-            isSecondPiece = B.isPieceHere(currentPosition);
-        }
-    }
-
-    //Diagonale SW :
-    currentPosition = position+SW+positionValue;
-    currentPositionValue= (positionValue+1)%2;
-    isPiece = false;
-    isSecondPiece = false;
-    while ((currentPosition%10)!=5 && currentPosition<45 && !isPiece){
-        isPiece = B.isPieceHere(currentPosition);
-        currentPosition = currentPosition+SW+currentPositionValue;
-        currentPositionValue= (currentPositionValue+1)%2;
-    }
-
-    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+NE+currentPositionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
-        isSecondPiece = B.isPieceHere(currentPosition);
-        while((currentPosition%10)!=5 && currentPosition<45 && !isSecondPiece){
-            possibleMoves.push_back(Move(position,currentPosition,1));
-            currentPosition = currentPosition+SW+currentPositionValue;
-            currentPositionValue= (currentPositionValue+1)%2;
-            isSecondPiece = B.isPieceHere(currentPosition);
-        }
-    }
-
-    //Diagonale SE :
-    currentPosition = position+SE+positionValue;
-    currentPositionValue= (positionValue+1)%2;
-    isPiece = false;
-    isSecondPiece = false;
-    while ((currentPosition%10)!=4 && currentPosition<45 && !isPiece){
-        isPiece = B.isPieceHere(currentPosition);
-        currentPosition = currentPosition+SE+currentPositionValue;
-        currentPositionValue= (currentPositionValue+1)%2;
-    }
-
-    if (isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+NW+currentPositionValue)))->Color() != color) ){ // Il faut récupérer la position précèdente
-        isSecondPiece = B.isPieceHere(currentPosition);
-        while((currentPosition%10)!=5 && currentPosition<45 && !isSecondPiece){
-            possibleMoves.push_back(Move(position,currentPosition,1));
-            currentPosition = currentPosition+SE+currentPositionValue;
-            currentPositionValue= (currentPositionValue+1)%2;
-            isSecondPiece = B.isPieceHere(currentPosition);
+        if (!onEdges && isPiece &&  ((B.getPiece(B.index_man_here(currentPosition+orientation1[i]+currentPositionValue)))->Color() != color) ){
+            currentPosition +=orientation1[i] + currentPositionValue;
+            currentPositionValue = (currentPositionValue+1)%2;
+            onEdges=checkEdges(i, currentPosition);
+            isSecondPiece = B.isPieceHere(currentPosition+orientation1[i]+currentPositionValue);
+            while(!onEdges && !isSecondPiece){
+                possibleMoves.push_back(Move(position,currentPosition,1));
+                currentPosition = currentPosition+orientation1[i]+currentPositionValue;
+                currentPositionValue= (currentPositionValue+1)%2;
+                onEdges=checkEdges(i, currentPosition);
+                isSecondPiece = B.isPieceHere(currentPosition+orientation1[i]+currentPositionValue);
+            }
         }
     }
 }

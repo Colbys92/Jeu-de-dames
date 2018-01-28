@@ -17,6 +17,8 @@ const int NE =-5;
 const int SE =+5;
 const int SW =+4;
 
+
+
 // 2 Cases :
 
 const int NW2 = -11;
