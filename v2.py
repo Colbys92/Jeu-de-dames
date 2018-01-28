@@ -157,7 +157,7 @@ if __name__ == "__main__":
                         highlightSquare(square.getArrival(),(0,0,255),window)
             print("2")
             pygame.display.flip()
-        print("3")
+            print("3")
         compteur=1-compteur
         print("sortie")
 pygame.quit()

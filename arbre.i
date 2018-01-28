@@ -8,6 +8,7 @@
 %{
 #define SWIG_FILE_WITH_INIT
 #include "arbre.h"
+#include "tools.h"
 %}
 
 struct Piece{

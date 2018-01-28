@@ -134,7 +134,7 @@ void King::killingMove(Board &B, vector<Move> &possibleMoves){
             onEdges=checkEdges(i, currentPosition);
             isSecondPiece = B.isPieceHere(currentPosition+orientation1[i]+currentPositionValue);
             while(!onEdges && !isSecondPiece){
-                possibleMoves.push_back(Move(position,currentPosition,1));
+                possibleMoves.push_back(Move(position,currentPosition+orientation1[i]+currentPositionValue,1));
                 currentPosition = currentPosition+orientation1[i]+currentPositionValue;
                 currentPositionValue= (currentPositionValue+1)%2;
                 onEdges=checkEdges(i, currentPosition);
@@ -160,7 +160,7 @@ void Man::select(Board& b, vector<Move> &possibleMoves){
         while(size!=0){
             currentMove = moveToAdd.front();
             //We play virtually the current move on the board
-            virtualBoard.playMove(currentMove);
+            virtualBoard.playMove(currentMove, true);
             //We compute the follow up move to the current move in complementrayMove
             virtualBoard.getPiece(virtualBoard.index_man_here(currentMove.getArrival()))->killingMove(virtualBoard, complementaryMove);
             //if the current move can not be extended we addit to the list of possible moves
@@ -206,7 +206,7 @@ void King::select(Board& b, vector<Move>& possibleMoves){
         while(size!=0){
             currentMove = moveToAdd.front();
             //We play virtually the current move on the board
-            virtualBoard.playMove(currentMove);
+            virtualBoard.playMove(currentMove, true);
             //We compute the follow up move to the current move in complementrayMove
             virtualBoard.getPiece(virtualBoard.index_man_here(currentMove.getArrival()))->killingMove(virtualBoard, complementaryMove);
             //if the current move can not be extended we addit to the list of possible moves
@@ -316,7 +316,7 @@ void Board::killAt(int pos) {
     pieces.erase(pieces.begin()+index);
 }
 
-void Board::playMove(const Move &m) {
+void Board::playMove(const Move &m, bool inSelect) {
 
     {    //ca ne marche pas avec iterateur, pourquoi ?
 //    for(int i=0;i<m.getPath().size()-1;i++) {
@@ -404,7 +404,7 @@ void Board::playMove(const Move &m) {
                             possibleDirection=false;
                         }
                     }
-                    positionValue+=1%2;
+                    positionValue=(positionValue+1)%2;
 
                 }
                 while(possibleDirection && !onEdges && ennemyFound && !arrivalFound){
@@ -420,12 +420,21 @@ void Board::playMove(const Move &m) {
                 else {
                     killAt(positionKill);
                     pieces[index_man_here(start)]->setPosition(arrival);
+                    break; // Voir le break si il est vraiment utile !
                 }
 
             }
             if(positionKill==-1){
                 cerr << "No ennemy found" << endl;
-
+            }
+        }
+        int arrival = m.getPath()[m.getPath().size()-1];
+        if(!inSelect){
+            if (pieces[index_man_here(arrival)]->Color() == "white" && arrival<5){
+                turnToKing(arrival);
+            }
+            else if (pieces[index_man_here(arrival)]->Color() == "black" && arrival >44){
+                turnToKing(arrival);
             }
         }
     }
@@ -644,6 +653,10 @@ int main(){
     cout << Plateau->getPiece(1)->isKing() << true << endl;
     Plateau->getPiece(0)->setPosition(9);
     Plateau->getPiece(1)->setPosition(27);
+    Plateau->getPiece(1)->killingMove(*Plateau, PossibleMoves);
+    for(int i=0; i<PossibleMoves.size();i++){
+        cout << PossibleMoves[i].getStart()<< " " << PossibleMoves[i].getArrival() << endl;
+    }
 
     map<int,vector<Move> > P = (*Plateau).playableMoves("black");
     for(int i=0; i<=39; i++){

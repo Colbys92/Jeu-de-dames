@@ -3656,6 +3656,7 @@ SWIG_AsVal_ptrdiff_t (PyObject * obj, ptrdiff_t *val)
 
 #define SWIG_FILE_WITH_INIT
 #include "arbre.h"
+#include "tools.h"
 
 
 SWIGINTERNINLINE PyObject*

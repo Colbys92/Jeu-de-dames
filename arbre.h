@@ -145,7 +145,7 @@ public :
     bool isPieceHere(int pos){
         return(isKingHere(pos) || isManHere(pos));
     }
-    void playMove(const Move& m);
+    void playMove(const Move& m, bool inSelect=false);
     void killAt(int pos);
 
     Piece* getPiece(int index){
