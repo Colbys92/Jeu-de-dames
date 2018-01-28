@@ -502,14 +502,14 @@ std::pair<float,Move> Board::bestMoveAlphaBeta(string color, int depth, float ma
     }
     else {
         if(!maxNode){
-            val = numeric_limits<float>::max();
+            bestMove.first = numeric_limits<float>::max();
             currentPlayableMove=virtualBoard.playableMoves(color);
             for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
                 for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
                     virtualBoard.playMove((*it1).second[playedMove]);
                     pair<float,Move> currentMove = virtualBoard.bestMoveAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,true,alpha,beta);
-                    val = std::min<float>(val,currentMove.first);
-                    if (val<= alpha){
+                    bestMove.first = std::min<float>(bestMove.first,currentMove.first);
+                    if (bestMove.first<= alpha){
                         bestMove.second=currentMove.second;
                         bestMove.first=currentMove.first;
                         return bestMove;
