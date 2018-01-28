@@ -8,7 +8,6 @@
 %{
 #define SWIG_FILE_WITH_INIT
 #include "arbre.h"
-#include "tools.h"
 %}
 
 struct Piece{
@@ -69,7 +68,7 @@ public:
 	bool isManHere(int);
 	bool isKingHere(int);
 	bool isPieceHere(int);
-	void playMove(const Move&);
+	void playMove(const Move&, bool);
 	void killAt(int);
 	Piece* getPiece(int);
 	int nbPieces() const;

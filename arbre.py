@@ -295,8 +295,8 @@ class Board(_object):
     def isPieceHere(self, arg2):
         return _arbre.Board_isPieceHere(self, arg2)
 
-    def playMove(self, arg2):
-        return _arbre.Board_playMove(self, arg2)
+    def playMove(self, arg2, arg3):
+        return _arbre.Board_playMove(self, arg2, arg3)
 
     def killAt(self, arg2):
         return _arbre.Board_killAt(self, arg2)

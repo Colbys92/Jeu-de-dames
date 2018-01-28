@@ -3656,7 +3656,6 @@ SWIG_AsVal_ptrdiff_t (PyObject * obj, ptrdiff_t *val)
 
 #define SWIG_FILE_WITH_INIT
 #include "arbre.h"
-#include "tools.h"
 
 
 SWIGINTERNINLINE PyObject*
@@ -3728,6 +3727,20 @@ SWIGINTERNINLINE PyObject *
 SWIG_From_std_string  (const std::string& s)
 {
   return SWIG_FromCharPtrAndSize(s.data(), s.size());
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_bool (PyObject *obj, bool *val)
+{
+  int r;
+  if (!PyBool_Check(obj))
+    return SWIG_ERROR;
+  r = PyObject_IsTrue(obj);
+  if (r == -1)
+    return SWIG_ERROR;
+  if (val) *val = r ? true : false;
+  return SWIG_OK;
 }
 
 
@@ -7555,14 +7568,18 @@ SWIGINTERN PyObject *_wrap_Board_playMove(PyObject *SWIGUNUSEDPARM(self), PyObje
   PyObject *resultobj = 0;
   Board *arg1 = (Board *) 0 ;
   Move *arg2 = 0 ;
+  bool arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
+  bool val3 ;
+  int ecode3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:Board_playMove",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:Board_playMove",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Board, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Board_playMove" "', argument " "1"" of type '" "Board *""'"); 
@@ -7576,7 +7593,12 @@ SWIGINTERN PyObject *_wrap_Board_playMove(PyObject *SWIGUNUSEDPARM(self), PyObje
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Board_playMove" "', argument " "2"" of type '" "Move const &""'"); 
   }
   arg2 = reinterpret_cast< Move * >(argp2);
-  (arg1)->playMove((Move const &)*arg2);
+  ecode3 = SWIG_AsVal_bool(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Board_playMove" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  (arg1)->playMove((Move const &)*arg2,arg3);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:

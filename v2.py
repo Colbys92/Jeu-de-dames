@@ -98,29 +98,27 @@ if __name__ == "__main__":
     run=True
     print(plateau.this.playableMoves("white"))
 
-    # plateau.this.getPiece(23).setPosition(29)
-    # plateau.this.getPiece(28).killFreeMove(plateau,possibleMoves)
+    plateau.this.getPiece(23).setPosition(29)
+    plateau.this.getPiece(28).killFreeMove(plateau,possibleMoves)
 
     
-    # for i in range(36,0,-1) :
-        # print(i)
-        # plateau.this.killAt(plateau.this.getPiece(i).getPosition())
-    #   
-    # plateau.this.getPiece(0).setPosition(47)
-    # plateau.this.getPiece(1).setPosition(41)
-    # plateau.this.getPiece(2).setPosition(42)
-    # plateau.this.getPiece(3).setPosition(36)
+    for i in range(36,0,-1) :
+        plateau.this.killAt(plateau.this.getPiece(i).getPosition())
+      
+    plateau.this.getPiece(0).setPosition(47)
+    plateau.this.getPiece(1).setPosition(41)
+    plateau.this.getPiece(2).setPosition(42)
+    plateau.this.getPiece(3).setPosition(36)
 
 
 
     
-    # bestmove = plateau.this.bestMove(plateau.this.playableMoves("white"),"white",2,1,1)
-    # print(bestmove.first)
+    bestmove = plateau.this.bestMove(plateau.this.playableMoves("white"),"white",2,1,1)
+
     while(plateau.this.nbPieces()>0 and run):
-        print("debut")
+     
         moves=plateau.this.playableMoves(couleurs[compteur])
-        displayTest(moves)
-        print("Fin")
+     
         played=False
         chosenPiece=-1
         while(not played):
@@ -141,13 +139,13 @@ if __name__ == "__main__":
                         plateau.display(window)
                         displayMovablePieces(moves,window)
                     elif chosenPiece!=-1:
-                        print("pasjoué")
-                        plateau.this.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)])
+                     
+                        plateau.this.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)],False)
                         plateau.display(window)
                         played=True
-                        print("joué")
+                       
             if(chosenPiece==-1):
-                print("1")
+              
                 plateau.display(window)
                 displayMovablePieces(moves,window)
                 (x,y)=pygame.mouse.get_pos()
@@ -155,11 +153,10 @@ if __name__ == "__main__":
                 if(pos in moves.keys()):
                     for square in moves[pos]:
                         highlightSquare(square.getArrival(),(0,0,255),window)
-            print("2")
+        
             pygame.display.flip()
-            print("3")
+        
         compteur=1-compteur
-        print("sortie")
 pygame.quit()
 
     

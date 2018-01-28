@@ -381,7 +381,7 @@ void Board::playMove(const Move &m, bool inSelect) {
                     positionValue=1;
                 }
                 int currentPosition =start;
-                bool onEdges=checkEdges(i,currentPosition);
+                bool onEdges=checkEdges(j,currentPosition);
                 bool possibleDirection=true;
                 bool ennemyFound=false;
                 bool arrivalFound=false;
@@ -395,7 +395,7 @@ void Board::playMove(const Move &m, bool inSelect) {
                 while(possibleDirection && !onEdges && !ennemyFound){
                     currentPosition+= positionValue + orientation1[j];
                     onEdges=checkEdges(j,currentPosition);
-                    if(isManHere(currentPosition)){
+                    if(isPieceHere(currentPosition)){
                         if((pieces[index_man_here(currentPosition)]->Color())!=(pieces[index_man_here(start)]->Color())){
                             ennemyFound=true;
                             positionKill=currentPosition;
@@ -409,10 +409,10 @@ void Board::playMove(const Move &m, bool inSelect) {
                 }
                 while(possibleDirection && !onEdges && ennemyFound && !arrivalFound){
                     currentPosition+=positionValue+orientation1[j];
-                    possibleDirection = !isManHere(currentPosition);
+                    possibleDirection = !isPieceHere(currentPosition);
                     onEdges=checkEdges(j,currentPosition);
                     arrivalFound=(arrival-currentPosition==0);
-                    positionValue+=1%2;
+                    positionValue= (positionValue+1)%2;
                 }
                 if(!arrivalFound){
                     positionKill=-1;
@@ -430,10 +430,10 @@ void Board::playMove(const Move &m, bool inSelect) {
         }
         int arrival = m.getPath()[m.getPath().size()-1];
         if(!inSelect){
-            if (pieces[index_man_here(arrival)]->Color() == "white" && arrival<5){
+            if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color() == "white" && arrival<5){
                 turnToKing(arrival);
             }
-            else if (pieces[index_man_here(arrival)]->Color() == "black" && arrival >44){
+            else if (pieces[index_man_here(arrival)]->isMan() && pieces[index_man_here(arrival)]->Color() == "black" && arrival >44){
                 turnToKing(arrival);
             }
         }
@@ -622,16 +622,16 @@ int main(){
 
 //    Plateau->getPiece(21)->select(*Plateau,PossibleMoves);
 
-//    for(std::vector<Move>::iterator it=PossibleMoves.begin(); it!=PossibleMoves.end();it++){
-//        cout << (*it).getStart() << " " << (*it).getArrival()<< endl;
-//    }
-//    Board b(true);
-//    Move m=b.bestMove(b.playableMoves("white"),"white",2,1,1).second;
-//    cout << b.bestMove(b.playableMoves("white"),"white",2,1,1).first << endl;
-//    for(int i=0;i<3;i++) {
-//        cout<<b.getPiece(i)->getPosition()<<endl;
-//    }
-//    std::cout<<b.bestMove(b.playableMoves("white"),"white",2,1,1).first<<endl;
+    for(std::vector<Move>::iterator it=PossibleMoves.begin(); it!=PossibleMoves.end();it++){
+        cout << (*it).getStart() << " " << (*it).getArrival()<< endl;
+    }
+    Board b(true);
+    Move m=b.bestMove(b.playableMoves("white"),"white",2,1,1).second;
+    cout << b.bestMove(b.playableMoves("white"),"white",2,1,1).first << endl;
+    for(int i=0;i<3;i++) {
+        cout<<b.getPiece(i)->getPosition()<<endl;
+    }
+    std::cout<<b.bestMove(b.playableMoves("white"),"white",2,1,1).first<<endl;
 
 
 
@@ -640,79 +640,38 @@ int main(){
 
 // Move sans bouffe, pas d'apparition du King : Problème dans PlayMove ? Select ? PlayableMove ?
 
-// Test final :
-    for(int i=30; i<49; i++){
-        Plateau->killAt(i);
-    }
-
-    for(int i=1; i<20; i++){
-        Plateau->killAt(i);
-    }
-    Plateau->turnToKing(0);
-    cout << Plateau->getPiece(0)->isKing() << true << endl;
-    cout << Plateau->getPiece(1)->isKing() << true << endl;
-    Plateau->getPiece(0)->setPosition(9);
-    Plateau->getPiece(1)->setPosition(27);
-    Plateau->getPiece(1)->killingMove(*Plateau, PossibleMoves);
-    for(int i=0; i<PossibleMoves.size();i++){
-        cout << PossibleMoves[i].getStart()<< " " << PossibleMoves[i].getArrival() << endl;
-    }
-
-    map<int,vector<Move> > P = (*Plateau).playableMoves("black");
-    for(int i=0; i<=39; i++){
-        for(std::vector<Move>::iterator it=P[i].begin(); it!=P[i].end();it++){
-            cout << (*it).getStart() << " " << (*it).getArrival()<< endl;
-        }
-    }
-
-
-//    cout << "Position du futur bouffe : " <<Plateau->getPiece(23)->getPosition() << endl;
-//    cout <<" Position du bouffeur :" <<Plateau->getPiece(19)->getPosition() << endl;
-
-//    Plateau->getPiece(23)->setPosition(23);
-//    cout << Plateau->getPiece(23)->getPosition() << endl;
-//    Plateau->killAt(32);
-//    map<int,vector<Move> > Q = (*Plateau).playableMoves("black");
-//    for(int i=0; i<=19; i++){
-//        for(std::vector<Move>::iterator it=Q[i].begin(); it!=Q[i].end();it++){
-//            cout << (*it).getStart() << " " << (*it).getArrival()<< " Kills :" <<(*it).getKills()<< endl;
-//        }
-//    }
-
-// Play Move ok :
-//    Plateau->getPiece(19)->killingMove(*Plateau,PossibleMoves);
-
-//    for(std::vector<Move>::iterator it = PossibleMoves.begin(); it<PossibleMoves.end();it++){
-//         cout << (*it).getStart() << " " << (*it).getArrival()<< " Kills : " <<(*it).getKills() << endl;
-//    }
-
-//    Plateau->playMove(PossibleMoves[0]);
-//    cout <<" Position du bouffeur :" <<Plateau->getPiece(19)->getPosition() << endl;
-//    cout <<"Normalement, mauvaise position du bouffé !"<< Plateau->getPiece(23)->getPosition() << endl;
-
-
-// Test select ok :
-
-//    Plateau->getPiece(19)->select(*Plateau, PossibleMoves);
-//    for(std::vector<Move>::iterator it = PossibleMoves.begin(); it<PossibleMoves.end();it++){
-//        cout << (*it).getStart() << " " << (*it).getArrival()<< " Kills : " <<(*it).getKills() << endl;
-//    }
-
-
-
-    // Test de la transformation en dame :
-
-//    for(int i=31; i<48; i++){
+//// Test final :
+//    for(int i=30; i<49; i++){
 //        Plateau->killAt(i);
 //    }
 
-//    Plateau->getPiece(20)->setPosition(43);
-//    Plateau->getPiece(18)->setPosition(38);
-//    map<int,vector<Move> > R = Plateau->playableMoves("black");
-//    cout << R[38][0].getStart() << " : "<< R[38][0].getArrival() << endl;
-//    Plateau->playMove(R[38][0]);
-//    cout << Plateau->isManHere(49) << endl;
-//    cout << true << endl;
+//    for(int i=1; i<20; i++){
+//        Plateau->killAt(i);
+//    }
+
+
+////    Plateau->turnToKing(0);
+//    Plateau->getPiece(0)->setPosition(15);
+//    Plateau->getPiece(1)->setPosition(20);
+//    Plateau->getPiece(0)->killingMove(*Plateau,PossibleMoves);
+////    Plateau->getPiece(0)->killFreeMove(*Plateau, PossibleMoves);
+////    Plateau->playMove(PossibleMoves[0]);
+////    cout << Plateau->getPiece(0)->isKing() << true << endl;
+////    cout << Plateau->getPiece(1)->isKing() << true << endl;
+
+//////    PossibleMoves.clear();
+//////    Plateau->getPiece(1)->killingMove(*Plateau,PossibleMoves);
+//    for(int i=0; i<PossibleMoves.size();i++){
+//        cout << PossibleMoves[i].getStart()<< " " << PossibleMoves[i].getArrival() << endl;
+//    }
+
+//    map<int,vector<Move> > P = (*Plateau).playableMoves("black");
+//        for(int j=0; j<P[15].size(); j++){
+//            cout << (P[15][j]).getStart() << " " << (P[15][j]).getArrival()<< endl;
+//        }
+
+
+
 
 
 
