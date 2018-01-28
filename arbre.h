@@ -114,9 +114,9 @@ public :
     }
     Board(bool lol) {
         pieces.push_back(new Man(47,"white"));
-         pieces.push_back(new Man(41,"white"));
-          pieces.push_back(new Man(42,"black"));
-           pieces.push_back(new Man(36,"black"));
+        pieces.push_back(new Man(41,"white"));
+        pieces.push_back(new Man(42,"black"));
+        pieces.push_back(new Man(36,"black"));
 
     }
     Board(const Board& b);

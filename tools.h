@@ -2,14 +2,14 @@
 #pragma once
 
 
-bool checkEdges(int orientation, int position){
+bool checkEdges(int i, int position){
     if(i==0 || i==3){
-        if(position%10==4){
+        if(position%10==5){
             return true;
         }
     }
     else{
-        if(position%10==0){
+        if(position%10==4){
             return true;
         }
     }
@@ -27,5 +27,5 @@ bool checkEdges(int orientation, int position){
 }
 
 int opposedDirection(int orientation){
-    return orientation+2%4;
+    return (orientation+2)%4;
 }
