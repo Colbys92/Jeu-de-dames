@@ -157,8 +157,8 @@ public :
     }
     float evaluate(float manWeight, float kingWeight, string color);
     pair<float, Move> bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight);
-    std::pair<float,Move> bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode=true, float alpha=numeric_limits<float>::min(), float beta=numeric_limits<float>::max());
-
+    Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode=true, float alpha=-numeric_limits<float>::max(), float beta=numeric_limits<float>::max());
+    float valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode, float alpha, float beta);
     map<int,vector<Move> > playableMoves(string color);
 };
 

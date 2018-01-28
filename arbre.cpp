@@ -488,31 +488,54 @@ float Board::evaluate(float manWeight, float kingWeight, string color) {
     }
     return value;
 }
-std::pair<float,Move> Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode, float alpha, float beta){
+Move Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode, float alpha, float beta){
+    Board virtualBoard(*this);
+    map<int,vector<Move> > currentPlayableMove;
+    pair<float,Move> bestMove(-std::numeric_limits<float>::max(),Move());
+    currentPlayableMove=virtualBoard.playableMoves(color);
+    if(currentPlayableMove.size()==0){
+        cerr << "Partie terminée, a prendre en compte" << endl;
+    }
+    else {
+        for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
+            for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
+                virtualBoard.playMove((*it1).second[playedMove]);
+                if(virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight,false,alpha,beta)>bestMove.first){
+                    bestMove.first=virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight,false,alpha,beta);
+                    bestMove.second=((*it1).second[playedMove]);
+                }
+            }
+        }
+        return bestMove.second;
+    }
+
+
+
+
+    }
+float Board::valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode, float alpha, float beta){
     // A Factoriser en écrivant avec moins min/ Fuite mémoire ? (clear les virtuals board)
     // Réécrire que avec currentMove, probleme avec val et currentMove :
     Board virtualBoard(*this);
     map<int,vector<Move> > currentPlayableMove;
-    pair<float, Move> bestMove(0,Move());
     float val=0.;
+    float currentVal=0.;
 
     if(depth==0){
-        bestMove.first=evaluate(manWeight,kingWeight,color);
-        return bestMove;
+        val=evaluate(manWeight,kingWeight,color);
+        return val;
     }
     else {
         if(!maxNode){
-            bestMove.first = numeric_limits<float>::max();
+            val = numeric_limits<float>::max();
             currentPlayableMove=virtualBoard.playableMoves(color);
             for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
                 for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
                     virtualBoard.playMove((*it1).second[playedMove]);
-                    pair<float,Move> currentMove = virtualBoard.bestMoveAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,true,alpha,beta);
-                    bestMove.first = std::min<float>(bestMove.first,currentMove.first);
-                    if (bestMove.first<= alpha){
-                        bestMove.second=currentMove.second;
-                        bestMove.first=currentMove.first;
-                        return bestMove;
+                    currentVal = virtualBoard.valueAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,true,alpha,beta);
+                    val = std::min<float>(val,currentVal);
+                    if (val<= alpha){
+                        return val;
                     }
                     beta = min<float>(beta,val);
                     virtualBoard = *this;
@@ -520,25 +543,22 @@ std::pair<float,Move> Board::bestMoveAlphaBeta(string color, int depth, float ma
             }
         }
         else{
-            val = numeric_limits<float>::min();
+            val = -numeric_limits<float>::max();
             currentPlayableMove=virtualBoard.playableMoves(color);
             for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
                 for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
                     virtualBoard.playMove((*it1).second[playedMove]);
-                    pair<float,Move> currentMove = virtualBoard.bestMoveAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,true,alpha,beta);
-                    val = std::max<float>(val,currentMove.first);
-                    if (val<= beta){
-                        bestMove.second=currentMove.second;
-                        bestMove.first=currentMove.first;
-                        return bestMove;
+                    currentVal = virtualBoard.valueAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,false,alpha,beta);
+                    val = std::max<float>(val,currentVal);
+                    if (val>= beta){
+                        return val;
                     }
                     alpha = max<float>(alpha,val);
                     virtualBoard = *this;
                 }
             }
         }
-    bestMove.first=val;
-    return bestMove;
+    return val;
     }
 }
 
@@ -626,12 +646,13 @@ int main(){
         cout << (*it).getStart() << " " << (*it).getArrival()<< endl;
     }
     Board b(true);
-    Move m=b.bestMove(b.playableMoves("white"),"white",2,1,1).second;
-    cout << b.bestMove(b.playableMoves("white"),"white",2,1,1).first << endl;
+    Move m=b.bestMoveAlphaBeta("white",2,1,1);
+    b.playMove(m);
+    cout << "Valeur best Move : " << b.evaluate(1,1,"white") << endl;
     for(int i=0;i<3;i++) {
         cout<<b.getPiece(i)->getPosition()<<endl;
     }
-    std::cout<<b.bestMove(b.playableMoves("white"),"white",2,1,1).first<<endl;
+
 
 
 
