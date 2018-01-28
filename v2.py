@@ -9,8 +9,8 @@ import pygame
 
 
 class PyMan(Man):
-    def __init__(self,man):
-        self.this=man
+    def __init__(self,pos0,color0):
+        Man.__init__(pos,color)
     def display(self,window):
         increment=0
         position=self.this.getPosition()
