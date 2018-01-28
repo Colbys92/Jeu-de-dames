@@ -2,6 +2,9 @@
 #include <queue>
 #include <algorithm>
 
+
+//enum Color { white, black };
+
 Move::Move(const Move &m){
     for(vector<int>::const_iterator it=m.path.begin(); it!=m.path.end(); it++){
         path.push_back(*it);
@@ -571,15 +574,70 @@ float Board::evaluate(float manWeight, float kingWeight, string color) {
     }
     return value;
 }
+std::pair<float,Move> Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode, float alpha, float beta){
+    // A Factoriser en écrivant avec moins min/ Fuite mémoire ? (clear les virtuals board)
+    // Réécrire que avec currentMove, probleme avec val et currentMove :
+    Board virtualBoard(*this);
+    map<int,vector<Move> > currentPlayableMove;
+    pair<float, Move> bestMove(0,Move());
+    float val=0.;
+
+    if(depth==0){
+        bestMove.first=evaluate(manWeight,kingWeight,color);
+        return bestMove;
+    }
+    else {
+        if(!maxNode){
+            val = numeric_limits<float>::max();
+            currentPlayableMove=virtualBoard.playableMoves(color);
+            for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
+                for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
+                    virtualBoard.playMove((*it1).second[playedMove]);
+                    pair<float,Move> currentMove = virtualBoard.bestMoveAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,true,alpha,beta);
+                    val = std::min<float>(val,currentMove.first);
+                    if (val<= alpha){
+                        bestMove.second=currentMove.second;
+                        bestMove.first=currentMove.first;
+                        return bestMove;
+                    }
+                    beta = min<float>(beta,val);
+                    virtualBoard = *this;
+                }
+            }
+        }
+        else{
+            val = numeric_limits<float>::min();
+            currentPlayableMove=virtualBoard.playableMoves(color);
+            for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
+                for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
+                    virtualBoard.playMove((*it1).second[playedMove]);
+                    pair<float,Move> currentMove = virtualBoard.bestMoveAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,true,alpha,beta);
+                    val = std::max<float>(val,currentMove.first);
+                    if (val<= beta){
+                        bestMove.second=currentMove.second;
+                        bestMove.first=currentMove.first;
+                        return bestMove;
+                    }
+                    alpha = max<float>(alpha,val);
+                    virtualBoard = *this;
+                }
+            }
+        }
+    bestMove.first=val;
+    return bestMove;
+    }
+}
+
 
 std::pair<float,Move> Board::bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight){
+    // fuite de mémoire ? clear les boards ?
     // Renvoie le cout et le meilleur move, attention utiliser avec profondeur pair car sinon le move n'existe pas
     Board virtualBoard(*this);
     Board virtualBoardOpposite;
     map<int,vector<Move> > currentPlayableMove;
     map<int,vector<Move> > currentPlayableMoveOpposite;
     float valueCurrentMove=0;
-    float valueCurrentMoveOpposite=5000;
+    float valueCurrentMoveOpposite=5000; // A changer.
     pair<float, Move> bestMoveOpposite;
     pair<float, Move> bestMove;
     bestMove.first = valueCurrentMove;

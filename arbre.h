@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <vector>
 #include <map>
+#include <limits>
 using namespace std;
 
 // Constant globale en position value =0:
@@ -154,7 +155,7 @@ public :
     }
     float evaluate(float manWeight, float kingWeight, string color);
     pair<float, Move> bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight);
-
+    std::pair<float,Move> bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode=true, float alpha=numeric_limits<float>::min(), float beta=numeric_limits<float>::max());
 
     map<int,vector<Move> > playableMoves(string color);
 };
