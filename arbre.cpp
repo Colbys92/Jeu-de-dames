@@ -488,6 +488,45 @@ float Board::evaluate(float manWeight, float kingWeight, string color) {
     }
     return value;
 }
+
+float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color){
+    float value=0;
+
+    for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++) {
+        if((*it)->Color() == color){
+            value+=((*it)->isMan())?manWeight:kingWeight;
+            countPieces+=1;
+        }
+        else {
+            value-=((*it)->isMan())?manWeight:kingWeight;
+            countPieces+=1;
+        }
+    }
+    map<int,vector<Move> > playableMove = playableMoves(color);
+    for(map<int,vector<Move> >::iterator it1=playableMove.begin(); it1!=playableMove.end();it1++){
+        for(int i=0; i<(*it1).second.size(); it++){
+            value+=nbMoveWeight;
+        }
+    }
+    for(int i=20;i<30;i++){
+        if(isPieceHere(i)){
+            value=(getPiece(index_man_here(i))->Color()==color)?value+centralWeight:value-centralWeight;
+        }
+    }
+    for(int i=0;i<50;i++){
+        float advanceWhite =(50-(i-i%5));
+        float advanceBlack = (i-i%5);
+        if(isPieceHere(i)){
+            if(color=="white"){
+                value=(getPiece(index_man_here(i))->Color()=="white")?value+advanceWhite*advancementForwardWeight:value-advanceBlack*advancementForwardWeight;
+            }
+            else{
+                value=(getPiece(index_man_here(i))->Color()=="white")?value+advanceBlack*advancementForwardWeight:value-advanceWhite*advancementForwardWeight;
+            }
+        }
+    }
+}
+
 Move Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode, float alpha, float beta){
     Board virtualBoard(*this);
     map<int,vector<Move> > currentPlayableMove;
@@ -512,7 +551,7 @@ Move Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float ki
 
 
 
-    }
+}
 float Board::valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode, float alpha, float beta){
     // A Factoriser en écrivant avec moins min/ Fuite mémoire ? (clear les virtuals board)
     // Réécrire que avec currentMove, probleme avec val et currentMove :
