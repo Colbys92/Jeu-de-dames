@@ -604,7 +604,9 @@ std::pair<float,Move> Board::bestMove(string color, int depth,float manWeight, f
                 for(int i=0;i<(*it).second.size();i++) {
                     virtualBoard=*this;
                     virtualBoard.playMove((*it).second[i]);
-                    std::pair<float,Move> currentCoup=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight);
+                    std::pair<float,Move> currentCoup;
+                    currentCoup.first=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first;
+                    currentCoup.second=(*it).second[i];
                     if(currentCoup.first>bestCoup.first)
                         bestCoup=currentCoup;
                 }
@@ -616,7 +618,9 @@ std::pair<float,Move> Board::bestMove(string color, int depth,float manWeight, f
                 for(int i=0;i<(*it).second.size();i++) {
                     virtualBoard=*this;
                     virtualBoard.playMove((*it).second[i]);
-                    std::pair<float,Move> currentCoup=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight);
+                    std::pair<float,Move> currentCoup;
+                    currentCoup.first=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first;
+                    currentCoup.second=(*it).second[i];
                     if(currentCoup.first<bestCoup.first)
                         bestCoup=currentCoup;
                 }

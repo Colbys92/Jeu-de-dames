@@ -177,6 +177,7 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
 //===============================Execution===============================
 int main(){
 
+
     vector<Individu> individus;
     vector<Individu> chosenOnes;
     for(int i=0; i<50; i++){
