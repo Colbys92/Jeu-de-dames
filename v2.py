@@ -9,21 +9,6 @@ from pygame.locals import *
 import pygame
 
 
-<<<<<<< HEAD
-class PyMan(Man):
-    def __init__(self,pos0,color0):
-        Man.__init__(pos,color)
-    def display(self,window):
-        increment=0
-        position=self.this.getPosition()
-        if(position%10<5):
-            increment+=50
-        if self.this.Color()=="white":
-                pygame.draw.circle(window,(255,255,255),(262+increment+100*(position%5)+25,109+50*(position//5)+25),20)
-        else:
-            #pygame.draw.circle(window,(255,255,255),(262+increment+100*(self.position%5)+25,109+50*(self.position//5)+25),20,2)
-            pygame.draw.circle(window,(255,0,0),(262+increment+100*(position%5)+25,109+50*(position//5)+25),20)
-=======
 def drawKing(king,window):
     increment=0
     position=king.getPosition()
@@ -46,8 +31,7 @@ def drawMan(man,window):
         #pygame.draw.circle(window,(255,255,255),(262+increment+100*(self.position%5)+25,109+50*(self.position//5)+25),20,2)
         # pygame.draw.circle(window,(255,0,0),(262+increment+100*(position%5)+25,109+50*(position//5)+25),20)
         window.blit(textureBlackMan,(262+increment+100*(position%5)-5,109+50*(position//5)+20))
-    
->>>>>>> FixingKing
+
 
 class PyBoard(Board):
     def __init__(self):
@@ -155,7 +139,7 @@ if __name__ == "__main__":
     textureGreenSquare=pygame.image.load("textures/case_sombre_verte.png")
     
     #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA
-    gameType=0
+    gameType=2
     
     fond=pygame.image.load("textures/surface_jeu_V1.png").convert()
     window.blit(fond,(0,0))
@@ -166,71 +150,57 @@ if __name__ == "__main__":
     #initialisation variable de calcul
     compteur=0
     couleurs=["white","black"]
-<<<<<<< HEAD
-    run=True
-    while(plateau.this.nbPieces()>0 and run):
-        moves=plateau.this.playableMoves(couleurs[compteur])
-        played=False
-        chosenPiece=-1
-        while(not played):
+    moves=plateau.playableMoves(couleurs[compteur])
+    chosenPiece=-1
+    if(gameType==2):
+        while(not plateau.endGame()):
+            pygame.time.wait(500)
+            window.blit(fond,(0,0))
+            plateau.display(window)
+            pygame.display.flip()
+            plateau.playMove(plateau.bestMoveAlphaBeta(couleurs[compteur],2,5.,20.,1.,1.,1.),False)
+            moves=plateau.playableMoves(couleurs[compteur])
+            compteur=1-compteur
+        
+    else:
+        while(not plateau.endGame()):
             for event in pygame.event.get():
                 if event.type == QUIT:
-                    run=False
-                    played=True
-                    choiceMade=True
-                    break
+                    pygame.quit()
                 elif event.type == MOUSEBUTTONDOWN and event.button==1:
                     pos=coordToPos(event.pos[0],event.pos[1])
                     if chosenPiece==-1 and pos in moves.keys():
                         chosenPiece=pos
                         for square in moves[pos]:
-                            highlightSquare(square.getArrival(),(255,0,0),window)
+                            highlightSquare(square.getArrival(),"green",window)
                     elif chosenPiece!=-1 and pos not in map(Move.getArrival,moves[chosenPiece]):
                         chosenPiece=-1
                         plateau.display(window)
-                        displayMovablePieces(moves,window)
+                        plateau.displayMovablePieces(moves,window)
                     elif chosenPiece!=-1:
-                        plateau.this.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)])
+                        plateau.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)],False)
                         plateau.display(window)
-                        played=True
-=======
-    moves=plateau.playableMoves(couleurs[compteur])
-    chosenPiece=-1
-    while(True):
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-            elif event.type == MOUSEBUTTONDOWN and event.button==1:
-                pos=coordToPos(event.pos[0],event.pos[1])
-                if chosenPiece==-1 and pos in moves.keys():
-                    chosenPiece=pos
-                    for square in moves[pos]:
-                        highlightSquare(square.getArrival(),"green",window)
-                elif chosenPiece!=-1 and pos not in map(Move.getArrival,moves[chosenPiece]):
-                    chosenPiece=-1
+                        if gameType==0:
+                            compteur=1-compteur
+                            moves=plateau.playableMoves(couleurs[compteur])
+                        else:
+                            window.blit(fond,(0,0))
+                            plateau.display(window)
+                            pygame.display.flip()
+                            plateau.playMove(plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1.,5.,0.,0.,0.),False)
+                            moves=plateau.playableMoves(couleurs[compteur])
+                        chosenPiece=-1
+                if(chosenPiece==-1):
+                    window.blit(fond,(0,0))
                     plateau.display(window)
                     plateau.displayMovablePieces(moves,window)
-                elif chosenPiece!=-1:
-                    plateau.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)],False)
-                    plateau.display(window)
-                    if gameType==0:
-                        compteur=1-compteur
-                        moves=plateau.playableMoves(couleurs[compteur])
-                    else:
-                        plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1,1)
-                    chosenPiece=-1
->>>>>>> FixingKing
-            if(chosenPiece==-1):
-                window.blit(fond,(0,0))
-                plateau.display(window)
-                plateau.displayMovablePieces(moves,window)
-                (x,y)=pygame.mouse.get_pos()
-                pos=coordToPos(x,y)
-                if(pos in moves.keys()):
-                    for square in moves[pos]:
-                        highlightSquare(square.getArrival(),"blue",window)
-            pygame.display.flip()
-pygame.quit()
+                    (x,y)=pygame.mouse.get_pos()
+                    pos=coordToPos(x,y)
+                    if(pos in moves.keys()):
+                        for square in moves[pos]:
+                            highlightSquare(square.getArrival(),"blue",window)
+                pygame.display.flip()
+    pygame.quit()
 
     
 

@@ -315,6 +315,12 @@ class Board(_object):
 
     def bestMove(self, arg2, arg3, arg4, arg5, arg6):
         return _arbre.Board_bestMove(self, arg2, arg3, arg4, arg5, arg6)
+
+    def bestMoveAlphaBeta(self, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9=True, arg10=-1000000, arg11=1000000):
+        return _arbre.Board_bestMoveAlphaBeta(self, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+
+    def endGame(self):
+        return _arbre.Board_endGame(self)
     __swig_destroy__ = _arbre.delete_Board
     __del__ = lambda self: None
 Board_swigregister = _arbre.Board_swigregister

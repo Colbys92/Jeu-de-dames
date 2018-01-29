@@ -75,6 +75,8 @@ public:
 	std::map<int, std::vector<Move> > playableMoves(std::string);
 	float evaluate(float , float , std::string );
     std::pair<float, Move> bestMove(std::map<int, vector<Move> > ,std::string , int , float , float );
+    Move bestMoveAlphaBeta(std::string, int , float, float, float, float, float, bool=true, float=-1000000, float=1000000);
+    bool endGame();
 };
 
 struct King : public Piece {
