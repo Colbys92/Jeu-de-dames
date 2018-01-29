@@ -496,10 +496,12 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
 
     for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++) {
         if((*it)->Color() == color){
+            cout<<"positif"<<endl;
             value+=((*it)->isMan())?manWeight:kingWeight;
 
         }
         else {
+            cout<<"negatif"<<endl;
             value-=((*it)->isMan())?manWeight:kingWeight;
 
         }
@@ -538,9 +540,7 @@ Move Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float ki
     Board virtualBoard(*this);
     float alphabis=alpha;
     map<int,vector<Move> > currentPlayableMove;
-
     currentPlayableMove=virtualBoard.playableMoves(color);
-
     if(currentPlayableMove.size()==0){
         cerr << "Partie terminée, a prendre en compte" << endl;
     }
@@ -548,21 +548,20 @@ Move Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float ki
         pair<float,Move> bestMove(-std::numeric_limits<float>::max(),(*currentPlayableMove.begin()).second[0]);
         for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
             for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
-
                 virtualBoard.playMove((*it1).second[playedMove]);
-
                 if(virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight, nbMoveWeight, advancementForwardWeight, centralWeight,false,alphabis,beta)>bestMove.first){
+//on calcule 2 fois c'est pas terrible
                     bestMove.first=virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight,nbMoveWeight, advancementForwardWeight,  centralWeight,false,alphabis,beta);
                     bestMove.second=((*it1).second[playedMove]);
                 }
-                alphabis = max(alphabis,bestMove.first);
+                alphabis = max<float>(alphabis,bestMove.first);
                 virtualBoard=*this;
             }
         }
         return bestMove.second;
     }
-
 }
+
 float Board::valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta){
     // A Factoriser en écrivant avec moins min/ Fuite mémoire ? (clear les virtuals board)
     // Réécrire que avec currentMove, probleme avec val et currentMove :
@@ -604,7 +603,7 @@ float Board::valueAlphaBeta(string color, int depth, float manWeight, float king
                 for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
 
                     virtualBoard.playMove((*it1).second[playedMove]);
-                    currentVal = virtualBoard.valueAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,nbMoveWeight, advancementForwardWeight,  centralWeight,false,alpha,beta);
+                    currentVal = virtualBoard.valueAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,nbMoveWeight, advancementForwardWeight,centralWeight,false,alpha,beta);
                     val = std::max<float>(val,currentVal);
                     if (val>= beta){
 

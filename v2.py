@@ -154,11 +154,16 @@ if __name__ == "__main__":
     chosenPiece=-1
     if(gameType==2):
         while(not plateau.endGame()):
-            pygame.time.wait(500)
+            pygame.time.delay(20)
             window.blit(fond,(0,0))
             plateau.display(window)
             pygame.display.flip()
-            plateau.playMove(plateau.bestMoveAlphaBeta(couleurs[compteur],2,5.,20.,1.,1.,1.),False)
+            # print(compteur)
+            print("avant")
+            move=plateau.bestMoveAlphaBeta(couleurs[compteur],2,5.,20.,1.,1.,1.)
+            print(move.getStart(),move.getArrival())
+            print("apres")
+            plateau.playMove(move,False)
             moves=plateau.playableMoves(couleurs[compteur])
             compteur=1-compteur
         

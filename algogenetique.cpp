@@ -74,8 +74,8 @@ int match(Individu i1, Individu i2){
 
 
 int main(){
-    Individu i1(0,1,1,2,1,1,1);
-    Individu i2(0,1,1,6,1,1,1);
+    Individu i1(0,5,20,2,1,1,1);
+    Individu i2(0,5,20,2,1,1,1);
     cout << match(i1,i2) << endl;
 
     return 0;
