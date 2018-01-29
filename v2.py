@@ -187,7 +187,7 @@ if __name__ == "__main__":
                             window.blit(fond,(0,0))
                             plateau.display(window)
                             pygame.display.flip()
-                            plateau.playMove((plateau.bestMove(couleurs[1-compteur],1,1,True,2))[1],False)
+                            plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,5)),False)
                             moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
                 if(chosenPiece==-1):

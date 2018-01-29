@@ -181,7 +181,7 @@ int main(){
     for(int i=0; i<50; i++){
         individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,2,0,0,0));
     }
-    for(int i=0; i<5;i++){
+    for(int i=0; i<1;i++){
         cout << i << endl;
         evaluation(individus);
         chosenOnes = selection(individus);
