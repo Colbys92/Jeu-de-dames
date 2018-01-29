@@ -295,8 +295,8 @@ class Board(_object):
     def isPieceHere(self, arg2):
         return _arbre.Board_isPieceHere(self, arg2)
 
-    def playMove(self, arg2):
-        return _arbre.Board_playMove(self, arg2)
+    def playMove(self, arg2, arg3):
+        return _arbre.Board_playMove(self, arg2, arg3)
 
     def killAt(self, arg2):
         return _arbre.Board_killAt(self, arg2)
@@ -309,6 +309,12 @@ class Board(_object):
 
     def playableMoves(self, arg2):
         return _arbre.Board_playableMoves(self, arg2)
+
+    def evaluate(self, arg2, arg3, arg4):
+        return _arbre.Board_evaluate(self, arg2, arg3, arg4)
+
+    def bestMove(self, arg2, arg3, arg4, arg5, arg6):
+        return _arbre.Board_bestMove(self, arg2, arg3, arg4, arg5, arg6)
     __swig_destroy__ = _arbre.delete_Board
     __del__ = lambda self: None
 Board_swigregister = _arbre.Board_swigregister
@@ -574,6 +580,46 @@ class map_int_moves(_object):
     __del__ = lambda self: None
 map_int_moves_swigregister = _arbre.map_int_moves_swigregister
 map_int_moves_swigregister(map_int_moves)
+
+class pair_float_moves(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, pair_float_moves, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, pair_float_moves, name)
+    __repr__ = _swig_repr
+
+    def __init__(self, *args):
+        this = _arbre.new_pair_float_moves(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+    __swig_setmethods__["first"] = _arbre.pair_float_moves_first_set
+    __swig_getmethods__["first"] = _arbre.pair_float_moves_first_get
+    if _newclass:
+        first = _swig_property(_arbre.pair_float_moves_first_get, _arbre.pair_float_moves_first_set)
+    __swig_setmethods__["second"] = _arbre.pair_float_moves_second_set
+    __swig_getmethods__["second"] = _arbre.pair_float_moves_second_get
+    if _newclass:
+        second = _swig_property(_arbre.pair_float_moves_second_get, _arbre.pair_float_moves_second_set)
+    def __len__(self):
+        return 2
+    def __repr__(self):
+        return str((self.first, self.second))
+    def __getitem__(self, index): 
+        if not (index % 2):
+            return self.first
+        else:
+            return self.second
+    def __setitem__(self, index, val):
+        if not (index % 2):
+            self.first = val
+        else:
+            self.second = val
+    __swig_destroy__ = _arbre.delete_pair_float_moves
+    __del__ = lambda self: None
+pair_float_moves_swigregister = _arbre.pair_float_moves_swigregister
+pair_float_moves_swigregister(pair_float_moves)
 
 # This file is compatible with both classic and new-style classes.
 
