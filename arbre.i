@@ -2,6 +2,7 @@
 %include <std_vector.i>
 %include <std_string.i>
 %include <std_map.i>
+%include <std_pair.i>
 
 
 %{
@@ -67,11 +68,13 @@ public:
 	bool isManHere(int);
 	bool isKingHere(int);
 	bool isPieceHere(int);
-	void playMove(const Move&);
+	void playMove(const Move&, bool);
 	void killAt(int);
 	Piece* getPiece(int);
 	int nbPieces() const;
 	std::map<int, std::vector<Move> > playableMoves(std::string);
+	float evaluate(float , float , std::string );
+    std::pair<float, Move> bestMove(std::map<int, vector<Move> > ,std::string , int , float , float );
 };
 
 struct King : public Piece {
@@ -91,4 +94,5 @@ public:
 namespace std {
 	%template(VectorMove) vector<Move>;
 	%template(map_int_moves) map<int,vector<Move> >;
+	%template(pair_float_moves) pair<float,Move>;
 };

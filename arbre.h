@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <vector>
 #include <map>
+#include <limits>
 using namespace std;
 
 // Constant globale en position value =0:
@@ -15,6 +16,8 @@ const int NW =-6;
 const int NE =-5;
 const int SE =+5;
 const int SW =+4;
+
+
 
 // 2 Cases :
 
@@ -109,6 +112,13 @@ public :
             pieces.push_back(new Man(i,"white"));
         }
     }
+    Board(bool lol) {
+        pieces.push_back(new Man(47,"white"));
+        pieces.push_back(new Man(41,"white"));
+        pieces.push_back(new Man(42,"black"));
+        pieces.push_back(new Man(36,"black"));
+
+    }
     Board(const Board& b);
     void operator=(const Board& b);
     int index_man_here(int pos){
@@ -135,7 +145,7 @@ public :
     bool isPieceHere(int pos){
         return(isKingHere(pos) || isManHere(pos));
     }
-    void playMove(const Move& m);
+    void playMove(const Move& m, bool inSelect=false);
     void killAt(int pos);
 
     Piece* getPiece(int index){
@@ -145,9 +155,13 @@ public :
     int nbPieces() const{
         return pieces.size();
     }
-
-
+    float evaluate(float manWeight, float kingWeight, string color);
+    float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color);
+    pair<float, Move> bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight);
+    Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode=true, float alpha=-numeric_limits<float>::max(), float beta=numeric_limits<float>::max());
+    float valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta);
     map<int,vector<Move> > playableMoves(string color);
+    bool endGame();
 };
 
 
