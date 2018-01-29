@@ -176,6 +176,8 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
 
 //===============================Execution===============================
 int main(){
+
+
     vector<Individu> individus;
     vector<Individu> chosenOnes;
     for(int i=0; i<50; i++){
@@ -190,5 +192,6 @@ int main(){
     }
     std::sort(individus.begin(),individus.end());
     cout << "KingWeight : " <<individus.begin()->getKingWeight() << "ManWeight : "<<individus.begin()->getManWeight() << endl;
+
 
 }

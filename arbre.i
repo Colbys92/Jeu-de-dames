@@ -77,7 +77,7 @@ public:
 	int nbPieces() const;
 	std::map<int, std::vector<Move> > playableMoves(std::string);
 	float evaluate(float , float , std::string );
-    std::pair<float, Move> bestMove(std::string , float , float , bool , int );
+    std::pair<float, Move> bestMove(std::string , int, float , float);
     std::pair<float, Move> bestMoveAlphaBeta(std::string, int , float, float, bool , float , float );
     bool endGame();
 };

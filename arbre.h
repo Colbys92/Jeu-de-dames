@@ -162,7 +162,7 @@ public :
     }
     float evaluate(float manWeight, float kingWeight, string color);
     float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color);
-    pair<float, Move> bestMove(string color, float manWeight, float kingWeight,bool maxNode, int depth);
+    pair<float, Move> bestMove(string color, int depth, float manWeight, float kingWeight);
     std::pair<float,Move> bestMoveAlphaBeta(string color,int depth, float manWeight, float kingWeight, bool maxNode,float alpha, float beta );
     //Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode=true, float alpha=-100000000, float beta=numeric_limits<float>::max());
     float valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta);
