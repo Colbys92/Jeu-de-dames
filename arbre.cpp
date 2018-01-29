@@ -690,6 +690,8 @@ bool Board::endGame(){
 }
 
 
+
+
 int main(){
 
     Board* Plateau = new Board;
