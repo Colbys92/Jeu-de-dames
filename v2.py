@@ -157,7 +157,7 @@ if __name__ == "__main__":
                     plateau.display(window)
                     plateau.displayMovablePieces(moves,window)
                 elif chosenPiece!=-1:
-                    plateau.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)])
+                    plateau.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)],False)
                     plateau.display(window)
                     compteur=1-compteur
                     moves=plateau.playableMoves(couleurs[compteur])
@@ -172,7 +172,6 @@ if __name__ == "__main__":
                     for square in moves[pos]:
                         highlightSquare(square.getArrival(),"blue",window)
             pygame.display.flip()
-        compteur=1-compteur
 pygame.quit()
 
     
