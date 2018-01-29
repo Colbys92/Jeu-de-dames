@@ -30,10 +30,9 @@ def drawKing(king,window):
     if(position%10<5):
         increment+=50
     if king.Color()=="white":
-            pygame.draw.circle(window,(255,255,255),(262+increment+100*(position%5)+25,109+50*(position//5)+20),20)
+        window.blit(textureWhiteKing,(262+increment+100*(position%5)-5,109+50*(position//5)+20))
     else:
-        #pygame.draw.circle(window,(255,255,255),(262+increment+100*(self.position%5)+25,109+50*(self.position//5)+25),20,2)
-        pygame.draw.circle(window,(255,0,0),(262+increment+100*(position%5)+25,109+50*(position//5)+20),20)
+        window.blit(textureBlackKing,(262+increment+100*(position%5)-5,109+50*(position//5)+20))
 
 def drawMan(man,window):
     increment=0
@@ -118,13 +117,16 @@ def highlightMan(position,color,window):
     else:
         window.blit(textureBlackManSelected,(262+i*100+increment-5,109+j*50+20))
     
-def highlightKing(position,window):
+def highlightKing(position,color,window):
     increment=0
     if(position%10<5):
         increment+=50
     i=(position%5)
     j=position//5
-    # window.blit(textureWhiteManSelected,(262+i*100+increment,109+j*50+25))
+    if color=="white":
+        window.blit(textureWhiteKingSelected,(262+i*100+increment-5,109+j*50+20))
+    else:
+        window.blit(textureBlackKingSelected,(262+i*100+increment-5,109+j*50+20))
     
 
 
@@ -132,7 +134,10 @@ def displayTest(movestest):
     for i in movestest.keys():
         for j in movestest[i]:
             print(j.getStart(),j.getArrival())
-        
+
+
+
+
 
 if __name__ == "__main__":
     #initialisation affichage
@@ -144,8 +149,13 @@ if __name__ == "__main__":
     textureWhiteKing=pygame.image.load("textures/reine_blanche_basique.png").convert_alpha()
     textureWhiteManSelected=pygame.image.load("textures/pion_blanc_lueur.png").convert_alpha()
     textureBlackManSelected=pygame.image.load("textures/pion_noir_lueur.png").convert_alpha()
+    textureWhiteKingSelected=pygame.image.load("textures/reine_blanche_lueur.png").convert_alpha()
+    textureBlackKingSelected=pygame.image.load("textures/reine_noir_lueur.png").convert_alpha()
     textureBlueSquare=pygame.image.load("textures/case_sombre_bleue.png")
     textureGreenSquare=pygame.image.load("textures/case_sombre_verte.png")
+    
+    #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA
+    gameType=0
     
     fond=pygame.image.load("textures/surface_jeu_V1.png").convert()
     window.blit(fond,(0,0))
@@ -203,8 +213,11 @@ if __name__ == "__main__":
                 elif chosenPiece!=-1:
                     plateau.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)],False)
                     plateau.display(window)
-                    compteur=1-compteur
-                    moves=plateau.playableMoves(couleurs[compteur])
+                    if gameType==0:
+                        compteur=1-compteur
+                        moves=plateau.playableMoves(couleurs[compteur])
+                    else:
+                        plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1,1)
                     chosenPiece=-1
 >>>>>>> FixingKing
             if(chosenPiece==-1):
