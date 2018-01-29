@@ -156,10 +156,12 @@ public :
         return pieces.size();
     }
     float evaluate(float manWeight, float kingWeight, string color);
+    float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color);
     pair<float, Move> bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight);
-    Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode=true, float alpha=-numeric_limits<float>::max(), float beta=numeric_limits<float>::max());
-    float valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, bool maxNode, float alpha, float beta);
+    Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode=true, float alpha=-numeric_limits<float>::max(), float beta=numeric_limits<float>::max());
+    float valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta);
     map<int,vector<Move> > playableMoves(string color);
+    bool endGame();
 };
 
 

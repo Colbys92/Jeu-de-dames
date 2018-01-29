@@ -29,3 +29,4 @@ bool checkEdges(int i, int position){
 int opposedDirection(int orientation){
     return (orientation+2)%4;
 }
+
