@@ -139,7 +139,7 @@ if __name__ == "__main__":
     textureGreenSquare=pygame.image.load("textures/case_sombre_verte.png")
     
     #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA
-    gameType=2
+    gameType=1
     
     fond=pygame.image.load("textures/surface_jeu_V1.png").convert()
     window.blit(fond,(0,0))
@@ -187,7 +187,7 @@ if __name__ == "__main__":
                             window.blit(fond,(0,0))
                             plateau.display(window)
                             pygame.display.flip()
-                            plateau.playMove(plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1.,5.,0.,0.,0.),False)
+                            plateau.playMove((plateau.bestMove(couleurs[1-compteur],1,1,True,2))[1],False)
                             moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
                 if(chosenPiece==-1):

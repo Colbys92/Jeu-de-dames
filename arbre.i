@@ -29,6 +29,9 @@ protected:
 	std::string color;
 };
 
+
+
+
 struct Man : public Piece{
 public:
 	Man(int,std::string);
@@ -74,8 +77,8 @@ public:
 	int nbPieces() const;
 	std::map<int, std::vector<Move> > playableMoves(std::string);
 	float evaluate(float , float , std::string );
-    std::pair<float, Move> bestMove(std::map<int, vector<Move> > ,std::string , int , float , float );
-    Move bestMoveAlphaBeta(std::string, int , float, float, float, float, float, bool=true, float=-1000000, float=1000000);
+    std::pair<float, Move> bestMove(std::string , float , float , bool , int );
+    std::pair<float, Move> bestMoveAlphaBeta(std::string, int , float, float, bool , float , float );
     bool endGame();
 };
 
@@ -91,6 +94,7 @@ public:
 	virtual Piece* clone();
 
 };
+Move Test(std::pair<float, Move> A);
 
 
 namespace std {
