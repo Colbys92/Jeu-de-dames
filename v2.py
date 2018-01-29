@@ -112,7 +112,11 @@ def highlightKing(position,window):
     
 
 
-
+def displayTest(movestest):
+    for i in movestest.keys():
+        for j in movestest[i]:
+            print(j.getStart(),j.getArrival())
+        
 
 if __name__ == "__main__":
     #initialisation affichage
@@ -168,11 +172,11 @@ if __name__ == "__main__":
                     for square in moves[pos]:
                         highlightSquare(square.getArrival(),"blue",window)
             pygame.display.flip()
-    
+        compteur=1-compteur
+pygame.quit()
 
-    
-        
-    
     
 
 
+    
+    

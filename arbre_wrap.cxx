@@ -3014,22 +3014,25 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 #define SWIGTYPE_p_allocator_type swig_types[5]
 #define SWIGTYPE_p_char swig_types[6]
 #define SWIGTYPE_p_difference_type swig_types[7]
-#define SWIGTYPE_p_key_type swig_types[8]
-#define SWIGTYPE_p_mapped_type swig_types[9]
-#define SWIGTYPE_p_p_PyObject swig_types[10]
-#define SWIGTYPE_p_size_type swig_types[11]
-#define SWIGTYPE_p_std__allocatorT_Move_t swig_types[12]
-#define SWIGTYPE_p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t swig_types[13]
-#define SWIGTYPE_p_std__invalid_argument swig_types[14]
-#define SWIGTYPE_p_std__lessT_int_t swig_types[15]
-#define SWIGTYPE_p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t swig_types[16]
-#define SWIGTYPE_p_std__vectorT_Move_std__allocatorT_Move_t_t swig_types[17]
-#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[18]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[19]
-#define SWIGTYPE_p_value_type swig_types[20]
-#define SWIGTYPE_p_vectorT_Move_t swig_types[21]
-static swig_type_info *swig_types[23];
-static swig_module_info swig_module = {swig_types, 22, 0, 0, 0, 0};
+#define SWIGTYPE_p_first_type swig_types[8]
+#define SWIGTYPE_p_key_type swig_types[9]
+#define SWIGTYPE_p_mapped_type swig_types[10]
+#define SWIGTYPE_p_p_PyObject swig_types[11]
+#define SWIGTYPE_p_second_type swig_types[12]
+#define SWIGTYPE_p_size_type swig_types[13]
+#define SWIGTYPE_p_std__allocatorT_Move_t swig_types[14]
+#define SWIGTYPE_p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t swig_types[15]
+#define SWIGTYPE_p_std__invalid_argument swig_types[16]
+#define SWIGTYPE_p_std__lessT_int_t swig_types[17]
+#define SWIGTYPE_p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t swig_types[18]
+#define SWIGTYPE_p_std__pairT_float_Move_t swig_types[19]
+#define SWIGTYPE_p_std__vectorT_Move_std__allocatorT_Move_t_t swig_types[20]
+#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[21]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[22]
+#define SWIGTYPE_p_value_type swig_types[23]
+#define SWIGTYPE_p_vectorT_Move_t swig_types[24]
+static swig_type_info *swig_types[26];
+static swig_module_info swig_module = {swig_types, 25, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3728,6 +3731,20 @@ SWIG_From_std_string  (const std::string& s)
 
 
 SWIGINTERN int
+SWIG_AsVal_bool (PyObject *obj, bool *val)
+{
+  int r;
+  if (!PyBool_Check(obj))
+    return SWIG_ERROR;
+  r = PyObject_IsTrue(obj);
+  if (r == -1)
+    return SWIG_ERROR;
+  if (val) *val = r ? true : false;
+  return SWIG_OK;
+}
+
+
+SWIGINTERN int
 SWIG_AsCharPtrAndSize(PyObject *obj, char** cptr, size_t* psize, int *alloc)
 {
 #if PY_VERSION_HEX>=0x03000000
@@ -3868,6 +3885,70 @@ SWIG_AsPtr_std_string (PyObject * obj, std::string **val)
     }
   }
   return SWIG_ERROR;
+}
+
+
+/* Getting isfinite working pre C99 across multiple platforms is non-trivial. Users can provide SWIG_isfinite on older platforms. */
+#ifndef SWIG_isfinite
+/* isfinite() is a macro for C99 */
+# if defined(isfinite)
+#  define SWIG_isfinite(X) (isfinite(X))
+# elif defined __cplusplus && __cplusplus >= 201103L
+/* Use a template so that this works whether isfinite() is std::isfinite() or
+ * in the global namespace.  The reality seems to vary between compiler
+ * versions.
+ *
+ * Make sure namespace std exists to avoid compiler warnings.
+ *
+ * extern "C++" is required as this fragment can end up inside an extern "C" { } block
+ */
+namespace std { }
+extern "C++" template<typename T>
+inline int SWIG_isfinite_func(T x) {
+  using namespace std;
+  return isfinite(x);
+}
+#  define SWIG_isfinite(X) (SWIG_isfinite_func(X))
+# elif defined(_MSC_VER)
+#  define SWIG_isfinite(X) (_finite(X))
+# elif defined(__sun) && defined(__SVR4)
+#  include <ieeefp.h>
+#  define SWIG_isfinite(X) (finite(X))
+# endif
+#endif
+
+
+/* Accept infinite as a valid float value unless we are unable to check if a value is finite */
+#ifdef SWIG_isfinite
+# define SWIG_Float_Overflow_Check(X) ((X < -FLT_MAX || X > FLT_MAX) && SWIG_isfinite(X))
+#else
+# define SWIG_Float_Overflow_Check(X) ((X < -FLT_MAX || X > FLT_MAX))
+#endif
+
+
+SWIGINTERN int
+SWIG_AsVal_float (PyObject * obj, float *val)
+{
+  double v;
+  int res = SWIG_AsVal_double (obj, &v);
+  if (SWIG_IsOK(res)) {
+    if (SWIG_Float_Overflow_Check(v)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< float >(v);
+    }
+  }  
+  return res;
+}
+
+
+  #define SWIG_From_double   PyFloat_FromDouble 
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_float  (float value)
+{    
+  return SWIG_From_double  (value);
 }
 
 
@@ -5589,6 +5670,36 @@ SWIGINTERN PyObject *std_map_Sl_int_Sc_std_vector_Sl_Move_Sg__Sg__asdict(std::ma
     }
 SWIGINTERN void std_map_Sl_int_Sc_std_vector_Sl_Move_Sg__Sg__erase__SWIG_1(std::map< int,std::vector< Move > > *self,std::map< int,std::vector< Move > >::iterator position){ self->erase(position); }
 SWIGINTERN void std_map_Sl_int_Sc_std_vector_Sl_Move_Sg__Sg__erase__SWIG_2(std::map< int,std::vector< Move > > *self,std::map< int,std::vector< Move > >::iterator first,std::map< int,std::vector< Move > >::iterator last){ self->erase(first, last); }
+
+namespace swig {
+  template <> struct traits< float > {
+    typedef value_category category;
+    static const char* type_name() { return"float"; }
+  };
+  template <>  struct traits_asval< float > {
+    typedef float value_type;
+    static int asval(PyObject *obj, value_type *val) {
+      return SWIG_AsVal_float (obj, val);
+    }
+  };
+  template <>  struct traits_from< float > {
+    typedef float value_type;
+    static PyObject *from(const value_type& val) {
+      return SWIG_From_float  (val);
+    }
+  };
+}
+
+
+      namespace swig {
+	template <>  struct traits<std::pair< float, Move > > {
+	  typedef pointer_category category;
+	  static const char* type_name() {
+	    return "std::pair<" "float" "," "Move" " >";
+	  }
+	};
+      }
+    
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -7457,14 +7568,18 @@ SWIGINTERN PyObject *_wrap_Board_playMove(PyObject *SWIGUNUSEDPARM(self), PyObje
   PyObject *resultobj = 0;
   Board *arg1 = (Board *) 0 ;
   Move *arg2 = 0 ;
+  bool arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
+  bool val3 ;
+  int ecode3 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:Board_playMove",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOO:Board_playMove",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Board, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Board_playMove" "', argument " "1"" of type '" "Board *""'"); 
@@ -7478,7 +7593,12 @@ SWIGINTERN PyObject *_wrap_Board_playMove(PyObject *SWIGUNUSEDPARM(self), PyObje
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Board_playMove" "', argument " "2"" of type '" "Move const &""'"); 
   }
   arg2 = reinterpret_cast< Move * >(argp2);
-  (arg1)->playMove((Move const &)*arg2);
+  ecode3 = SWIG_AsVal_bool(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Board_playMove" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  (arg1)->playMove((Move const &)*arg2,arg3);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -7596,6 +7716,134 @@ SWIGINTERN PyObject *_wrap_Board_playableMoves(PyObject *SWIGUNUSEDPARM(self), P
   }
   result = (arg1)->playableMoves(arg2);
   resultobj = SWIG_NewPointerObj((new std::map< int,std::vector< Move,std::allocator< Move > >,std::less< int >,std::allocator< std::pair< int const,std::vector< Move,std::allocator< Move > > > > >(static_cast< const std::map< int,std::vector< Move,std::allocator< Move > >,std::less< int >,std::allocator< std::pair< int const,std::vector< Move,std::allocator< Move > > > > >& >(result))), SWIGTYPE_p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Board_evaluate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Board *arg1 = (Board *) 0 ;
+  float arg2 ;
+  float arg3 ;
+  std::string arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  float val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:Board_evaluate",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Board, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Board_evaluate" "', argument " "1"" of type '" "Board *""'"); 
+  }
+  arg1 = reinterpret_cast< Board * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Board_evaluate" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  ecode3 = SWIG_AsVal_float(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Board_evaluate" "', argument " "3"" of type '" "float""'");
+  } 
+  arg3 = static_cast< float >(val3);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(obj3, &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "Board_evaluate" "', argument " "4"" of type '" "std::string""'"); 
+    }
+    arg4 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (float)(arg1)->evaluate(arg2,arg3,arg4);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Board_bestMove(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Board *arg1 = (Board *) 0 ;
+  std::map< int,std::vector< Move,std::allocator< Move > >,std::less< int >,std::allocator< std::pair< int const,std::vector< Move,std::allocator< Move > > > > > arg2 ;
+  std::string arg3 ;
+  int arg4 ;
+  float arg5 ;
+  float arg6 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  float val5 ;
+  int ecode5 = 0 ;
+  float val6 ;
+  int ecode6 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  std::pair< float,Move > result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:Board_bestMove",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Board, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Board_bestMove" "', argument " "1"" of type '" "Board *""'"); 
+  }
+  arg1 = reinterpret_cast< Board * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Board_bestMove" "', argument " "2"" of type '" "std::map< int,std::vector< Move,std::allocator< Move > >,std::less< int >,std::allocator< std::pair< int const,std::vector< Move,std::allocator< Move > > > > >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Board_bestMove" "', argument " "2"" of type '" "std::map< int,std::vector< Move,std::allocator< Move > >,std::less< int >,std::allocator< std::pair< int const,std::vector< Move,std::allocator< Move > > > > >""'");
+    } else {
+      std::map< int,std::vector< Move,std::allocator< Move > >,std::less< int >,std::allocator< std::pair< int const,std::vector< Move,std::allocator< Move > > > > > * temp = reinterpret_cast< std::map< int,std::vector< Move,std::allocator< Move > >,std::less< int >,std::allocator< std::pair< int const,std::vector< Move,std::allocator< Move > > > > > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(obj2, &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "Board_bestMove" "', argument " "3"" of type '" "std::string""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "Board_bestMove" "', argument " "4"" of type '" "int""'");
+  } 
+  arg4 = static_cast< int >(val4);
+  ecode5 = SWIG_AsVal_float(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Board_bestMove" "', argument " "5"" of type '" "float""'");
+  } 
+  arg5 = static_cast< float >(val5);
+  ecode6 = SWIG_AsVal_float(obj5, &val6);
+  if (!SWIG_IsOK(ecode6)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "Board_bestMove" "', argument " "6"" of type '" "float""'");
+  } 
+  arg6 = static_cast< float >(val6);
+  result = (arg1)->bestMove(arg2,arg3,arg4,arg5,arg6);
+  resultobj = SWIG_NewPointerObj((new std::pair< float,Move >(static_cast< const std::pair< float,Move >& >(result))), SWIGTYPE_p_std__pairT_float_Move_t, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -10934,6 +11182,267 @@ SWIGINTERN PyObject *map_int_moves_swigregister(PyObject *SWIGUNUSEDPARM(self), 
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_new_pair_float_moves__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  std::pair< float,Move > *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_pair_float_moves")) SWIG_fail;
+  result = (std::pair< float,Move > *)new std::pair< float,Move >();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__pairT_float_Move_t, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_pair_float_moves__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  float arg1 ;
+  SwigValueWrapper< Move > arg2 ;
+  float val1 ;
+  int ecode1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  std::pair< float,Move > *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_pair_float_moves",&obj0,&obj1)) SWIG_fail;
+  ecode1 = SWIG_AsVal_float(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_pair_float_moves" "', argument " "1"" of type '" "float""'");
+  } 
+  arg1 = static_cast< float >(val1);
+  {
+    res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_Move,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_pair_float_moves" "', argument " "2"" of type '" "Move""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_pair_float_moves" "', argument " "2"" of type '" "Move""'");
+    } else {
+      Move * temp = reinterpret_cast< Move * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  result = (std::pair< float,Move > *)new std::pair< float,Move >(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__pairT_float_Move_t, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_pair_float_moves__SWIG_2(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  std::pair< float,Move > *arg1 = 0 ;
+  int res1 = SWIG_OLDOBJ ;
+  PyObject * obj0 = 0 ;
+  std::pair< float,Move > *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_pair_float_moves",&obj0)) SWIG_fail;
+  {
+    std::pair< float,Move > *ptr = (std::pair< float,Move > *)0;
+    res1 = swig::asptr(obj0, &ptr);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_pair_float_moves" "', argument " "1"" of type '" "std::pair< float,Move > const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_pair_float_moves" "', argument " "1"" of type '" "std::pair< float,Move > const &""'"); 
+    }
+    arg1 = ptr;
+  }
+  result = (std::pair< float,Move > *)new std::pair< float,Move >((std::pair< float,Move > const &)*arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_std__pairT_float_Move_t, SWIG_POINTER_NEW |  0 );
+  if (SWIG_IsNewObj(res1)) delete arg1;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res1)) delete arg1;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_pair_float_moves(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  Py_ssize_t ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = args ? PyObject_Length(args) : 0;
+  for (ii = 0; (ii < 2) && (ii < argc); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 0) {
+    return _wrap_new_pair_float_moves__SWIG_0(self, args);
+  }
+  if (argc == 1) {
+    int _v;
+    int res = swig::asptr(argv[0], (std::pair< float,Move >**)(0));
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_new_pair_float_moves__SWIG_2(self, args);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    {
+      int res = SWIG_AsVal_float(argv[0], NULL);
+      _v = SWIG_CheckState(res);
+    }
+    if (_v) {
+      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_Move, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_new_pair_float_moves__SWIG_1(self, args);
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_pair_float_moves'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    std::pair< float,Move >::pair()\n"
+    "    std::pair< float,Move >::pair(float,Move)\n"
+    "    std::pair< float,Move >::pair(std::pair< float,Move > const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_pair_float_moves_first_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  std::pair< float,Move > *arg1 = (std::pair< float,Move > *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:pair_float_moves_first_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_std__pairT_float_Move_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pair_float_moves_first_set" "', argument " "1"" of type '" "std::pair< float,Move > *""'"); 
+  }
+  arg1 = reinterpret_cast< std::pair< float,Move > * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "pair_float_moves_first_set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  if (arg1) (arg1)->first = arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_pair_float_moves_first_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  std::pair< float,Move > *arg1 = (std::pair< float,Move > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:pair_float_moves_first_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_std__pairT_float_Move_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pair_float_moves_first_get" "', argument " "1"" of type '" "std::pair< float,Move > *""'"); 
+  }
+  arg1 = reinterpret_cast< std::pair< float,Move > * >(argp1);
+  result = (float) ((arg1)->first);
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_pair_float_moves_second_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  std::pair< float,Move > *arg1 = (std::pair< float,Move > *) 0 ;
+  Move *arg2 = (Move *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:pair_float_moves_second_set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_std__pairT_float_Move_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pair_float_moves_second_set" "', argument " "1"" of type '" "std::pair< float,Move > *""'"); 
+  }
+  arg1 = reinterpret_cast< std::pair< float,Move > * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_Move, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "pair_float_moves_second_set" "', argument " "2"" of type '" "Move *""'"); 
+  }
+  arg2 = reinterpret_cast< Move * >(argp2);
+  if (arg1) (arg1)->second = *arg2;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_pair_float_moves_second_get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  std::pair< float,Move > *arg1 = (std::pair< float,Move > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  Move *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:pair_float_moves_second_get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_std__pairT_float_Move_t, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "pair_float_moves_second_get" "', argument " "1"" of type '" "std::pair< float,Move > *""'"); 
+  }
+  arg1 = reinterpret_cast< std::pair< float,Move > * >(argp1);
+  result = (Move *)& ((arg1)->second);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Move, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_pair_float_moves(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  std::pair< float,Move > *arg1 = (std::pair< float,Move > *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_pair_float_moves",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_std__pairT_float_Move_t, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_pair_float_moves" "', argument " "1"" of type '" "std::pair< float,Move > *""'"); 
+  }
+  arg1 = reinterpret_cast< std::pair< float,Move > * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *pair_float_moves_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_std__pairT_float_Move_t, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"delete_SwigPyIterator", _wrap_delete_SwigPyIterator, METH_VARARGS, NULL},
@@ -10991,6 +11500,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Board_getPiece", _wrap_Board_getPiece, METH_VARARGS, NULL},
 	 { (char *)"Board_nbPieces", _wrap_Board_nbPieces, METH_VARARGS, NULL},
 	 { (char *)"Board_playableMoves", _wrap_Board_playableMoves, METH_VARARGS, NULL},
+	 { (char *)"Board_evaluate", _wrap_Board_evaluate, METH_VARARGS, NULL},
+	 { (char *)"Board_bestMove", _wrap_Board_bestMove, METH_VARARGS, NULL},
 	 { (char *)"delete_Board", _wrap_delete_Board, METH_VARARGS, NULL},
 	 { (char *)"Board_swigregister", Board_swigregister, METH_VARARGS, NULL},
 	 { (char *)"delete_King", _wrap_delete_King, METH_VARARGS, NULL},
@@ -11066,6 +11577,13 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"map_int_moves_upper_bound", _wrap_map_int_moves_upper_bound, METH_VARARGS, NULL},
 	 { (char *)"delete_map_int_moves", _wrap_delete_map_int_moves, METH_VARARGS, NULL},
 	 { (char *)"map_int_moves_swigregister", map_int_moves_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_pair_float_moves", _wrap_new_pair_float_moves, METH_VARARGS, NULL},
+	 { (char *)"pair_float_moves_first_set", _wrap_pair_float_moves_first_set, METH_VARARGS, NULL},
+	 { (char *)"pair_float_moves_first_get", _wrap_pair_float_moves_first_get, METH_VARARGS, NULL},
+	 { (char *)"pair_float_moves_second_set", _wrap_pair_float_moves_second_set, METH_VARARGS, NULL},
+	 { (char *)"pair_float_moves_second_get", _wrap_pair_float_moves_second_get, METH_VARARGS, NULL},
+	 { (char *)"delete_pair_float_moves", _wrap_delete_pair_float_moves, METH_VARARGS, NULL},
+	 { (char *)"pair_float_moves_swigregister", pair_float_moves_swigregister, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -11086,15 +11604,18 @@ static swig_type_info _swigt__p_Piece = {"_p_Piece", "Piece *", 0, 0, (void*)0, 
 static swig_type_info _swigt__p_allocator_type = {"_p_allocator_type", "allocator_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_difference_type = {"_p_difference_type", "difference_type *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_first_type = {"_p_first_type", "first_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_key_type = {"_p_key_type", "key_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_mapped_type = {"_p_mapped_type", "mapped_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_PyObject = {"_p_p_PyObject", "PyObject **", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_second_type = {"_p_second_type", "second_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_size_type = {"_p_size_type", "size_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__allocatorT_Move_t = {"_p_std__allocatorT_Move_t", "std::vector< Move >::allocator_type *|std::allocator< Move > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t = {"_p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t", "std::allocator< std::pair< int const,std::vector< Move,std::allocator< Move > > > > *|std::map< int,std::vector< Move > >::allocator_type *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__invalid_argument = {"_p_std__invalid_argument", "std::invalid_argument *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__lessT_int_t = {"_p_std__lessT_int_t", "std::less< int > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t = {"_p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t", "std::map< int,std::vector< Move > > *|std::map< int,std::vector< Move,std::allocator< Move > >,std::less< int >,std::allocator< std::pair< int const,std::vector< Move,std::allocator< Move > > > > > *|std::map< int,std::vector< Move,std::allocator< Move > > > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_std__pairT_float_Move_t = {"_p_std__pairT_float_Move_t", "std::pair< float,Move > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_Move_std__allocatorT_Move_t_t = {"_p_std__vectorT_Move_std__allocatorT_Move_t_t", "std::vector< Move,std::allocator< Move > > *|std::vector< Move > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_std__vectorT_int_std__allocatorT_int_t_t = {"_p_std__vectorT_int_std__allocatorT_int_t_t", "std::vector< int,std::allocator< int > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_swig__SwigPyIterator = {"_p_swig__SwigPyIterator", "swig::SwigPyIterator *", 0, 0, (void*)0, 0};
@@ -11110,15 +11631,18 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_allocator_type,
   &_swigt__p_char,
   &_swigt__p_difference_type,
+  &_swigt__p_first_type,
   &_swigt__p_key_type,
   &_swigt__p_mapped_type,
   &_swigt__p_p_PyObject,
+  &_swigt__p_second_type,
   &_swigt__p_size_type,
   &_swigt__p_std__allocatorT_Move_t,
   &_swigt__p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t,
   &_swigt__p_std__invalid_argument,
   &_swigt__p_std__lessT_int_t,
   &_swigt__p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t,
+  &_swigt__p_std__pairT_float_Move_t,
   &_swigt__p_std__vectorT_Move_std__allocatorT_Move_t_t,
   &_swigt__p_std__vectorT_int_std__allocatorT_int_t_t,
   &_swigt__p_swig__SwigPyIterator,
@@ -11134,15 +11658,18 @@ static swig_cast_info _swigc__p_Piece[] = {  {&_swigt__p_King, _p_KingTo_p_Piece
 static swig_cast_info _swigc__p_allocator_type[] = {  {&_swigt__p_allocator_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_difference_type[] = {  {&_swigt__p_difference_type, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_first_type[] = {  {&_swigt__p_first_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_key_type[] = {  {&_swigt__p_key_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_mapped_type[] = {  {&_swigt__p_mapped_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_PyObject[] = {  {&_swigt__p_p_PyObject, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_second_type[] = {  {&_swigt__p_second_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_size_type[] = {  {&_swigt__p_size_type, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__allocatorT_Move_t[] = {  {&_swigt__p_std__allocatorT_Move_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t[] = {  {&_swigt__p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__invalid_argument[] = {  {&_swigt__p_std__invalid_argument, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__lessT_int_t[] = {  {&_swigt__p_std__lessT_int_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t[] = {  {&_swigt__p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_std__pairT_float_Move_t[] = {  {&_swigt__p_std__pairT_float_Move_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_Move_std__allocatorT_Move_t_t[] = {  {&_swigt__p_std__vectorT_Move_std__allocatorT_Move_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_std__vectorT_int_std__allocatorT_int_t_t[] = {  {&_swigt__p_std__vectorT_int_std__allocatorT_int_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_swig__SwigPyIterator[] = {  {&_swigt__p_swig__SwigPyIterator, 0, 0, 0},{0, 0, 0, 0}};
@@ -11158,15 +11685,18 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_allocator_type,
   _swigc__p_char,
   _swigc__p_difference_type,
+  _swigc__p_first_type,
   _swigc__p_key_type,
   _swigc__p_mapped_type,
   _swigc__p_p_PyObject,
+  _swigc__p_second_type,
   _swigc__p_size_type,
   _swigc__p_std__allocatorT_Move_t,
   _swigc__p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t,
   _swigc__p_std__invalid_argument,
   _swigc__p_std__lessT_int_t,
   _swigc__p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t,
+  _swigc__p_std__pairT_float_Move_t,
   _swigc__p_std__vectorT_Move_std__allocatorT_Move_t_t,
   _swigc__p_std__vectorT_int_std__allocatorT_int_t_t,
   _swigc__p_swig__SwigPyIterator,
