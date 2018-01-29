@@ -530,6 +530,7 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
 
 Move Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight,float nbMoveWeight,float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta){
     Board virtualBoard(*this);
+    float alphabis=alpha;
     map<int,vector<Move> > currentPlayableMove;
     pair<float,Move> bestMove(-std::numeric_limits<float>::max(),Move());
     currentPlayableMove=virtualBoard.playableMoves(color);
@@ -540,18 +541,16 @@ Move Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float ki
         for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
             for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
                 virtualBoard.playMove((*it1).second[playedMove]);
-                if(virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight, nbMoveWeight, advancementForwardWeight, centralWeight,false,alpha,beta)>bestMove.first){
-                    bestMove.first=virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight,nbMoveWeight, advancementForwardWeight,  centralWeight,false,alpha,beta);
+                if(virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight, nbMoveWeight, advancementForwardWeight, centralWeight,false,alphabis,beta)>bestMove.first){
+                    bestMove.first=virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight,nbMoveWeight, advancementForwardWeight,  centralWeight,false,alphabis,beta);
                     bestMove.second=((*it1).second[playedMove]);
                 }
+                alphabis = max(alphabis,bestMove.first);
+                virtualBoard=*this;
             }
         }
         return bestMove.second;
     }
-
-
-
-
 }
 float Board::valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta){
     // A Factoriser en écrivant avec moins min/ Fuite mémoire ? (clear les virtuals board)
@@ -692,62 +691,3 @@ bool Board::endGame(){
 
 
 
-int main(){
-
-    Board* Plateau = new Board;
-    vector<Move> PossibleMoves;
-
-//    Plateau->getPiece(21)->select(*Plateau,PossibleMoves);
-
-    for(std::vector<Move>::iterator it=PossibleMoves.begin(); it!=PossibleMoves.end();it++){
-        cout << (*it).getStart() << " " << (*it).getArrival()<< endl;
-    }
-    cout << Plateau->evaluateBetter(2,2,2,2,2,"white") << endl;
-    //cout << "Valeur best Move : " << b.evaluateBetter(10,10,2,1,1,"white") << endl;
-
-
-
-
-
-
-
-// Move sans bouffe, pas d'apparition du King : Problème dans PlayMove ? Select ? PlayableMove ?
-
-//// Test final :
-//    for(int i=30; i<49; i++){
-//        Plateau->killAt(i);
-//    }
-
-//    for(int i=1; i<20; i++){
-//        Plateau->killAt(i);
-//    }
-
-
-////    Plateau->turnToKing(0);
-//    Plateau->getPiece(0)->setPosition(15);
-//    Plateau->getPiece(1)->setPosition(20);
-//    Plateau->getPiece(0)->killingMove(*Plateau,PossibleMoves);
-////    Plateau->getPiece(0)->killFreeMove(*Plateau, PossibleMoves);
-////    Plateau->playMove(PossibleMoves[0]);
-////    cout << Plateau->getPiece(0)->isKing() << true << endl;
-////    cout << Plateau->getPiece(1)->isKing() << true << endl;
-
-//////    PossibleMoves.clear();
-//////    Plateau->getPiece(1)->killingMove(*Plateau,PossibleMoves);
-//    for(int i=0; i<PossibleMoves.size();i++){
-//        cout << PossibleMoves[i].getStart()<< " " << PossibleMoves[i].getArrival() << endl;
-//    }
-
-//    map<int,vector<Move> > P = (*Plateau).playableMoves("black");
-//        for(int j=0; j<P[15].size(); j++){
-//            cout << (P[15][j]).getStart() << " " << (P[15][j]).getArrival()<< endl;
-//        }
-
-
-
-
-
-
-
-    return 0;
-}
