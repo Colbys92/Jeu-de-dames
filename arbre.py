@@ -316,8 +316,8 @@ class Board(_object):
     def bestMove(self, arg2, arg3, arg4, arg5, arg6):
         return _arbre.Board_bestMove(self, arg2, arg3, arg4, arg5, arg6)
 
-    def bestMoveAlphaBeta(self, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9=True, arg10=-1000000, arg11=1000000):
-        return _arbre.Board_bestMoveAlphaBeta(self, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+    def bestMoveAlphaBeta(self, arg2, arg3, arg4, arg5, arg6, arg7, arg8):
+        return _arbre.Board_bestMoveAlphaBeta(self, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
 
     def endGame(self):
         return _arbre.Board_endGame(self)
@@ -359,6 +359,10 @@ class King(Piece):
 King_swigregister = _arbre.King_swigregister
 King_swigregister(King)
 
+
+def Test(A):
+    return _arbre.Test(A)
+Test = _arbre.Test
 class VectorMove(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, VectorMove, name, value)

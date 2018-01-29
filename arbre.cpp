@@ -496,12 +496,10 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
 
     for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++) {
         if((*it)->Color() == color){
-            cout<<"positif"<<endl;
             value+=((*it)->isMan())?manWeight:kingWeight;
 
         }
         else {
-            cout<<"negatif"<<endl;
             value-=((*it)->isMan())?manWeight:kingWeight;
 
         }
@@ -619,76 +617,112 @@ float Board::valueAlphaBeta(string color, int depth, float manWeight, float king
     }
 }
 
-
-std::pair<float,Move> Board::bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight){
-    // fuite de mémoire ? clear les boards ?
-    // Renvoie le cout et le meilleur move, attention utiliser avec profondeur pair car sinon le move n'existe pas
-    Board virtualBoard(*this);
-    Board virtualBoardOpposite;
-    map<int,vector<Move> > currentPlayableMove;
-    map<int,vector<Move> > currentPlayableMoveOpposite;
-    float valueCurrentMove=0;
-    float valueCurrentMoveOpposite=5000; // A changer.
-    pair<float, Move> bestMoveOpposite;
-    pair<float, Move> bestMove;
-    bestMove.first = valueCurrentMove;
-    bestMoveOpposite.first=valueCurrentMoveOpposite;
-    string colorOpposite;
-    if(color == "white"){
-        colorOpposite="black";
-    }
+std::pair<float,Move> Board::bestMove(string color, int depth) {
+    if(depth==0)
+        return std::pair<float,Move>(evaluate(manWeight,kingWeight,color),Move());
     else {
-        colorOpposite="white";
-    }
-
-    if(profondeur>0){
-        for(map<int,vector<Move> >::iterator it1=playableMove.begin(); it1!=playableMove.end(); it1++){
-            for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
-
-                virtualBoard.playMove((*it1).second[playedMove]);
-                currentPlayableMove = virtualBoard.playableMoves(colorOpposite);
-                virtualBoardOpposite=virtualBoard;
-
-
-                for(map<int,vector<Move> >::iterator it=currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
-                    for(int j=0; j<(*it).second.size();j++){
-                        virtualBoardOpposite.playMove((*it).second[j]);
-                        currentPlayableMoveOpposite = virtualBoardOpposite.playableMoves(color);
-
-                        valueCurrentMoveOpposite = virtualBoardOpposite.bestMove(currentPlayableMoveOpposite,color,profondeur-2,manWeight,kingWeight).first;
-
-                        if(bestMoveOpposite.first<valueCurrentMoveOpposite){
-                            bestMoveOpposite.first=valueCurrentMoveOpposite;
-                            bestMoveOpposite.second=(*it).second[j];
-                        }
-                        //Nettoyage des valeurs :
-                        currentPlayableMoveOpposite.clear();
-                        virtualBoardOpposite=virtualBoard;
-                    }
+        Board virtualBoard(*this);
+        map<int,vector<Move> > movesToPlay=playableMoves(color);
+        map<int,vector<Move> >::iterator it=movesToPlay.begin();
+        Move currentMove=(*it)[0];
+        virtualBoard.playMove(currentMove);
+        std::pair<float,Move> bestCoup(virtualBoard.bestMove(currentMove,color,depth-1).first,currentMove);
+        if(depth%2==0) {
+            for(;it!=movesToPlay.end();it++) {
+                for(int i=0;i<(*it).size();i++) {
+                    virtualBoard=*this;
+                    virtualBoard.playMove((*it)[i]);
+                    std::pair<float,Move> currentCoup=virtualBoard.bestMove(color,depth-1);
+                    if(currentCoup.first>bestCoup.first)
+                        bestCoup=currentCoup;
                 }
-
-
-                if(bestMoveOpposite.first>bestMove.first){
-                    bestMove.second= (*it1).second[playedMove];
-                    bestMove.first=bestMoveOpposite.first;
-                }
-
-
-
-                // Nettoyage des valeurs :
-                currentPlayableMove.clear();
-                virtualBoard = *this;
             }
+            return bestCoup;
         }
-
-        return bestMove;
-    }
-    else {
-        bestMove.first=evaluate(manWeight,kingWeight,color);
-        return bestMove;
-
+        else {
+            for(;it!=movesToPlay.end();it++) {
+                for(int i=0;i<(*it).size();i++) {
+                    virtualBoard=*this;
+                    virtualBoard.playMove((*it)[i]);
+                    std::pair<float,Move> currentCoup=virtualBoard.bestMove(color,depth-1);
+                    if(currentCoup.first<bestCoup.first)
+                        bestCoup=currentCoup;
+                }
+            }
+            return bestCoup;
+        }
     }
 }
+
+//std::pair<float,Move> Board::bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight){
+//    // fuite de mémoire ? clear les boards ?
+//    // Renvoie le cout et le meilleur move, attention utiliser avec profondeur pair car sinon le move n'existe pas
+//    Board virtualBoard(*this);
+//    Board virtualBoardOpposite;
+//    map<int,vector<Move> > currentPlayableMove;
+//    map<int,vector<Move> > currentPlayableMoveOpposite;
+//    float valueCurrentMove=0;
+//    float valueCurrentMoveOpposite=5000; // A changer.
+//    pair<float, Move> bestMoveOpposite;
+//    pair<float, Move> bestMove;
+//    bestMove.first = valueCurrentMove;
+//    bestMoveOpposite.first=valueCurrentMoveOpposite;
+//    string colorOpposite;
+//    if(color == "white"){
+//        colorOpposite="black";
+//    }
+//    else {
+//        colorOpposite="white";
+//    }
+
+//    if(profondeur>0){
+//        for(map<int,vector<Move> >::iterator it1=playableMove.begin(); it1!=playableMove.end(); it1++){
+//            for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
+
+//                virtualBoard.playMove((*it1).second[playedMove]);
+//                currentPlayableMove = virtualBoard.playableMoves(colorOpposite);
+//                virtualBoardOpposite=virtualBoard;
+
+
+//                for(map<int,vector<Move> >::iterator it=currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
+//                    for(int j=0; j<(*it).second.size();j++){
+//                        virtualBoardOpposite.playMove((*it).second[j]);
+//                        currentPlayableMoveOpposite = virtualBoardOpposite.playableMoves(color);
+
+//                        valueCurrentMoveOpposite = virtualBoardOpposite.bestMove(currentPlayableMoveOpposite,color,profondeur-2,manWeight,kingWeight).first;
+
+//                        if(bestMoveOpposite.first<valueCurrentMoveOpposite){
+//                            bestMoveOpposite.first=valueCurrentMoveOpposite;
+//                            bestMoveOpposite.second=(*it).second[j];
+//                        }
+//                        //Nettoyage des valeurs :
+//                        currentPlayableMoveOpposite.clear();
+//                        virtualBoardOpposite=virtualBoard;
+//                    }
+//                }
+
+
+//                if(bestMoveOpposite.first>bestMove.first){
+//                    bestMove.second= (*it1).second[playedMove];
+//                    bestMove.first=bestMoveOpposite.first;
+//                }
+
+
+
+//                // Nettoyage des valeurs :
+//                currentPlayableMove.clear();
+//                virtualBoard = *this;
+//            }
+//        }
+
+//        return bestMove;
+//    }
+//    else {
+//        bestMove.first=evaluate(manWeight,kingWeight,color);
+//        return bestMove;
+
+//    }
+//}
 
 bool Board::endGame(){
     bool white=false;
