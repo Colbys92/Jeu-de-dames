@@ -119,6 +119,11 @@ public :
         pieces.push_back(new Man(36,"black"));
 
     }
+    ~Board() {
+        for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++)
+            delete *it;
+        pieces.clear();
+    }
     Board(const Board& b);
     void operator=(const Board& b);
     int index_man_here(int pos){
@@ -158,7 +163,7 @@ public :
     float evaluate(float manWeight, float kingWeight, string color);
     float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color);
     pair<float, Move> bestMove(map<int, vector<Move> > playableMove,string color, int profondeur, float manWeight, float kingWeight);
-    Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode=true, float alpha=-numeric_limits<float>::max(), float beta=numeric_limits<float>::max());
+    Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode=true, float alpha=-100000000, float beta=numeric_limits<float>::max());
     float valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta);
     map<int,vector<Move> > playableMoves(string color);
     bool endGame();

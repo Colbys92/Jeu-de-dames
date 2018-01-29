@@ -304,6 +304,8 @@ void Man::killingMove(Board& B, vector<Move>& possibleMoves){
 
 
 void Board::operator=(const Board& b){
+    for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++)
+        delete *it;
     pieces.clear();
     for(vector<Piece*>::const_iterator it=b.pieces.begin();it!=b.pieces.end();it++) {
         pieces.push_back((*it)->clone());
@@ -502,26 +504,30 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
 
         }
     }
+
     map<int,vector<Move> > playableMove = playableMoves(color);
-    for(map<int,vector<Move> >::iterator it=playableMove.begin(); it!=playableMove.end();it++){
-        for(int i=0; i<(*it).second.size(); i++){
-            value+=nbMoveWeight;
+
+    if (playableMove.size()!=0){
+        for(map<int,vector<Move> >::iterator it=playableMove.begin(); it!=playableMove.end();it++){
+            for(int i=0; i<(*it).second.size(); i++){
+                value+=nbMoveWeight;
+            }
         }
     }
     for(int i=20;i<30;i++){
         if(isPieceHere(i)){
-            value=(getPiece(index_man_here(i))->Color()==color)?value+centralWeight:value-centralWeight;
+            value+=(getPiece(index_man_here(i))->Color()==color)?centralWeight:(-1.)*centralWeight;
         }
     }
     for(int i=0;i<50;i++){
-        float advanceWhite =(50-(i-i%5));
+        float advanceWhite =((49-i)-(49-i)%5);
         float advanceBlack = (i-i%5);
         if(isPieceHere(i)){
             if(color=="white"){
-                value=(getPiece(index_man_here(i))->Color()=="white")?value+advanceWhite*advancementForwardWeight:value-advanceBlack*advancementForwardWeight;
+                value=(getPiece(index_man_here(i))->Color()=="white")?(value+advanceWhite*advancementForwardWeight):(value-advanceBlack*advancementForwardWeight);
             }
             else{
-                value=(getPiece(index_man_here(i))->Color()=="black")?value+advanceBlack*advancementForwardWeight:value-advanceWhite*advancementForwardWeight;
+                value=(getPiece(index_man_here(i))->Color()=="black")?(value+advanceBlack*advancementForwardWeight):(value-advanceWhite*advancementForwardWeight);
             }
         }
     }
@@ -532,15 +538,19 @@ Move Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float ki
     Board virtualBoard(*this);
     float alphabis=alpha;
     map<int,vector<Move> > currentPlayableMove;
-    pair<float,Move> bestMove(-std::numeric_limits<float>::max(),Move());
+
     currentPlayableMove=virtualBoard.playableMoves(color);
+
     if(currentPlayableMove.size()==0){
         cerr << "Partie terminée, a prendre en compte" << endl;
     }
     else {
+        pair<float,Move> bestMove(-std::numeric_limits<float>::max(),(*currentPlayableMove.begin()).second[0]);
         for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
             for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
+
                 virtualBoard.playMove((*it1).second[playedMove]);
+
                 if(virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight, nbMoveWeight, advancementForwardWeight, centralWeight,false,alphabis,beta)>bestMove.first){
                     bestMove.first=virtualBoard.valueAlphaBeta(color,depth-1,manWeight,kingWeight,nbMoveWeight, advancementForwardWeight,  centralWeight,false,alphabis,beta);
                     bestMove.second=((*it1).second[playedMove]);
@@ -551,6 +561,7 @@ Move Board::bestMoveAlphaBeta(string color, int depth, float manWeight, float ki
         }
         return bestMove.second;
     }
+
 }
 float Board::valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta){
     // A Factoriser en écrivant avec moins min/ Fuite mémoire ? (clear les virtuals board)
@@ -560,8 +571,10 @@ float Board::valueAlphaBeta(string color, int depth, float manWeight, float king
     float val=0.;
     float currentVal=0.;
 
-    if(depth==0){
-        val=evaluateBetter(manWeight,kingWeight,nbMoveWeight, advancementForwardWeight,  centralWeight,color);
+    if(depth==0 || virtualBoard.playableMoves(color).size()==0){
+
+        val=virtualBoard.evaluateBetter(manWeight,kingWeight,nbMoveWeight,advancementForwardWeight,centralWeight,color);
+
         return val;
     }
     else {
@@ -570,11 +583,14 @@ float Board::valueAlphaBeta(string color, int depth, float manWeight, float king
             currentPlayableMove=virtualBoard.playableMoves(color);
             for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
                 for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
+
                     virtualBoard.playMove((*it1).second[playedMove]);
                     currentVal = virtualBoard.valueAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,nbMoveWeight, advancementForwardWeight,  centralWeight,true,alpha,beta);
                     val = std::min<float>(val,currentVal);
                     if (val<= alpha){
+
                         return val;
+
                     }
                     beta = min<float>(beta,val);
                     virtualBoard = *this;
@@ -586,10 +602,12 @@ float Board::valueAlphaBeta(string color, int depth, float manWeight, float king
             currentPlayableMove=virtualBoard.playableMoves(color);
             for(map<int,vector<Move> >::iterator it1=currentPlayableMove.begin(); it1!=currentPlayableMove.end(); it1++){
                 for(int playedMove=0; playedMove<(*it1).second.size(); playedMove++){
+
                     virtualBoard.playMove((*it1).second[playedMove]);
                     currentVal = virtualBoard.valueAlphaBeta((color=="white")?"black":"white",depth-1,manWeight,kingWeight,nbMoveWeight, advancementForwardWeight,  centralWeight,false,alpha,beta);
                     val = std::max<float>(val,currentVal);
                     if (val>= beta){
+
                         return val;
                     }
                     alpha = max<float>(alpha,val);
@@ -597,6 +615,7 @@ float Board::valueAlphaBeta(string color, int depth, float manWeight, float king
                 }
             }
         }
+
     return val;
     }
 }
