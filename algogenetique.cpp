@@ -154,6 +154,7 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
                 trouve=true;
             }
         }
+        compteur = compteur%10;
         individus.push_back(chosenOnes.at(compteur));
         mutation(individus[k]);
     }

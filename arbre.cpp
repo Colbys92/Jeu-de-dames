@@ -508,7 +508,7 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
             value+=((*it)->Color()==color)?centralWeight:(-1.)*centralWeight;
         }
 
-        float advanceWhite =((49-(i)->getPosition())-(49-i)%5);
+        float advanceWhite =((49-(i))-(49-i)%5);
         float advanceBlack = (i-i%5);
         if(color=="white"){
             value=((*it)->Color()=="white")?(value+advanceWhite*advancementForwardWeight):(value-advanceBlack*advancementForwardWeight);
@@ -529,6 +529,67 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
     }
     return value;
 }
+
+std::pair<float,Move> Board::bestMoveAlphaBeta2(string color,int depth, float manWeight, float kingWeight,float nbMoveWeight, float centralWeight, float advanceWeight, bool maxNode,float alpha, float beta ){
+    Board virtualBoard(*this);
+    pair<float,Move> move(0,Move());
+    pair<float,Move> currentMove;
+    map<int,vector<Move> > currentPlayableMove;
+
+    if(maxNode){
+        currentPlayableMove = virtualBoard.playableMoves(color);
+    }
+    else{
+        currentPlayableMove = virtualBoard.playableMoves((color=="white")?"black":"white");
+    }
+
+    if(currentPlayableMove.size()==0 || depth==0){
+        move.first = virtualBoard.evaluateBetter(manWeight,kingWeight,nbMoveWeight,advanceWeight,centralWeight,color);
+        return move;
+    }
+    else{
+        if(!maxNode){
+            move.first=+10000000;
+            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
+                for(int i=0; i<(*it).second.size(); i++){
+                    currentMove.second=(*it).second[i];
+                    virtualBoard.playMove(currentMove.second);
+                    currentMove.first = virtualBoard.bestMoveAlphaBeta2(color,depth-1,manWeight,kingWeight, nbMoveWeight, centralWeight, advanceWeight,true,alpha,beta).first;
+                    if(currentMove.first<move.first){
+                        move.first=currentMove.first;
+                        move.second=currentMove.second;
+                    }
+                    if(move.first<=alpha){
+                        return move;
+                    }
+                    beta = std::min<float>(beta,move.first);
+                    virtualBoard= *this;
+                }
+            }
+        }
+        else {
+            move.first=-10000000;
+            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
+                for(int i=0; i<(*it).second.size(); i++){
+                    currentMove.second=(*it).second[i];
+                    virtualBoard.playMove(currentMove.second);
+                    currentMove.first = virtualBoard.bestMoveAlphaBeta2(color,depth-1,manWeight,kingWeight, nbMoveWeight,centralWeight, advanceWeight,false,alpha,beta).first;
+                    if(currentMove.first>move.first){
+                        move.first=currentMove.first;
+                        move.second=currentMove.second;
+                    }
+                    if(move.first>=beta){
+                        return move;
+                    }
+                    alpha=std::max<float>(alpha,move.first);
+                    virtualBoard= *this;
+                }
+            }
+        }
+        return move;
+    }
+}
+
 
 std::pair<float,Move> Board::bestMoveAlphaBeta(string color,int depth, float manWeight, float kingWeight, bool maxNode,float alpha, float beta ){
     Board virtualBoard(*this);

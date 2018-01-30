@@ -164,6 +164,7 @@ public :
     float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color);
     pair<float, Move> bestMove(string color, float manWeight, float kingWeight, bool maxNode, int depth);
     std::pair<float,Move> bestMoveAlphaBeta(string color,int depth, float manWeight, float kingWeight, bool maxNode,float alpha, float beta );
+    std::pair<float,Move> bestMoveAlphaBeta2(string color,int depth, float manWeight, float kingWeight,float nbMoveWeight, float centralWeight, float advanceWeight, bool maxNode,float alpha, float beta );
     //Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode=true, float alpha=-100000000, float beta=numeric_limits<float>::max());
     float valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta);
     map<int,vector<Move> > playableMoves(string color);
