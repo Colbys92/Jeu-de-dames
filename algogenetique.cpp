@@ -24,11 +24,15 @@ public:
     float getKingWeight() {return kingWeight;}
     void setKingWeight(float newKingWeight){kingWeight=newKingWeight;}
     int getScore() {return score;}
-    int getDepth(){return depth;}
     int addToScore(int toAdd);
+    int getDepth(){return depth;}
+    void setDepth(int newDepth){depth=newDepth;}
     float getNbMoveWeight(){return nbMoveWeight;}
+    void setNbMoveWeight(float newNbMoveWeight){nbMoveWeight=newNbMoveWeight;}
     float getAdvancementForwardWeight(){return advancementForwardWeight;}
+    void setAdvancementForwardWeight(float newAdvancementForwardWeight){advancementForwardWeight=newAdvancementForwardWeight;}
     float getCentralWeight(){return centralWeight;}
+    void setCentralWeight(float newCentralWeight){centralWeight=newCentralWeight;}
     operator<(Individu i2);
 };
 
@@ -82,7 +86,33 @@ int match(Individu i1, Individu i2){
     }
     return 0;
 }
-
+int match2(Individu i1, Individu i2){
+    // Renvoie 1 si le premier individu gagne; 2 si le second; 0 si personne ne gagne.
+    Board B;
+    Move m1,m2;
+    float val;
+    int compteur =0;
+    while(compteur<200){
+        if(B.playableMoves("white").size()>0){
+            m1=B.bestMoveAlphaBeta2("white",i1.getDepth(),i1.getManWeight(),i1.getKingWeight(),i1.getNbMoveWeight(),i1.getCentralWeight(),i1.getAdvancementForwardWeight(),true,-10000,10000).second;
+            B.playMove(m1);
+        }
+        else{
+            cout << "2 gagne" << endl;
+            return 2;
+        }
+        if(B.playableMoves("black").size()>0){
+            m2=B.bestMoveAlphaBeta2("black", i2.getDepth(), i2.getManWeight(),i2.getKingWeight(),i1.getNbMoveWeight(),i1.getCentralWeight(),i1.getAdvancementForwardWeight(),true, -10000,10000).second;
+            B.playMove(m2);
+        }
+        else{
+            cout << "1 gagne" << endl;
+            return 1;
+        }
+        compteur+=1;
+    }
+    return 0;
+}
 
 void resultsMatch(Individu& i1, Individu& i2){
     // Si un individu gagne, on ajoute 2 points à son score, si il y a match nul on ajoute 1, 0 si il perd.
@@ -128,7 +158,29 @@ void mutation(Individu individus){
     }
 }
 
-void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
+void mutation2(Individu individu, int proba){
+    if((std::rand()%100)<proba){
+        individu.setKingWeight(std::rand()%1000/1000.);
+    }
+    if(std::rand()%100<proba){
+        individu.setManWeight(std::rand()%1000/1000.);
+    }
+   /* if((std::rand()%100)<proba){
+        individu.setDepth(std::rand()%4);
+    }*/
+    if(std::rand()%100<proba){
+        individu.setNbMoveWeight(std::rand()%1000/1000.);
+    }
+    if((std::rand()%100)<proba){
+        individu.setAdvancementForwardWeight(std::rand()%1000/1000.);
+    }
+    if(std::rand()%100<proba){
+        individu.setCentralWeight(std::rand()%1000/1000.);
+    }
+}
+
+void heredity2(vector<Individu>& individus, vector<Individu> chosenOnes){
+    int size =individus.size();
     individus.clear();
     float maxScore;
     float dices;
@@ -141,7 +193,40 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
         proba.push_back(chosenOnes[i].getScore()+proba[i-1]);
     }
 
-    for(int k=0; k<100; k++){
+    for(int k=0; k<size; k++){
+        dices = float(std::rand()%1000)/1000.;
+        int compteur = 0;
+        bool trouve = false;
+        if(proba[0]>=dices){
+            trouve=true;
+        }
+        while(compteur<chosenOnes.size() && !trouve){
+            compteur+=1;
+            if(proba[compteur]>=dices){
+                trouve=true;
+            }
+        }
+        compteur = compteur%10;
+        individus.push_back(chosenOnes.at(compteur));
+        mutation2(individus[k],1);
+    }
+}
+
+void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
+    int size =individus.size();
+    individus.clear();
+    float maxScore;
+    float dices;
+    for(int i=0; i<chosenOnes.size();i++){
+        maxScore += float(chosenOnes[i].getScore());
+        }
+    vector<float> proba;
+    proba.push_back(chosenOnes[0].getScore()/maxScore);
+    for(int i=1;i<chosenOnes.size();i++){
+        proba.push_back(chosenOnes[i].getScore()+proba[i-1]);
+    }
+
+    for(int k=0; k<size; k++){
         dices = float(std::rand()%1000)/1000.;
         int compteur = 0;
         bool trouve = false;
