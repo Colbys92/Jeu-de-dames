@@ -7777,25 +7777,29 @@ SWIGINTERN PyObject *_wrap_Board_bestMove(PyObject *SWIGUNUSEDPARM(self), PyObje
   PyObject *resultobj = 0;
   Board *arg1 = (Board *) 0 ;
   std::string arg2 ;
-  int arg3 ;
+  float arg3 ;
   float arg4 ;
-  float arg5 ;
+  bool arg5 ;
+  int arg6 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int val3 ;
+  float val3 ;
   int ecode3 = 0 ;
   float val4 ;
   int ecode4 = 0 ;
-  float val5 ;
+  bool val5 ;
   int ecode5 = 0 ;
+  int val6 ;
+  int ecode6 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
   PyObject * obj3 = 0 ;
   PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
   std::pair< float,Move > result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOOOO:Board_bestMove",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:Board_bestMove",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Board, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Board_bestMove" "', argument " "1"" of type '" "Board *""'"); 
@@ -7810,22 +7814,27 @@ SWIGINTERN PyObject *_wrap_Board_bestMove(PyObject *SWIGUNUSEDPARM(self), PyObje
     arg2 = *ptr;
     if (SWIG_IsNewObj(res)) delete ptr;
   }
-  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  ecode3 = SWIG_AsVal_float(obj2, &val3);
   if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Board_bestMove" "', argument " "3"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "Board_bestMove" "', argument " "3"" of type '" "float""'");
   } 
-  arg3 = static_cast< int >(val3);
+  arg3 = static_cast< float >(val3);
   ecode4 = SWIG_AsVal_float(obj3, &val4);
   if (!SWIG_IsOK(ecode4)) {
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "Board_bestMove" "', argument " "4"" of type '" "float""'");
   } 
   arg4 = static_cast< float >(val4);
-  ecode5 = SWIG_AsVal_float(obj4, &val5);
+  ecode5 = SWIG_AsVal_bool(obj4, &val5);
   if (!SWIG_IsOK(ecode5)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Board_bestMove" "', argument " "5"" of type '" "float""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Board_bestMove" "', argument " "5"" of type '" "bool""'");
   } 
-  arg5 = static_cast< float >(val5);
-  result = (arg1)->bestMove(arg2,arg3,arg4,arg5);
+  arg5 = static_cast< bool >(val5);
+  ecode6 = SWIG_AsVal_int(obj5, &val6);
+  if (!SWIG_IsOK(ecode6)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "Board_bestMove" "', argument " "6"" of type '" "int""'");
+  } 
+  arg6 = static_cast< int >(val6);
+  result = (arg1)->bestMove(arg2,arg3,arg4,arg5,arg6);
   resultobj = SWIG_NewPointerObj((new std::pair< float,Move >(static_cast< const std::pair< float,Move >& >(result))), SWIGTYPE_p_std__pairT_float_Move_t, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:

@@ -193,9 +193,9 @@ if __name__ == "__main__":
                             plateau.display(window)
                             pygame.display.flip()
 
-                            # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,5)),False)
+                            plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,4)),False)
 
-                            plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],2,1,1)),False)
+                            # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],2,1,1)),False)
 
                             moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1

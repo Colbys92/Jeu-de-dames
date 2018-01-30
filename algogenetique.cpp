@@ -62,31 +62,20 @@ int match(Individu i1, Individu i2){
     float val;
     int compteur =0;
     while(compteur<200){
-
-
         if(B.playableMoves("white").size()>0){
-//            m1=B.bestMove("white",i1.getManWeight(),i1.getKingWeight(),true,i1.getDepth()).second;
-            //m1=B.bestMoveAlphaBeta("white",i1.getDepth(),i1.getManWeight(),i1.getKingWeight(),i1.getNbMoveWeight(),i1.getAdvancementForwardWeight(),i1.getCentralWeight());
-//            if(val!=B.bestMoveAlphaBeta("white",i1.getDepth(),i1.getManWeight(),i1.getKingWeight(),true,-10000,10000).first){
-//                cerr << "WTF BORDEL DE COUILLES" << endl;
-//            }
             m1=B.bestMoveAlphaBeta("white",i1.getDepth(),i1.getManWeight(),i1.getKingWeight(),true,-10000,10000).second;
             B.playMove(m1);
-            //cout << m1.getStart() << " " << m1.getArrival() << endl;
-
         }
         else{
-
+            cout << "2 gagne" << endl;
             return 2;
         }
         if(B.playableMoves("black").size()>0){
-
-            //m2=B.bestMoveAlphaBeta("black", i2.getDepth(),i2.getManWeight(),i2.getKingWeight(),i2.getNbMoveWeight(),i2.getAdvancementForwardWeight(),i2.getCentralWeight());
             m2=B.bestMoveAlphaBeta("black", i2.getDepth(), i2.getManWeight(),i2.getKingWeight(),true, -10000,10000).second;
             B.playMove(m2);
-            //cout << m2.getStart() << " " << m2.getArrival() << "kill" << m2.getKills() << endl;
         }
         else{
+            cout << "1 gagne" << endl;
             return 1;
         }
         compteur+=1;
@@ -120,10 +109,10 @@ int evaluation(vector<Individu>& individus){
 }
 
 //=============================Selection des meilleurs individus ===============================
-vector<Individu> selection(vector<Individu>& individus){
+vector<Individu> selection(vector<Individu>& individus, int numberChosen){
     std::sort(individus.begin(), individus.end());
     vector<Individu> chosenOnes;
-    for(int i=individus.size()-1; i>individus.size()-11; i--){
+    for(int i=individus.size()-1; i>individus.size()-numberChosen-1; i--){
         chosenOnes.push_back(individus[i]);
     }
     return chosenOnes;
@@ -131,11 +120,11 @@ vector<Individu> selection(vector<Individu>& individus){
 
 //=============================Hérédité et mutations ==========================
 void mutation(Individu individus){
-    if(std::rand()%100<1){
-        individus.setKingWeight(rand()%1000/1000.);
+    if((std::rand()%100)<1){
+        individus.setKingWeight(std::rand()%1000/1000.);
     }
     if(std::rand()%100<1){
-        individus.setManWeight(rand()%1000/1000.);
+        individus.setManWeight(std::rand()%1000/1000.);
     }
 }
 
@@ -153,7 +142,7 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
     }
 
     for(int k=0; k<100; k++){
-        dices = float(std::rand()%1000)/1000;
+        dices = float(std::rand()%1000)/1000.;
         int compteur = 0;
         bool trouve = false;
         if(proba[0]>=dices){
@@ -165,7 +154,7 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
                 trouve=true;
             }
         }
-        individus.push_back(chosenOnes[compteur]);
+        individus.push_back(chosenOnes.at(compteur));
         mutation(individus[k]);
     }
 }
@@ -180,13 +169,15 @@ int main(){
 
     vector<Individu> individus;
     vector<Individu> chosenOnes;
-    for(int i=0; i<50; i++){
+    for(int i=0; i<5; i++){
         individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,2,0,0,0));
     }
+
     for(int i=0; i<1;i++){
         cout << i << endl;
         evaluation(individus);
-        chosenOnes = selection(individus);
+        chosenOnes = selection(individus,2);
+
         heredity(individus,chosenOnes);
         chosenOnes.clear();
     }
