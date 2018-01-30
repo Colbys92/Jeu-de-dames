@@ -503,6 +503,20 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
         else {
             value-=((*it)->isMan())?manWeight:kingWeight;
         }
+        int i = (*it)->getPosition();
+        if(i%5<4 && i%5>0){
+            value+=((*it)->Color()==color)?centralWeight:(-1.)*centralWeight;
+        }
+
+        float advanceWhite =((49-(i)->getPosition())-(49-i)%5);
+        float advanceBlack = (i-i%5);
+        if(color=="white"){
+            value=((*it)->Color()=="white")?(value+advanceWhite*advancementForwardWeight):(value-advanceBlack*advancementForwardWeight);
+        }
+        else{
+            value=((*it)->Color()=="black")?(value+advanceBlack*advancementForwardWeight):(value-advanceWhite*advancementForwardWeight);
+        }
+
     }
 
     map<int,vector<Move> > playableMove = playableMoves(color);
@@ -510,25 +524,6 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
         for(map<int,vector<Move> >::iterator it=playableMove.begin(); it!=playableMove.end();it++){
             for(int i=0; i<(*it).second.size(); i++){
                 value+=nbMoveWeight;
-            }
-        }
-    }
-
-    for(int i=20;i<30;i++){
-        if(isPieceHere(i)){
-            value+=(getPiece(index_man_here(i))->Color()==color)?centralWeight:(-1.)*centralWeight;
-        }
-    }
-
-    for(int i=0;i<50;i++){
-        float advanceWhite =((49-i)-(49-i)%5);
-        float advanceBlack = (i-i%5);
-        if(isPieceHere(i)){
-            if(color=="white"){
-                value=(getPiece(index_man_here(i))->Color()=="white")?(value+advanceWhite*advancementForwardWeight):(value-advanceBlack*advancementForwardWeight);
-            }
-            else{
-                value=(getPiece(index_man_here(i))->Color()=="black")?(value+advanceBlack*advancementForwardWeight):(value-advanceWhite*advancementForwardWeight);
             }
         }
     }
