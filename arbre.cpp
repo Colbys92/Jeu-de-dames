@@ -503,27 +503,31 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
         else {
             value-=((*it)->isMan())?manWeight:kingWeight;
         }
-        int i = (*it)->getPosition();
-        if(i%5<4 && i%5>0){
-            value+=((*it)->Color()==color)?centralWeight:(-1.)*centralWeight;
-        }
 
-        float advanceWhite =((49-(i))-(49-i)%5);
-        float advanceBlack = (i-i%5);
-        if(color=="white"){
-            value=((*it)->Color()=="white")?(value+advanceWhite*advancementForwardWeight):(value-advanceBlack*advancementForwardWeight);
-        }
-        else{
-            value=((*it)->Color()=="black")?(value+advanceBlack*advancementForwardWeight):(value-advanceWhite*advancementForwardWeight);
+        if((*it)->isMan()){
+            int i = (*it)->getPosition();
+            if(i%5<4 && i%5>0){
+                value+=((*it)->Color()==color)?centralWeight:(-1.)*centralWeight;
+            }
+
+            float advanceWhite =((49-(i))-(49-i)%5);
+            float advanceBlack = (i-i%5);
+            if(color=="white"){
+                value=((*it)->Color()=="white")?(value+advanceWhite*advancementForwardWeight):(value-advanceBlack*advancementForwardWeight);
+            }
+            else{
+                value=((*it)->Color()=="black")?(value+advanceBlack*advancementForwardWeight):(value-advanceWhite*advancementForwardWeight);
+            }
         }
 
     }
 
-    map<int,vector<Move> > playableMove = playableMoves(color);
+    map<int,vector<Move> > playableMove = playableMoves((color=="white")?"black":"white");
+    // Problème avec cette partie de la fonction de coût ? comment gérer ?
     if (playableMove.size()!=0){
         for(map<int,vector<Move> >::iterator it=playableMove.begin(); it!=playableMove.end();it++){
             for(int i=0; i<(*it).second.size(); i++){
-                value+=nbMoveWeight;
+                value-=nbMoveWeight;
             }
         }
     }
@@ -749,7 +753,8 @@ std::pair<float,Move> Board::bestMove(string color, float manWeight, float kingW
 }
 
 
-bool Board::endGame(){
+int Board::endGame(){
+    // 0 égalité, 1 les blancs gagnent, 2 les noirs gagnent :: Attention, ne prends pas en compte le bloquage d'un individu qui peut plus jouer.
     bool white=false;
     bool black=false;
     int i=0;
@@ -763,6 +768,18 @@ bool Board::endGame(){
     i+=1;
     }
     return(!white || !black);
+}
+
+
+int Board::timeMatch(){
+    // Renvoie 0 en début de partie, 1 en milieu de partie, 2 en fin de partie :
+    if(pieces.size()<10){
+        return 2;
+    }
+    else if(pieces.size()<25){
+        return 1;
+    }
+    return 0;
 }
 
 

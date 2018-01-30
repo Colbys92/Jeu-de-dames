@@ -9,6 +9,9 @@
 #include <map>
 #include <limits>
 using namespace std;
+
+//===========================Les classes d'individus==================
+
 class Individu{
     int score;
     float manWeight;
@@ -19,6 +22,8 @@ class Individu{
     float centralWeight;
 public:
     Individu(int score1, float manWeight1, float kingWeight1, int depth1, float nbMoveWeight1, float advancementForwardWeight1, float centralWeight1);
+    Individu(const Individu& i):score(i.score),manWeight(i.manWeight),kingWeight(i.kingWeight),depth(i.depth),nbMoveWeight(i.nbMoveWeight),advancementForwardWeight(i.advancementForwardWeight),centralWeight(i.centralWeight){}
+    operator=(const Individu& i);
     float getManWeight(){return manWeight;}
     void setManWeight(float newManWeight){manWeight=newManWeight;}
     float getKingWeight() {return kingWeight;}
@@ -34,12 +39,34 @@ public:
     float getCentralWeight(){return centralWeight;}
     void setCentralWeight(float newCentralWeight){centralWeight=newCentralWeight;}
     operator<(Individu i2);
+    Move bestMoveAlphaBeta(Board& B,string color,float alpha, float beta );
 };
+
+
+class PowerfulIndividu{
+    Individu Ibegin;
+    Individu Imiddle;
+    Individu Iend;
+public:
+    PowerfulIndividu(Individu i1,Individu i2, Individu i3):Ibegin(i1),Imiddle(i2),Iend(i3){}
+    Individu getIbegin(){ return Ibegin; }
+    Individu getImiddle(){ return Imiddle; }
+    Individu getIend(){ return Iend; }
+};
+
 
 Individu::operator<(Individu i2){
     return(score<i2.getScore());
 }
-
+Individu::operator=(const Individu& i){
+    score = i.score;
+    depth=i.depth;
+    manWeight=i.manWeight;
+    kingWeight=i.kingWeight;
+    nbMoveWeight=i.nbMoveWeight;
+    centralWeight=i.centralWeight;
+    advancementForwardWeight=i.advancementForwardWeight;
+}
 Individu::addToScore(int toAdd){
     score+=toAdd;
 }
@@ -54,7 +81,10 @@ Individu::Individu(int score1, float manWeight1, float kingWeight1, int depth1, 
     centralWeight=centralWeight1;
 }
 
-
+Move Individu::bestMoveAlphaBeta(Board & B,string color,float alpha, float beta ){
+    return B.bestMoveAlphaBeta2(color,getDepth(),getManWeight(),getKingWeight(),getNbMoveWeight(),getCentralWeight(),getAdvancementForwardWeight(),true,-10000,10000).second;
+}
+//==================================Tools===========================================
 
 
 //==================================Méthode pour l'évaluation========================
@@ -92,7 +122,7 @@ int match2(Individu i1, Individu i2){
     Move m1,m2;
     float val;
     int compteur =0;
-    while(compteur<200){
+    while(compteur<100){
         if(B.playableMoves("white").size()>0){
             m1=B.bestMoveAlphaBeta2("white",i1.getDepth(),i1.getManWeight(),i1.getKingWeight(),i1.getNbMoveWeight(),i1.getCentralWeight(),i1.getAdvancementForwardWeight(),true,-10000,10000).second;
             B.playMove(m1);
@@ -116,7 +146,8 @@ int match2(Individu i1, Individu i2){
 
 void resultsMatch(Individu& i1, Individu& i2){
     // Si un individu gagne, on ajoute 2 points à son score, si il y a match nul on ajoute 1, 0 si il perd.
-    int results = match(i1,i2);
+    //int results = match1(i1,i2);
+    int results = match2(i1,i2);
     if (results==1){
         i1.addToScore(2);
     }
@@ -150,10 +181,10 @@ vector<Individu> selection(vector<Individu>& individus, int numberChosen){
 
 //=============================Hérédité et mutations ==========================
 void mutation(Individu individus){
-    if((std::rand()%100)<1){
+    if((std::rand()%100)<10){
         individus.setKingWeight(std::rand()%1000/1000.);
     }
-    if(std::rand()%100<1){
+    if(std::rand()%100<10){
         individus.setManWeight(std::rand()%1000/1000.);
     }
 }
@@ -189,9 +220,10 @@ void heredity2(vector<Individu>& individus, vector<Individu> chosenOnes){
         }
     vector<float> proba;
     proba.push_back(chosenOnes[0].getScore()/maxScore);
-    for(int i=1;i<chosenOnes.size();i++){
-        proba.push_back(chosenOnes[i].getScore()+proba[i-1]);
+    for(int i=1;i<chosenOnes.size()-1;i++){
+        proba.push_back(chosenOnes[i].getScore()/maxScore+proba[i-1]);
     }
+    proba.push_back(1.);
 
     for(int k=0; k<size; k++){
         dices = float(std::rand()%1000)/1000.;
@@ -200,7 +232,7 @@ void heredity2(vector<Individu>& individus, vector<Individu> chosenOnes){
         if(proba[0]>=dices){
             trouve=true;
         }
-        while(compteur<chosenOnes.size() && !trouve){
+        while(compteur<chosenOnes.size()-1 && !trouve){
             compteur+=1;
             if(proba[compteur]>=dices){
                 trouve=true;
@@ -208,7 +240,7 @@ void heredity2(vector<Individu>& individus, vector<Individu> chosenOnes){
         }
         compteur = compteur%10;
         individus.push_back(chosenOnes.at(compteur));
-        mutation2(individus[k],1);
+        mutation2(individus[k],10);
     }
 }
 
@@ -222,9 +254,10 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
         }
     vector<float> proba;
     proba.push_back(chosenOnes[0].getScore()/maxScore);
-    for(int i=1;i<chosenOnes.size();i++){
-        proba.push_back(chosenOnes[i].getScore()+proba[i-1]);
+    for(int i=1;i<chosenOnes.size()-1;i++){
+        proba.push_back(chosenOnes[i].getScore()/maxScore+proba[i-1]);
     }
+    proba.push_back(1.);
 
     for(int k=0; k<size; k++){
         dices = float(std::rand()%1000)/1000.;
@@ -233,13 +266,12 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
         if(proba[0]>=dices){
             trouve=true;
         }
-        while(compteur<chosenOnes.size() && !trouve){
+        while(compteur<chosenOnes.size()-1 && !trouve){
             compteur+=1;
             if(proba[compteur]>=dices){
                 trouve=true;
             }
         }
-        compteur = compteur%10;
         individus.push_back(chosenOnes.at(compteur));
         mutation(individus[k]);
     }
@@ -251,20 +283,22 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
 
 //===============================Execution===============================
 int main(){
-
+//    Individu i1(0,2,5,4,0,0,0);
+//    Individu i2(0,5,20,4,1,1,1);
+//    cout << match2(i2,i1) << endl;
 
     vector<Individu> individus;
     vector<Individu> chosenOnes;
-    for(int i=0; i<5; i++){
-        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,2,0,0,0));
+    for(int i=0; i<20; i++){
+        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,4,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
     }
 
-    for(int i=0; i<1;i++){
+    for(int i=0; i<4;i++){
         cout << i << endl;
         evaluation(individus);
-        chosenOnes = selection(individus,2);
+        chosenOnes = selection(individus,10);
 
-        heredity(individus,chosenOnes);
+        heredity2(individus,chosenOnes);
         chosenOnes.clear();
     }
     std::sort(individus.begin(),individus.end());

@@ -79,6 +79,7 @@ public:
 	float evaluate(float , float , std::string );
     std::pair<float, Move> bestMove(std::string , float , float, bool , int);
     std::pair<float, Move> bestMoveAlphaBeta(std::string, int , float, float, bool , float , float );
+    std::pair<float,Move> bestMoveAlphaBeta2(std::string color,int depth, float manWeight, float kingWeight,float nbMoveWeight, float centralWeight, float advanceWeight, bool maxNode,float alpha, float beta );
     bool endGame();
 };
 

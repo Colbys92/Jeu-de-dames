@@ -7,6 +7,7 @@
 from arbre import *
 from pygame.locals import *
 import pygame
+import time
 
 
 def drawKing(king,window):
@@ -137,9 +138,12 @@ if __name__ == "__main__":
     textureBlackKingSelected=pygame.image.load("textures/reine_noir_lueur.png").convert_alpha()
     textureBlueSquare=pygame.image.load("textures/case_sombre_bleue.png")
     textureGreenSquare=pygame.image.load("textures/case_sombre_verte.png")
+    #bots=[Individu(0,1,5,2,0,0,0),Individu(0,2,5,2,0.5,0.5,0.5),Individu(0,2,5,4,0.5,0.5,0.5)] #différents niveaux de difficulté
     
     #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA
-    gameType=1
+    gameType=2
+    #choix de la difficulté (mode JvIA)
+    difficulty=1
     
     fond=pygame.image.load("textures/surface_jeu_V1.png").convert()
     window.blit(fond,(0,0))
@@ -154,14 +158,19 @@ if __name__ == "__main__":
     chosenPiece=-1
     if(gameType==2):
         while(not plateau.endGame()):
-            pygame.time.delay(20)
+            pygame.event.pump()
             window.blit(fond,(0,0))
             plateau.display(window)
-            pygame.display.flip()
+            time.sleep(0.1)
+            pygame.display.update()
             # print(compteur)
             print("avant")
             # move=plateau.bestMoveAlphaBeta(couleurs[compteur],2,5.,20.,1.,1.,1.)
-            move = Test(plateau.bestMove(couleurs[compteur],1,5,True,4)
+            if compteur==1 :
+                move = Test(plateau.bestMoveAlphaBeta2(couleurs[compteur],4,1,1,1,1,1,True,-1000,1000))
+            else :
+                move = Test(plateau.bestMoveAlphaBeta2(couleurs[compteur],4,5,20,1,1,1,True,-1000,1000))
+            
             print(move.getStart(),move.getArrival())
             print("apres")
             plateau.playMove(move,False)
@@ -193,10 +202,10 @@ if __name__ == "__main__":
                             window.blit(fond,(0,0))
                             plateau.display(window)
                             pygame.display.flip()
-
-                            plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,4)),False)
+                            # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,4)),False)
 
                             # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],2,1,1)),False)
+                            plateau.playMove(Test(plateau.bestMoveAlphaBeta2(couleurs[1-compteur],4,5,10,1,1,1,True,-10000,10000)),False)
 
                             moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
