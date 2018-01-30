@@ -1,4 +1,5 @@
 #include "algogenetique.h"
+#include <iostream>
 
 //===========================Les classes d'individus==================
 
@@ -19,7 +20,9 @@ Individu::operator=(const Individu& i){
 Individu::addToScore(int toAdd){
     score+=toAdd;
 }
-
+PowerfulIndividu::addToScore(int toAdd){
+    score+=toAdd;
+}
 Individu::Individu(int score1, float manWeight1, float kingWeight1, int depth1, float nbMoveWeight1, float advancementForwardWeight1, float centralWeight1){
     score = score1;
     manWeight=manWeight1;
@@ -31,26 +34,41 @@ Individu::Individu(int score1, float manWeight1, float kingWeight1, int depth1, 
 }
 
 Move Individu::bestMoveAlphaBeta(Board & B,string color,float alpha, float beta ){
-    return B.bestMoveAlphaBeta2(color,getDepth(),getManWeight(),getKingWeight(),getNbMoveWeight(),getCentralWeight(),getAdvancementForwardWeight(),true,-10000,10000).second;
+    return B.bestMoveAlphaBeta2(color,getDepth(),getManWeight(),getKingWeight(),getNbMoveWeight(),getCentralWeight(),getAdvancementForwardWeight(),true,alpha,beta).second;
 }
 
 Move PowerfulIndividu::bestMoveAlphaBeta(Board &B, string color, float alpha, float beta){
     if(B.timeMatch()==2){
-        Iend.bestMoveAlphaBeta(B,color,alpha,beta);
+        return Iend.bestMoveAlphaBeta(B,color,alpha,beta);
     }
     else if(B.timeMatch()==1){
-        Imiddle.bestMoveAlphaBeta(B,color,alpha,beta);
+        return Imiddle.bestMoveAlphaBeta(B,color,alpha,beta);
     }
     else{
-        Ibegin.bestMoveAlphaBeta(B,color,alpha,beta);
+        return Ibegin.bestMoveAlphaBeta(B,color,alpha,beta);
     }
 }
 //==================================Tools===========================================
+ostream& operator<<(ostream& os,Individu & i){
+    os << 'Man Weight : ' << i.getManWeight() << 'King Weight : ' << i.getKingWeight() <<  'Advance Forward Weight' << i.getAdvancementForwardWeight() \
+       << "Depth : " << i.getDepth() << " Central Weight : " << i.getCentralWeight() << " Number of possible move weight " << i.getNbMoveWeight();
+    return os;
+}
+
+ostream& operator<<(ostream& os, PowerfulIndividu & i){
+    os << "Ibegin : " << endl;
+    os << i.getIbegin() << endl;
+    os << "Imiddle : " << endl;
+    os << i.getImiddle() << endl;
+    os << "Iend : " << endl;
+    os << i.getIend() << endl;
+    return os;
+}
 
 vector<Individu> genIndividu(int size){
     vector<Individu> individus;
     for(int i=0; i<size; i++){
-        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,4,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
+        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,2,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
     }
     return individus;
 }
@@ -122,7 +140,30 @@ int match2(Individu i1, Individu i2){
     }
     return 0;
 }
-
+int matchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
+    // Renvoie 1 si le premier individu gagne; 2 si le second; 0 si personne ne gagne.
+    Board B;
+    Move m1,m2;
+    int compteur =0;
+    while(compteur<100){
+        if(B.playableMoves("white").size()>0){
+            m1=i1.bestMoveAlphaBeta(B,"white",-1000,1000);
+            B.playMove(m1);
+        }
+        else{
+            return 2;
+        }
+        if(B.playableMoves("black").size()>0){
+            m2=i2.bestMoveAlphaBeta(B,"black",-1000,1000);
+            B.playMove(m2);
+        }
+        else{
+            return 1;
+        }
+        compteur+=1;
+    }
+    return 0;
+}
 void resultsMatch(Individu& i1, Individu& i2){
     // Si un individu gagne, on ajoute 2 points à son score, si il y a match nul on ajoute 1, 0 si il perd.
     //int results = match1(i1,i2);
@@ -136,6 +177,30 @@ void resultsMatch(Individu& i1, Individu& i2){
     if(results==0){
         i1.addToScore(1);
         i2.addToScore(1);
+    }
+}
+void resultsMatchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
+    // Si un individu gagne, on ajoute 2 points à son score, si il y a match nul on ajoute 1, 0 si il perd.
+    //int results = match1(i1,i2);
+    int results = matchPowerfulIndividu(i1,i2);
+    if (results==1){
+        i1.addToScore(2);
+    }
+    if(results==2){
+        i2.addToScore(2);
+    }
+    if(results==0){
+        i1.addToScore(1);
+        i2.addToScore(1);
+    }
+}
+int evaluationPowerfulIndividu(vector<PowerfulIndividu>& individus){
+    for(int i=0; i< individus.size(); i++){
+        for(int j=i+1; j<individus.size(); j++){
+            cout<<"("<<i<<","<<j<<")"<<endl;
+            resultsMatchPowerfulIndividu(individus[i],individus[j]);
+            resultsMatchPowerfulIndividu(individus[j],individus[i]);
+        }
     }
 }
 int evaluation(vector<Individu>& individus){
@@ -303,9 +368,9 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
 
 //===============================Execution===============================
 int main(){
-    Individu i1(0,2,5,4,0,0,0);
-    Individu i2(0,5,20,4,0.1,1,1);
-    cout << match2(i1,i2) << endl;
+//    Individu i1(0,2,5,4,0,0,0);
+//    Individu i2(0,5,20,4,0.1,1,1);
+//    cout << match2(i1,i2) << endl;
 //    vector<Individu> individus;
 //    vector<Individu> chosenOnes;
 //    for(int i=0; i<20; i++){
@@ -322,6 +387,19 @@ int main(){
 //    }
 //    std::sort(individus.begin(),individus.end());
 //    cout << "KingWeight : " <<individus.begin()->getKingWeight() << "ManWeight : "<<individus.begin()->getManWeight() << endl;
+
+    vector<PowerfulIndividu> individus;
+    vector<PowerfulIndividu> chosenOnes;
+    individus=genPowerfulIndividu(10);
+    for(int i=0; i<4; i++){
+        cout << i << endl;
+        evaluationPowerfulIndividu(individus);
+        chosenOnes = selectionPowerful(individus,4);
+        heredityPowerful(individus,chosenOnes);
+        chosenOnes.clear();
+    }
+    std::sort(individus.begin(),individus.end());
+    cout << individus[individus.size()-1] << endl;
 
 
 }

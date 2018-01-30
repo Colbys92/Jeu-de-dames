@@ -39,6 +39,7 @@ public:
     void setCentralWeight(float newCentralWeight){centralWeight=newCentralWeight;}
     operator<(Individu i2);
     Move bestMoveAlphaBeta(Board& B,string color,float alpha, float beta );
+
 };
 
 
@@ -52,8 +53,9 @@ public:
     Individu getIbegin(){ return Ibegin; }
     Individu getImiddle(){ return Imiddle; }
     Individu getIend(){ return Iend; }
+    int getScore() {return score;}
     Move bestMoveAlphaBeta(Board& B, string color, float alpha, float beta);
-    int getScore(){return score;}
+    int addToScore(int toAdd);
     void mutationPowerful(int proba);
     operator<(PowerfulIndividu i){return score<i.score;}
 };
