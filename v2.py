@@ -255,8 +255,7 @@ if __name__ == "__main__":
                                 listeValeurs.append(plateau.evaluate(1,5,"white"))
                                 #listeValeurs.append(plateau.evaluateBetter(1,5,0.1,0.3,0.3,"white"))
                             plateau.playMove(Test(plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1,5,True,0.1,0.1)),False)
-
-   #                           moves=plateau.playableMoves(couleurs[compteur])
+                            moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
             if(gameType==4 and len(listeValeurs)>1):
                 ax.plot(listeValeurs,'b-')
@@ -298,10 +297,6 @@ if __name__ == "__main__":
             plateau.displayMovablePieces(moves,window)
             pygame.time.delay(waitingTime)
 
-   #       
-            
-        
-        
     pygame.quit()
 
 
