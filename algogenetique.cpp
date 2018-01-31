@@ -1,6 +1,6 @@
 #include "algogenetique.h"
 #include <iostream>
-
+#include <ctime>
 //===========================Les classes d'individus==================
 
 
@@ -49,26 +49,12 @@ Move PowerfulIndividu::bestMoveAlphaBeta(Board &B, string color, float alpha, fl
     }
 }
 //==================================Tools===========================================
-ostream& operator<<(ostream& os,Individu & i){
-    os << 'Man Weight : ' << i.getManWeight() << 'King Weight : ' << i.getKingWeight() <<  'Advance Forward Weight' << i.getAdvancementForwardWeight() \
-       << "Depth : " << i.getDepth() << " Central Weight : " << i.getCentralWeight() << " Number of possible move weight " << i.getNbMoveWeight();
-    return os;
-}
 
-ostream& operator<<(ostream& os, PowerfulIndividu & i){
-    os << "Ibegin : " << endl;
-    os << i.getIbegin() << endl;
-    os << "Imiddle : " << endl;
-    os << i.getImiddle() << endl;
-    os << "Iend : " << endl;
-    os << i.getIend() << endl;
-    return os;
-}
 
 vector<Individu> genIndividu(int size){
     vector<Individu> individus;
     for(int i=0; i<size; i++){
-        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,2,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
+        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,4,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
     }
     return individus;
 }
@@ -142,10 +128,11 @@ int match2(Individu i1, Individu i2){
 }
 int matchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
     // Renvoie 1 si le premier individu gagne; 2 si le second; 0 si personne ne gagne.
+
     Board B;
     Move m1,m2;
     int compteur =0;
-    while(compteur<100){
+    while(compteur<75){
         if(B.playableMoves("white").size()>0){
             m1=i1.bestMoveAlphaBeta(B,"white",-1000,1000);
             B.playMove(m1);
@@ -162,6 +149,7 @@ int matchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
         }
         compteur+=1;
     }
+
     return 0;
 }
 void resultsMatch(Individu& i1, Individu& i2){
@@ -200,6 +188,7 @@ int evaluationPowerfulIndividu(vector<PowerfulIndividu>& individus){
             cout<<"("<<i<<","<<j<<")"<<endl;
             resultsMatchPowerfulIndividu(individus[i],individus[j]);
             resultsMatchPowerfulIndividu(individus[j],individus[i]);
+            cout << "end " << endl;
         }
     }
 }
@@ -301,7 +290,7 @@ void heredityPowerful(vector<PowerfulIndividu>& individus, vector<PowerfulIndivi
     int size =individus.size();
     individus.clear();
     float maxScore;
-    float dices;
+    float dices1,dices2,dices3;
     for(int i=0; i<chosenOnes.size();i++){
         maxScore += float(chosenOnes[i].getScore());
         }
@@ -313,19 +302,44 @@ void heredityPowerful(vector<PowerfulIndividu>& individus, vector<PowerfulIndivi
     proba.push_back(1.);
 
     for(int k=0; k<size; k++){
-        dices = float(std::rand()%1000)/1000.;
-        int compteur = 0;
-        bool trouve = false;
-        if(proba[0]>=dices){
-            trouve=true;
+        dices1 = float(std::rand()%1000)/1000.;
+        dices2 = float(std::rand()%1000)/1000.;
+        dices3 = float(std::rand()%1000)/1000.;
+
+        int compteur1 = 0;
+        int compteur2 = 0;
+        int compteur3 =0;
+        bool trouve1 = false;
+        bool trouve2 =false;
+        bool trouve3 = false;
+        if(proba[0]>=dices1){
+            trouve1=true;
         }
-        while(compteur<chosenOnes.size()-1 && !trouve){
-            compteur+=1;
-            if(proba[compteur]>=dices){
-                trouve=true;
+        if(proba[0]>=dices2){
+            trouve2=true;
+        }
+        if(proba[0]>=dices3){
+            trouve3=true;
+        }
+        while(compteur1<chosenOnes.size()-1 && !trouve1){
+            compteur1+=1;
+            if(proba[compteur1]>=dices1){
+                trouve1=true;
             }
         }
-        individus.push_back(chosenOnes.at(compteur));
+        while(compteur2<chosenOnes.size()-1 && !trouve2){
+            compteur2+=1;
+            if(proba[compteur1]>=dices2){
+                trouve2=true;
+            }
+        }
+        while(compteur3<chosenOnes.size()-1 && !trouve3){
+            compteur3+=1;
+            if(proba[compteur3]>=dices3){
+                trouve3=true;
+            }
+        }
+        individus.push_back(PowerfulIndividu(chosenOnes.at(compteur1).getIbegin(),chosenOnes.at(compteur2).getImiddle(),chosenOnes.at(compteur3).getIend()));
         individus[k].mutationPowerful(10);
     }
 }
@@ -390,16 +404,26 @@ int main(){
 
     vector<PowerfulIndividu> individus;
     vector<PowerfulIndividu> chosenOnes;
-    individus=genPowerfulIndividu(10);
-    for(int i=0; i<4; i++){
+    individus=genPowerfulIndividu(50);
+    for(int i=0; i<2; i++){
         cout << i << endl;
         evaluationPowerfulIndividu(individus);
-        chosenOnes = selectionPowerful(individus,4);
+        chosenOnes = selectionPowerful(individus,5);
         heredityPowerful(individus,chosenOnes);
         chosenOnes.clear();
     }
+    evaluationPowerfulIndividu(individus);
     std::sort(individus.begin(),individus.end());
-    cout << individus[individus.size()-1] << endl;
+    PowerfulIndividu i = individus[individus.size()-1];
+    Individu i1 = i.getIbegin();
+    Individu i2 = i.getImiddle();
+    Individu i3 = i.getIend();
+    cout << "Man Weight : " << i1.getManWeight() << "King Weight : " << i1.getKingWeight() <<  "Advance Forward Weight" << i1.getAdvancementForwardWeight() \
+           << "Depth : " << i1.getDepth() << " Central Weight : " << i1.getCentralWeight() << " Number of possible move weight " << i1.getNbMoveWeight() << endl;
+    cout << "Man Weight : " << i2.getManWeight() << "King Weight : " << i2.getKingWeight() <<  "Advance Forward Weight" << i2.getAdvancementForwardWeight() \
+           << "Depth : " << i2.getDepth() << " Central Weight : " << i2.getCentralWeight() << " Number of possible move weight " << i2.getNbMoveWeight()<< endl;
+    cout << "Man Weight : " << i3.getManWeight() << "King Weight : " << i3.getKingWeight() <<  "Advance Forward Weight" << i3.getAdvancementForwardWeight() \
+           << "Depth : " << i3.getDepth() << " Central Weight : " << i3.getCentralWeight() << " Number of possible move weight " << i3.getNbMoveWeight()<< endl;
 
 
 }

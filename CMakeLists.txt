@@ -9,3 +9,4 @@ add_executable (algoGenetique2 arbre.h arbre.cpp tools.h algogenetique.cpp algog
 
 
 
+add_definitions(-DsrcPath="${CMAKE_CURRENT_SOURCE_DIR}")
