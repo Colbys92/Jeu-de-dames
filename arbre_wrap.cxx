@@ -7777,6 +7777,36 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Board_turnToKing(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Board *arg1 = (Board *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:Board_turnToKing",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Board, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Board_turnToKing" "', argument " "1"" of type '" "Board *""'"); 
+  }
+  arg1 = reinterpret_cast< Board * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Board_turnToKing" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = static_cast< int >(val2);
+  (arg1)->turnToKing(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Board_getPiece(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Board *arg1 = (Board *) 0 ;
@@ -13678,6 +13708,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Board_isPieceHere", _wrap_Board_isPieceHere, METH_VARARGS, NULL},
 	 { (char *)"Board_playMove", _wrap_Board_playMove, METH_VARARGS, NULL},
 	 { (char *)"Board_killAt", _wrap_Board_killAt, METH_VARARGS, NULL},
+	 { (char *)"Board_turnToKing", _wrap_Board_turnToKing, METH_VARARGS, NULL},
 	 { (char *)"Board_getPiece", _wrap_Board_getPiece, METH_VARARGS, NULL},
 	 { (char *)"Board_nbPieces", _wrap_Board_nbPieces, METH_VARARGS, NULL},
 	 { (char *)"Board_playableMoves", _wrap_Board_playableMoves, METH_VARARGS, NULL},

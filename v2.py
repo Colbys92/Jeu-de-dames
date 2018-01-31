@@ -8,6 +8,10 @@ import sqlite3
 from arbre import *
 from pygame.locals import *
 import pygame
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.backends.backend_agg as agg
+import pylab
 
 
 def drawKing(king,window):
@@ -128,6 +132,7 @@ def loadMoveList(gameId):
     for row in c.execute("SELECT listeCoups FROM games WHERE id=?",(gameId,)):
         #on utilise la fonction eval... Qui peut conduire à des problèmes de sécurité.. ON s'autorise à le faire vu le cadre du projet.
         return eval(row[0])
+        #print(row)
     conn.close()
 
 
@@ -140,7 +145,8 @@ if __name__ == "__main__":
     c=conn.cursor()
     #initialisation affichage
     pygame.init()
-    window=pygame.display.set_mode((1024,768))
+    window=pygame.display.set_mode((1424,768))
+    screen=pygame.display.get_surface()
     textureBlackMan=pygame.image.load("textures/pion_noir_basique.png").convert_alpha()
     textureWhiteMan=pygame.image.load("textures/pion_blanc_basique.png").convert_alpha()
     textureBlackKing=pygame.image.load("textures/reine_noir_basique.png").convert_alpha()
@@ -152,8 +158,8 @@ if __name__ == "__main__":
     textureBlueSquare=pygame.image.load("textures/case_sombre_bleue.png")
     textureGreenSquare=pygame.image.load("textures/case_sombre_verte.png")
     
-    #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA, 2 pour IAvIA, 3 pour regarder une partie
-    gameType=3
+    #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA, 2 pour IAvIA, 3 pour regarder une partie, 4 learning Mode
+    gameType=4
     #choix du niveau de difficulté
     difficulty=1
     
@@ -162,8 +168,12 @@ if __name__ == "__main__":
     fond=pygame.image.load("textures/surface_jeu_V1.png").convert()
     window.blit(fond,(0,0))
     plateau=PyBoard()
-    # plateau.getPiece(0).setPosition(27)
     plateau.display(window)
+    
+    
+    fig = pylab.figure(figsize=[4, 4], dpi=100,)
+    ax = fig.gca()
+    
     
     #initialisation variable de calcul
     compteur=0
@@ -171,7 +181,23 @@ if __name__ == "__main__":
     couleurs=["white","black"]
     moves=plateau.playableMoves(couleurs[compteur])
     listeCoups=[]
+    listeValeurs=[]
     chosenPiece=-1
+    # for i in range(17):
+    #     plateau.killAt(plateau.getPiece(0).getPosition())
+    # for i in range(17):
+    #     plateau.killAt(plateau.getPiece(3).getPosition())
+    # plateau.turnToKing(49)
+    # plateau.getPiece(0).setPosition(8)
+    # plateau.getPiece(1).setPosition(17)
+    # plateau.getPiece(2).setPosition(18)
+    # plateau.getPiece(3).setPosition(22)
+    # plateau.getPiece(5).setPosition(35)
+    
+    window.blit(fond,(0,0))
+    plateau.display(window)
+    pygame.display.flip()
+    
     if(gameType==2):
         while(not plateau.endGame()):
             pygame.time.delay(20)
@@ -183,7 +209,7 @@ if __name__ == "__main__":
             moves=plateau.playableMoves(couleurs[compteur])
             compteur=1-compteur
         
-    elif(gameType<=1):
+    elif(gameType<=1 or gameType==4):
         while(not plateau.endGame() and not forceQuit):
             for event in pygame.event.get():
                 if(chosenPiece==-1):
@@ -196,6 +222,7 @@ if __name__ == "__main__":
                         for square in moves[pos]:
                             highlightSquare(square.getArrival(),"blue",window)
                 pygame.display.flip()
+                #plt.show()
                 if event.type == QUIT:
                     pygame.quit()
                     forceQuit=True
@@ -213,26 +240,39 @@ if __name__ == "__main__":
                     elif chosenPiece!=-1:
                         move=moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)]
                         #on enregistre le move sous la forme d'une liste d'entiers (positions par lesquelles le pion passe pour jouer)
-                        listeCoups.append([move.getPath()[i] for i in range(len(move.getPath()))])
-                        #sauvegarder cette partie a la fin puis tester de la regarder
+                        listeCoups.append(([move.getPath()[i] for i in range(len(move.getPath()))],move.getKills()))
                         plateau.playMove(move,False)
                         plateau.display(window)
                         if gameType==0:
                             compteur=1-compteur
                             moves=plateau.playableMoves(couleurs[compteur])
-                        else:
+                        elif (gameType==1 or gameType==4) and not plateau.endGame():
                             window.blit(fond,(0,0))
                             plateau.display(window)
                             pygame.display.flip()
                             # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,5)),False)
+                            if(gameType==4):
+                                listeValeurs.append(plateau.evaluate(1,5,"white"))
+                                #listeValeurs.append(plateau.evaluateBetter(1,5,0.1,0.3,0.3,"white"))
+                            plateau.playMove(Test(plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1,5,True,0.1,0.1)),False)
 
-                            plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],2,1,1)),False)
-
-                            moves=plateau.playableMoves(couleurs[compteur])
+   #                           moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
+            if(gameType==4 and len(listeValeurs)>1):
+                ax.plot(listeValeurs,'b-')
+                ax.set_xlim(0,20)
+                ax.set_ylim(-20,20)
+                canvas=agg.FigureCanvasAgg(fig)
+                canvas.draw()
+                renderer=canvas.get_renderer()
+                raw_data=renderer.tostring_rgb()
+                size=canvas.get_width_height()
+                surf=pygame.image.fromstring(raw_data,size,"RGB")
+                screen.blit(surf,(1024,184))
+                pygame.display.flip()
         stringMove=listeCoups.__str__()
         stringDate=datetime.date.today().__str__()
-        c.execute("INSERT INTO games VALUES (3,?,?)",(stringDate,stringMove))
+        c.execute("INSERT INTO games VALUES (5,?,?)",(stringDate,stringMove))
         conn.commit()
         conn.close()
     elif(gameType==3):
@@ -250,18 +290,20 @@ if __name__ == "__main__":
                         waitingTime=1000
                     else:
                         waitingTime-=250
-            plateau.playMove(Move(vectori(moveList[0])),False)
+            plateau.playMove(Move(vectori(moveList[0][0]),moveList[0][1]),False)
+            #constructeur move path + nb kills
             moveList=moveList[1:]
             window.blit(fond,(0,0))
             plateau.display(window)
             plateau.displayMovablePieces(moves,window)
             pygame.time.delay(waitingTime)
-                
-                    #debugger bail ci dessus
+
+   #       
             
         
         
     pygame.quit()
+
 
 
 

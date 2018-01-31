@@ -301,6 +301,9 @@ class Board(_object):
     def killAt(self, arg2):
         return _arbre.Board_killAt(self, arg2)
 
+    def turnToKing(self, pos):
+        return _arbre.Board_turnToKing(self, pos)
+
     def getPiece(self, arg2):
         return _arbre.Board_getPiece(self, arg2)
 

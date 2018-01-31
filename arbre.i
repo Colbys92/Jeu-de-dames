@@ -74,6 +74,7 @@ public:
 	bool isPieceHere(int);
 	void playMove(const Move&, bool);
 	void killAt(int);
+	void turnToKing(int pos);
 	Piece* getPiece(int);
 	int nbPieces() const;
 	std::map<int, std::vector<Move> > playableMoves(std::string);
