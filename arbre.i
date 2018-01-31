@@ -50,6 +50,7 @@ private:
 public:
     Move(int , int , int );
     Move(const Move&);
+    Move(std::vector<int>);
     void operator=(const Move&);
     bool operator<(const Move&) const;
     int getStart();
@@ -99,6 +100,7 @@ Move Test(std::pair<float, Move> A);
 
 namespace std {
 	%template(VectorMove) vector<Move>;
+	%template(vectori) vector<int>;
 	%template(map_int_moves) map<int,vector<Move> >;
 	%template(pair_float_moves) pair<float,Move>;
 };

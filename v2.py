@@ -3,7 +3,8 @@
 #sys.path.append('c:\\users\\matthieu\\documents\\ponts\\2A\\td log\\projet')
 #sys.path.append('D:\\ENPC\\Semestre 3\\ProjetMOPSI\\Projet\\Jeu-de-dames')
 
-
+import datetime
+import sqlite3
 from arbre import *
 from pygame.locals import *
 import pygame
@@ -119,11 +120,24 @@ def displayTest(movestest):
         for j in movestest[i]:
             print(j.getStart(),j.getArrival())
 
+def loadMoveList(gameId):
+    #renvoie la liste des coups joués dans la partie numérotée gameId de la base de données 
+    #on suppose que id est unique
+    conn=sqlite3.connect('example.db')
+    c=conn.cursor()
+    for row in c.execute("SELECT listeCoups FROM games WHERE id=?",(gameId,)):
+        #on utilise la fonction eval... Qui peut conduire à des problèmes de sécurité.. ON s'autorise à le faire vu le cadre du projet.
+        return eval(row[0])
+    conn.close()
+
 
 
 
 
 if __name__ == "__main__":
+    #on charge la base données
+    conn=sqlite3.connect('example.db')
+    c=conn.cursor()
     #initialisation affichage
     pygame.init()
     window=pygame.display.set_mode((1024,768))
@@ -138,8 +152,12 @@ if __name__ == "__main__":
     textureBlueSquare=pygame.image.load("textures/case_sombre_bleue.png")
     textureGreenSquare=pygame.image.load("textures/case_sombre_verte.png")
     
-    #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA
-    gameType=1
+    #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA, 2 pour IAvIA, 3 pour regarder une partie
+    gameType=3
+    #choix du niveau de difficulté
+    difficulty=1
+    
+    
     
     fond=pygame.image.load("textures/surface_jeu_V1.png").convert()
     window.blit(fond,(0,0))
@@ -149,8 +167,10 @@ if __name__ == "__main__":
     
     #initialisation variable de calcul
     compteur=0
+    forceQuit=False
     couleurs=["white","black"]
     moves=plateau.playableMoves(couleurs[compteur])
+    listeCoups=[]
     chosenPiece=-1
     if(gameType==2):
         while(not plateau.endGame()):
@@ -158,20 +178,28 @@ if __name__ == "__main__":
             window.blit(fond,(0,0))
             plateau.display(window)
             pygame.display.flip()
-            # print(compteur)
-            print("avant")
             move=plateau.bestMoveAlphaBeta(couleurs[compteur],2,5.,20.,1.,1.,1.)
-            print(move.getStart(),move.getArrival())
-            print("apres")
             plateau.playMove(move,False)
             moves=plateau.playableMoves(couleurs[compteur])
             compteur=1-compteur
         
-    else:
-        while(not plateau.endGame()):
+    elif(gameType<=1):
+        while(not plateau.endGame() and not forceQuit):
             for event in pygame.event.get():
+                if(chosenPiece==-1):
+                    window.blit(fond,(0,0))
+                    plateau.display(window)
+                    plateau.displayMovablePieces(moves,window)
+                    (x,y)=pygame.mouse.get_pos()
+                    pos=coordToPos(x,y)
+                    if(pos in moves.keys()):
+                        for square in moves[pos]:
+                            highlightSquare(square.getArrival(),"blue",window)
+                pygame.display.flip()
                 if event.type == QUIT:
                     pygame.quit()
+                    forceQuit=True
+                    break
                 elif event.type == MOUSEBUTTONDOWN and event.button==1:
                     pos=coordToPos(event.pos[0],event.pos[1])
                     if chosenPiece==-1 and pos in moves.keys():
@@ -183,7 +211,11 @@ if __name__ == "__main__":
                         plateau.display(window)
                         plateau.displayMovablePieces(moves,window)
                     elif chosenPiece!=-1:
-                        plateau.playMove(moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)],False)
+                        move=moves[chosenPiece][list(map(Move.getArrival,moves[chosenPiece])).index(pos)]
+                        #on enregistre le move sous la forme d'une liste d'entiers (positions par lesquelles le pion passe pour jouer)
+                        listeCoups.append([move.getPath()[i] for i in range(len(move.getPath()))])
+                        #sauvegarder cette partie a la fin puis tester de la regarder
+                        plateau.playMove(move,False)
                         plateau.display(window)
                         if gameType==0:
                             compteur=1-compteur
@@ -192,26 +224,45 @@ if __name__ == "__main__":
                             window.blit(fond,(0,0))
                             plateau.display(window)
                             pygame.display.flip()
-
                             # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,5)),False)
 
                             plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],2,1,1)),False)
 
                             moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
-                if(chosenPiece==-1):
-                    window.blit(fond,(0,0))
-                    plateau.display(window)
-                    plateau.displayMovablePieces(moves,window)
-                    (x,y)=pygame.mouse.get_pos()
-                    pos=coordToPos(x,y)
-                    if(pos in moves.keys()):
-                        for square in moves[pos]:
-                            highlightSquare(square.getArrival(),"blue",window)
-                pygame.display.flip()
+        stringMove=listeCoups.__str__()
+        stringDate=datetime.date.today().__str__()
+        c.execute("INSERT INTO games VALUES (3,?,?)",(stringDate,stringMove))
+        conn.commit()
+        conn.close()
+    elif(gameType==3):
+        gameId=3 #demander à l'utilisateur de choisir la partie qu'il veut regarder
+        moveList=loadMoveList(gameId)
+        waitingTime=1000 #temps d'attente entre 2 coups en millisecondes
+        while len(moveList)>0:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    forceQuit=True
+                    break
+                if event.type == KEYDOWN and event.key==K_1:
+                    if(waitingTime==100):
+                        waitingTime=1000
+                    else:
+                        waitingTime-=250
+            plateau.playMove(Move(vectori(moveList[0])),False)
+            moveList=moveList[1:]
+            window.blit(fond,(0,0))
+            plateau.display(window)
+            plateau.displayMovablePieces(moves,window)
+            pygame.time.delay(waitingTime)
+                
+                    #debugger bail ci dessus
+            
+        
+        
     pygame.quit()
 
-    
 
 
     

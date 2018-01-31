@@ -476,6 +476,119 @@ class VectorMove(_object):
 VectorMove_swigregister = _arbre.VectorMove_swigregister
 VectorMove_swigregister(VectorMove)
 
+class vectori(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, vectori, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, vectori, name)
+    __repr__ = _swig_repr
+
+    def iterator(self):
+        return _arbre.vectori_iterator(self)
+    def __iter__(self):
+        return self.iterator()
+
+    def __nonzero__(self):
+        return _arbre.vectori___nonzero__(self)
+
+    def __bool__(self):
+        return _arbre.vectori___bool__(self)
+
+    def __len__(self):
+        return _arbre.vectori___len__(self)
+
+    def __getslice__(self, i, j):
+        return _arbre.vectori___getslice__(self, i, j)
+
+    def __setslice__(self, *args):
+        return _arbre.vectori___setslice__(self, *args)
+
+    def __delslice__(self, i, j):
+        return _arbre.vectori___delslice__(self, i, j)
+
+    def __delitem__(self, *args):
+        return _arbre.vectori___delitem__(self, *args)
+
+    def __getitem__(self, *args):
+        return _arbre.vectori___getitem__(self, *args)
+
+    def __setitem__(self, *args):
+        return _arbre.vectori___setitem__(self, *args)
+
+    def pop(self):
+        return _arbre.vectori_pop(self)
+
+    def append(self, x):
+        return _arbre.vectori_append(self, x)
+
+    def empty(self):
+        return _arbre.vectori_empty(self)
+
+    def size(self):
+        return _arbre.vectori_size(self)
+
+    def swap(self, v):
+        return _arbre.vectori_swap(self, v)
+
+    def begin(self):
+        return _arbre.vectori_begin(self)
+
+    def end(self):
+        return _arbre.vectori_end(self)
+
+    def rbegin(self):
+        return _arbre.vectori_rbegin(self)
+
+    def rend(self):
+        return _arbre.vectori_rend(self)
+
+    def clear(self):
+        return _arbre.vectori_clear(self)
+
+    def get_allocator(self):
+        return _arbre.vectori_get_allocator(self)
+
+    def pop_back(self):
+        return _arbre.vectori_pop_back(self)
+
+    def erase(self, *args):
+        return _arbre.vectori_erase(self, *args)
+
+    def __init__(self, *args):
+        this = _arbre.new_vectori(*args)
+        try:
+            self.this.append(this)
+        except __builtin__.Exception:
+            self.this = this
+
+    def push_back(self, x):
+        return _arbre.vectori_push_back(self, x)
+
+    def front(self):
+        return _arbre.vectori_front(self)
+
+    def back(self):
+        return _arbre.vectori_back(self)
+
+    def assign(self, n, x):
+        return _arbre.vectori_assign(self, n, x)
+
+    def resize(self, *args):
+        return _arbre.vectori_resize(self, *args)
+
+    def insert(self, *args):
+        return _arbre.vectori_insert(self, *args)
+
+    def reserve(self, n):
+        return _arbre.vectori_reserve(self, n)
+
+    def capacity(self):
+        return _arbre.vectori_capacity(self)
+    __swig_destroy__ = _arbre.delete_vectori
+    __del__ = lambda self: None
+vectori_swigregister = _arbre.vectori_swigregister
+vectori_swigregister(vectori)
+
 class map_int_moves(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, map_int_moves, name, value)

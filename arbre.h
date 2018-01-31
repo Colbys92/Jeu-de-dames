@@ -89,6 +89,10 @@ public:
         path.push_back(a);
         kills = k;
     }
+    Move(vector<int> path0) {
+    	path=path0;
+    	kills=0;
+    }
     void operator=(const Move& m);
     bool operator<(const Move& m) const;
     int getStart() {return path[0];}
