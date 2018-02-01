@@ -186,21 +186,7 @@ if __name__ == "__main__":
     listeCoups=[]
     listeValeurs=[]
     chosenPiece=-1
-    # for i in range(17):
-    #     plateau.killAt(plateau.getPiece(0).getPosition())
-    # for i in range(17):
-    #     plateau.killAt(plateau.getPiece(3).getPosition())
-    # plateau.turnToKing(49)
-    # plateau.getPiece(0).setPosition(8)
-    # plateau.getPiece(1).setPosition(17)
-    # plateau.getPiece(2).setPosition(18)
-    # plateau.getPiece(3).setPosition(22)
-    # plateau.getPiece(5).setPosition(35)
-    # plateau.getPiece(3).setPosition(2)
-    # plateau.killAt(18)
-    # plateau.killAt(8)
-    
-    
+
     window.blit(fond,(0,0))
     plateau.display(window)
     pygame.display.flip()
@@ -211,12 +197,11 @@ if __name__ == "__main__":
             window.blit(fond,(0,0))
             plateau.display(window)
             time.sleep(0.1)
-            pygame.display.update()   
-            move=plateau.bestMoveAlphaBeta(couleurs[compteur],2,5.,20.,1.,1.,1.)
+            pygame.display.update()
             if compteur==1 :
                 move = Test(plateau.bestMoveAlphaBeta2(couleurs[compteur],4,1,1,0,0,0,True,-1000,1000))
             else :
-                move = Test(plateau.bestMoveAlphaBeta2(couleurs[compteur],4,5,20,1,1,1,True,-1000,1000))
+                move = Test(plateau.bestMoveAlphaBeta2(couleurs[compteur],6,1,1,0,0,0,True,-1000,1000))
             plateau.playMove(move,False)
             moves=plateau.playableMoves(couleurs[compteur])
             compteur=1-compteur
@@ -262,16 +247,12 @@ if __name__ == "__main__":
                             window.blit(fond,(0,0))
                             plateau.display(window)
                             pygame.display.flip()
-                            # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,5)),False)
                             if(gameType==4):
                                 listeValeurs.append(plateau.evaluateBetter(1,5,0.1,0.3,0.2,"white"))
-                                #listeValeurs.append(plateau.evaluateBetter(1,5,0.1,0.3,0.3,"white"))
-                            #plateau.playMove(Test(plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1,5,True,0.1,0.1)),False)
                             move=Test(plateau.bestMoveAlphaBeta2(couleurs[1-compteur],4,5,10,0,0,0,True,-10000,10000))
                             listeCoups.append(([move.getPath()[i] for i in range(len(move.getPath()))],move.getKills()))
                             plateau.playMove(move,False)
-
-    ##                           moves=plateau.playableMoves(couleurs[compteur])
+                            moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
             if(gameType==4 and len(listeValeurs)>1):
                 ax.plot(listeValeurs,'b-')
@@ -307,7 +288,7 @@ if __name__ == "__main__":
                         waitingTime=1000
                     else:
                         waitingTime-=250
-                if event.type == KEYDOWN and event.key==K_2:
+                if event.type == KEYDOWN and event.key==K_2s:
                     pause=not pause
                 if event.type == KEYDOWN and event.key==K_SPACE:
                     if(pause):
@@ -318,7 +299,6 @@ if __name__ == "__main__":
             if( not pause):
                 plateau.playMove(Move(vectori(moveList[0][0]),moveList[0][1]),False)
                 moveList=moveList[1:]
-            #constructeur move path + nb kills
             window.blit(fond,(0,0))
             plateau.display(window)
             pygame.display.flip()
