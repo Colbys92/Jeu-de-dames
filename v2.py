@@ -162,7 +162,7 @@ if __name__ == "__main__":
     #bots=[Individu(0,1,5,2,0,0,0),Individu(0,2,5,2,0.5,0.5,0.5),Individu(0,2,5,4,0.5,0.5,0.5)] #différents niveaux de difficulté
     
     #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA, 2 pour IAvIA, 3 pour regarder une partie, 4 learning Mode
-    gameType=3
+    gameType=4
     #choix du niveau de difficulté
     difficulty=1
     
@@ -196,6 +196,10 @@ if __name__ == "__main__":
     # plateau.getPiece(2).setPosition(18)
     # plateau.getPiece(3).setPosition(22)
     # plateau.getPiece(5).setPosition(35)
+    # plateau.getPiece(3).setPosition(2)
+    # plateau.killAt(18)
+    # plateau.killAt(8)
+    
     
     window.blit(fond,(0,0))
     plateau.display(window)
@@ -260,14 +264,14 @@ if __name__ == "__main__":
                             pygame.display.flip()
                             # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,5)),False)
                             if(gameType==4):
-                                listeValeurs.append(plateau.evaluate(1,5,"white"))
+                                listeValeurs.append(plateau.evaluateBetter(1,5,0.1,0.3,0.2,"white"))
                                 #listeValeurs.append(plateau.evaluateBetter(1,5,0.1,0.3,0.3,"white"))
                             #plateau.playMove(Test(plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1,5,True,0.1,0.1)),False)
                             move=Test(plateau.bestMoveAlphaBeta2(couleurs[1-compteur],4,5,10,0,0,0,True,-10000,10000))
                             listeCoups.append(([move.getPath()[i] for i in range(len(move.getPath()))],move.getKills()))
                             plateau.playMove(move,False)
 
-                            moves=plateau.playableMoves(couleurs[compteur])
+    ##                           moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
             if(gameType==4 and len(listeValeurs)>1):
                 ax.plot(listeValeurs,'b-')
@@ -305,6 +309,12 @@ if __name__ == "__main__":
                         waitingTime-=250
                 if event.type == KEYDOWN and event.key==K_2:
                     pause=not pause
+                if event.type == KEYDOWN and event.key==K_SPACE:
+                    if(pause):
+                        plateau.playMove(Move(vectori(moveList[0][0]),moveList[0][1]),False)
+                        moveList=moveList[1:]
+                    else:
+                        pause=True
             if( not pause):
                 plateau.playMove(Move(vectori(moveList[0][0]),moveList[0][1]),False)
                 moveList=moveList[1:]
@@ -314,7 +324,7 @@ if __name__ == "__main__":
             pygame.display.flip()
             pygame.time.delay(waitingTime)
 
-    pygame.quit()
+    ##   pygame.quit()
 
 
 

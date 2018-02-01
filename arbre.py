@@ -316,6 +316,9 @@ class Board(_object):
     def evaluate(self, arg2, arg3, arg4):
         return _arbre.Board_evaluate(self, arg2, arg3, arg4)
 
+    def evaluateBetter(self, manWeight, kingWeight, nbMoveWeight, advancementForwardWeight, centralWeight, color):
+        return _arbre.Board_evaluateBetter(self, manWeight, kingWeight, nbMoveWeight, advancementForwardWeight, centralWeight, color)
+
     def bestMove(self, arg2, arg3, arg4, arg5, arg6):
         return _arbre.Board_bestMove(self, arg2, arg3, arg4, arg5, arg6)
 
