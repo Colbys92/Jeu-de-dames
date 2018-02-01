@@ -89,9 +89,9 @@ public:
         path.push_back(a);
         kills = k;
     }
-    Move(vector<int> path0) {
+    Move(vector<int> path0,int nbKills) {
     	path=path0;
-    	kills=0;
+    	kills=nbKills;
     }
     void operator=(const Move& m);
     bool operator<(const Move& m) const;
@@ -166,12 +166,14 @@ public :
     }
     float evaluate(float manWeight, float kingWeight, string color);
     float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color);
-    pair<float, Move> bestMove(string color, int depth, float manWeight, float kingWeight);
+    pair<float, Move> bestMove(string color, float manWeight, float kingWeight, bool maxNode, int depth);
     std::pair<float,Move> bestMoveAlphaBeta(string color,int depth, float manWeight, float kingWeight, bool maxNode,float alpha, float beta );
+    std::pair<float,Move> bestMoveAlphaBeta2(string color,int depth, float manWeight, float kingWeight,float nbMoveWeight, float centralWeight, float advanceWeight, bool maxNode,float alpha, float beta );
     //Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode=true, float alpha=-100000000, float beta=numeric_limits<float>::max());
     float valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta);
     map<int,vector<Move> > playableMoves(string color);
-    bool endGame();
+    int endGame();
+    int timeMatch();
 };
 
 

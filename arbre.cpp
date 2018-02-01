@@ -493,6 +493,7 @@ float Board::evaluate(float manWeight, float kingWeight, string color) {
 }
 
 float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color){
+    // Tout factoriser dans l'itération sur les pièces. (ATTENTION, CENTRAL = COLONNE)
     float value=0;
 
     for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++) {
@@ -502,37 +503,97 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
         else {
             value-=((*it)->isMan())?manWeight:kingWeight;
         }
+
+        if((*it)->isMan()){
+            int i = (*it)->getPosition();
+            if(i%5<4 && i%5>0){
+                value+=((*it)->Color()==color)?centralWeight:(-1.)*centralWeight;
+            }
+
+            float advanceWhite =((49-(i))-(49-i)%5);
+            float advanceBlack = (i-i%5);
+            if(color=="white"){
+                value=((*it)->Color()=="white")?(value+advanceWhite*advancementForwardWeight):(value-advanceBlack*advancementForwardWeight);
+            }
+            else{
+                value=((*it)->Color()=="black")?(value+advanceBlack*advancementForwardWeight):(value-advanceWhite*advancementForwardWeight);
+            }
+        }
+
     }
 
-    map<int,vector<Move> > playableMove = playableMoves(color);
+    map<int,vector<Move> > playableMove = playableMoves((color=="white")?"black":"white");
+    // Problème avec cette partie de la fonction de coût ? comment gérer ?
     if (playableMove.size()!=0){
         for(map<int,vector<Move> >::iterator it=playableMove.begin(); it!=playableMove.end();it++){
             for(int i=0; i<(*it).second.size(); i++){
-                value+=nbMoveWeight;
-            }
-        }
-    }
-
-    for(int i=20;i<30;i++){
-        if(isPieceHere(i)){
-            value+=(getPiece(index_man_here(i))->Color()==color)?centralWeight:(-1.)*centralWeight;
-        }
-    }
-
-    for(int i=0;i<50;i++){
-        float advanceWhite =((49-i)-(49-i)%5);
-        float advanceBlack = (i-i%5);
-        if(isPieceHere(i)){
-            if(color=="white"){
-                value=(getPiece(index_man_here(i))->Color()=="white")?(value+advanceWhite*advancementForwardWeight):(value-advanceBlack*advancementForwardWeight);
-            }
-            else{
-                value=(getPiece(index_man_here(i))->Color()=="black")?(value+advanceBlack*advancementForwardWeight):(value-advanceWhite*advancementForwardWeight);
+                value-=nbMoveWeight;
             }
         }
     }
     return value;
 }
+
+std::pair<float,Move> Board::bestMoveAlphaBeta2(string color,int depth, float manWeight, float kingWeight,float nbMoveWeight, float centralWeight, float advanceWeight, bool maxNode,float alpha, float beta ){
+    Board virtualBoard(*this);
+    pair<float,Move> move(0,Move());
+    pair<float,Move> currentMove;
+    map<int,vector<Move> > currentPlayableMove;
+
+    if(maxNode){
+        currentPlayableMove = virtualBoard.playableMoves(color);
+    }
+    else{
+        currentPlayableMove = virtualBoard.playableMoves((color=="white")?"black":"white");
+    }
+
+    if(currentPlayableMove.size()==0 || depth==0){
+        move.first = virtualBoard.evaluateBetter(manWeight,kingWeight,nbMoveWeight,advanceWeight,centralWeight,color);
+        return move;
+    }
+    else{
+        if(!maxNode){
+            move.first=+10000000;
+            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
+                for(int i=0; i<(*it).second.size(); i++){
+                    currentMove.second=(*it).second[i];
+                    virtualBoard.playMove(currentMove.second);
+                    currentMove.first = virtualBoard.bestMoveAlphaBeta2(color,depth-1,manWeight,kingWeight, nbMoveWeight, centralWeight, advanceWeight,true,alpha,beta).first;
+                    if(currentMove.first<move.first){
+                        move.first=currentMove.first;
+                        move.second=currentMove.second;
+                    }
+                    if(move.first<=alpha){
+                        return move;
+                    }
+                    beta = std::min<float>(beta,move.first);
+                    virtualBoard= *this;
+                }
+            }
+        }
+        else {
+            move.first=-10000000;
+            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
+                for(int i=0; i<(*it).second.size(); i++){
+                    currentMove.second=(*it).second[i];
+                    virtualBoard.playMove(currentMove.second);
+                    currentMove.first = virtualBoard.bestMoveAlphaBeta2(color,depth-1,manWeight,kingWeight, nbMoveWeight,centralWeight, advanceWeight,false,alpha,beta).first;
+                    if(currentMove.first>move.first){
+                        move.first=currentMove.first;
+                        move.second=currentMove.second;
+                    }
+                    if(move.first>=beta){
+                        return move;
+                    }
+                    alpha=std::max<float>(alpha,move.first);
+                    virtualBoard= *this;
+                }
+            }
+        }
+        return move;
+    }
+}
+
 
 std::pair<float,Move> Board::bestMoveAlphaBeta(string color,int depth, float manWeight, float kingWeight, bool maxNode,float alpha, float beta ){
     Board virtualBoard(*this);
@@ -540,7 +601,13 @@ std::pair<float,Move> Board::bestMoveAlphaBeta(string color,int depth, float man
     pair<float,Move> currentMove;
     map<int,vector<Move> > currentPlayableMove;
 
-    currentPlayableMove = virtualBoard.playableMoves(color);
+    if(maxNode){
+        currentPlayableMove = virtualBoard.playableMoves(color);
+    }
+    else{
+        currentPlayableMove = virtualBoard.playableMoves((color=="white")?"black":"white");
+    }
+
     if(currentPlayableMove.size()==0 || depth==0){
         move.first = virtualBoard.evaluate(manWeight,kingWeight,color);
         return move;
@@ -590,98 +657,104 @@ std::pair<float,Move> Board::bestMoveAlphaBeta(string color,int depth, float man
 
 
 
-std::pair<float,Move> Board::bestMove(string color, int depth,float manWeight, float kingWeight) {
-    if(depth==0)
-        return std::pair<float,Move>(evaluate(manWeight,kingWeight,color),Move());
-    else {
-        Board virtualBoard(*this);
-        map<int,vector<Move> > movesToPlay=playableMoves(color);
-        map<int,vector<Move> >::iterator it=movesToPlay.begin();
-        Move currentMove=(*it).second[0];
-        virtualBoard.playMove(currentMove);
-        std::pair<float,Move> bestCoup(virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first,currentMove);
-        if(depth%2==0) {
-            for(;it!=movesToPlay.end();it++) {
-                for(int i=0;i<(*it).second.size();i++) {
-                    virtualBoard=*this;
-                    virtualBoard.playMove((*it).second[i]);
-                    std::pair<float,Move> currentCoup;
-                    currentCoup.first=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first;
-                    currentCoup.second=(*it).second[i];
-                    if(currentCoup.first>bestCoup.first)
-                        bestCoup=currentCoup;
-                }
-            }
-            return bestCoup;
-        }
-        else {
-            for(;it!=movesToPlay.end();it++) {
-                for(int i=0;i<(*it).second.size();i++) {
-                    virtualBoard=*this;
-                    virtualBoard.playMove((*it).second[i]);
-                    std::pair<float,Move> currentCoup;
-                    currentCoup.first=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first;
-                    currentCoup.second=(*it).second[i];
-                    if(currentCoup.first<bestCoup.first)
-                        bestCoup=currentCoup;
-                }
-            }
-            return bestCoup;
-        }
-    }
-}
-
-
-
-
-//std::pair<float,Move> Board::bestMove(string color, float manWeight, float kingWeight, bool maxNode, int depth){
-//    Board virtualBoard(*this);
-//    pair<float,Move> move(0,Move());
-//    pair<float,Move> currentMove;
-//    map<int,vector<Move> > currentPlayableMove;
-
-//    currentPlayableMove = virtualBoard.playableMoves(color);
-//    if(currentPlayableMove.size()==0 || depth==0){
-//        move.first = virtualBoard.evaluate(manWeight,kingWeight,color);
-//        return move;
-//    }
-//    else{
-//        if(!maxNode){
-//            move.first=+10000000;
-//            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
-//                for(int i=0; i<(*it).second.size(); i++){
-//                    currentMove.second=(*it).second[i];
-//                    virtualBoard.playMove(currentMove.second);
-//                    currentMove.first = virtualBoard.bestMove(color,manWeight,kingWeight,true,depth-1).first;
-//                    if(currentMove.first<move.first){
-//                        move.first=currentMove.first;
-//                        move.second=currentMove.second;
-//                    }
-//                    virtualBoard= *this;
+//std::pair<float,Move> Board::bestMove(string color, int depth,float manWeight, float kingWeight) {
+//    // Toujours prendre un depth %2
+//    if(depth==0 || playableMoves(color).size()==0 )
+//        return std::pair<float,Move>(evaluate(manWeight,kingWeight,color),Move());
+//    else {
+//        Board virtualBoard(*this);
+//        map<int,vector<Move> > movesToPlay=playableMoves(color);
+//        map<int,vector<Move> >::iterator it=movesToPlay.begin();
+//        Move currentMove=(*it).second[0];
+//        virtualBoard.playMove(currentMove);
+//        std::pair<float,Move> bestCoup(virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first,currentMove);
+//        if(depth%2==0) {
+//            for(;it!=movesToPlay.end();it++) {
+//                for(int i=0;i<(*it).second.size();i++) {
+//                    virtualBoard=*this;
+//                    virtualBoard.playMove((*it).second[i]);
+//                    std::pair<float,Move> currentCoup;
+//                    currentCoup.first=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first;
+//                    currentCoup.second=(*it).second[i];
+//                    if(currentCoup.first>bestCoup.first)
+//                        bestCoup=currentCoup;
 //                }
 //            }
+//            return bestCoup;
 //        }
 //        else {
-//            move.first=-10000000;
-//            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
-//                for(int i=0; i<(*it).second.size(); i++){
-//                    currentMove.second=(*it).second[i];
-//                    virtualBoard.playMove(currentMove.second);
-//                    currentMove.first = virtualBoard.bestMove(color,manWeight,kingWeight,false,depth-1).first;
-//                    if(currentMove.first>move.first){
-//                        move.first=currentMove.first;
-//                        move.second=currentMove.second;
-//                    }
-//                    virtualBoard= *this;
+//            for(;it!=movesToPlay.end();it++) {
+//                for(int i=0;i<(*it).second.size();i++) {
+//                    virtualBoard=*this;
+//                    virtualBoard.playMove((*it).second[i]);
+//                    std::pair<float,Move> currentCoup;
+//                    currentCoup.first=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first;
+//                    currentCoup.second=(*it).second[i];
+//                    if(currentCoup.first<bestCoup.first)
+//                        bestCoup=currentCoup;
 //                }
 //            }
+//            return bestCoup;
 //        }
-//        return move;
 //    }
 //}
 
 
-bool Board::endGame(){
+
+
+std::pair<float,Move> Board::bestMove(string color, float manWeight, float kingWeight, bool maxNode, int depth){
+    Board virtualBoard(*this);
+    pair<float,Move> move(0,Move());
+    pair<float,Move> currentMove;
+    map<int,vector<Move> > currentPlayableMove;
+    if(maxNode){
+    currentPlayableMove = virtualBoard.playableMoves(color);
+    }
+    else{
+        currentPlayableMove = virtualBoard.playableMoves((color=="white")?"black":"white");
+    }
+    if(currentPlayableMove.size()==0 || depth==0){
+        move.first = virtualBoard.evaluate(manWeight,kingWeight,color);
+        return move;
+    }
+    else{
+        if(!maxNode){
+            move.first=+10000000;
+            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
+                for(int i=0; i<(*it).second.size(); i++){
+                    currentMove.second=(*it).second[i];
+                    virtualBoard.playMove(currentMove.second);
+                    currentMove.first = virtualBoard.bestMove(color,manWeight,kingWeight,true,depth-1).first;
+                    if(currentMove.first<move.first){
+                        move.first=currentMove.first;
+                        move.second=currentMove.second;
+                    }
+                    virtualBoard= *this;
+                }
+            }
+        }
+        else {
+            move.first=-10000000;
+            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
+                for(int i=0; i<(*it).second.size(); i++){
+                    currentMove.second=(*it).second[i];
+                    virtualBoard.playMove(currentMove.second);
+                    currentMove.first = virtualBoard.bestMove(color,manWeight,kingWeight,false,depth-1).first;
+                    if(currentMove.first>move.first){
+                        move.first=currentMove.first;
+                        move.second=currentMove.second;
+                    }
+                    virtualBoard= *this;
+                }
+            }
+        }
+        return move;
+    }
+}
+
+
+int Board::endGame(){
+    // 0 égalité, 1 les blancs gagnent, 2 les noirs gagnent :: Attention, ne prends pas en compte le bloquage d'un individu qui peut plus jouer.
     bool white=false;
     bool black=false;
     int i=0;
@@ -695,6 +768,18 @@ bool Board::endGame(){
     i+=1;
     }
     return(!white || !black);
+}
+
+
+int Board::timeMatch(){
+    // Renvoie 0 en début de partie, 1 en milieu de partie, 2 en fin de partie :
+    if(pieces.size()<10){
+        return 2;
+    }
+    else if(pieces.size()<25){
+        return 1;
+    }
+    return 0;
 }
 
 

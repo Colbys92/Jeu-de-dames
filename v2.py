@@ -12,6 +12,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.backends.backend_agg as agg
 import pylab
+import time
 
 
 def drawKing(king,window):
@@ -131,9 +132,10 @@ def loadMoveList(gameId):
     c=conn.cursor()
     for row in c.execute("SELECT listeCoups FROM games WHERE id=?",(gameId,)):
         #on utilise la fonction eval... Qui peut conduire à des problèmes de sécurité.. ON s'autorise à le faire vu le cadre du projet.
+        conn.close()
         return eval(row[0])
         #print(row)
-    conn.close()
+    
 
 
 
@@ -157,13 +159,14 @@ if __name__ == "__main__":
     textureBlackKingSelected=pygame.image.load("textures/reine_noir_lueur.png").convert_alpha()
     textureBlueSquare=pygame.image.load("textures/case_sombre_bleue.png")
     textureGreenSquare=pygame.image.load("textures/case_sombre_verte.png")
+    #bots=[Individu(0,1,5,2,0,0,0),Individu(0,2,5,2,0.5,0.5,0.5),Individu(0,2,5,4,0.5,0.5,0.5)] #différents niveaux de difficulté
     
     #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA, 2 pour IAvIA, 3 pour regarder une partie, 4 learning Mode
-    gameType=4
+    gameType=3
     #choix du niveau de difficulté
     difficulty=1
     
-    
+
     
     fond=pygame.image.load("textures/surface_jeu_V1.png").convert()
     window.blit(fond,(0,0))
@@ -200,11 +203,16 @@ if __name__ == "__main__":
     
     if(gameType==2):
         while(not plateau.endGame()):
-            pygame.time.delay(20)
+            pygame.event.pump()
             window.blit(fond,(0,0))
             plateau.display(window)
-            pygame.display.flip()
+            time.sleep(0.1)
+            pygame.display.update()   
             move=plateau.bestMoveAlphaBeta(couleurs[compteur],2,5.,20.,1.,1.,1.)
+            if compteur==1 :
+                move = Test(plateau.bestMoveAlphaBeta2(couleurs[compteur],4,1,1,0,0,0,True,-1000,1000))
+            else :
+                move = Test(plateau.bestMoveAlphaBeta2(couleurs[compteur],4,5,20,1,1,1,True,-1000,1000))
             plateau.playMove(move,False)
             moves=plateau.playableMoves(couleurs[compteur])
             compteur=1-compteur
@@ -254,7 +262,11 @@ if __name__ == "__main__":
                             if(gameType==4):
                                 listeValeurs.append(plateau.evaluate(1,5,"white"))
                                 #listeValeurs.append(plateau.evaluateBetter(1,5,0.1,0.3,0.3,"white"))
-                            plateau.playMove(Test(plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1,5,True,0.1,0.1)),False)
+                            #plateau.playMove(Test(plateau.bestMoveAlphaBeta(couleurs[1-compteur],4,1,5,True,0.1,0.1)),False)
+                            move=Test(plateau.bestMoveAlphaBeta2(couleurs[1-compteur],4,5,10,0,0,0,True,-10000,10000))
+                            listeCoups.append(([move.getPath()[i] for i in range(len(move.getPath()))],move.getKills()))
+                            plateau.playMove(move,False)
+
                             moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
             if(gameType==4 and len(listeValeurs)>1):
@@ -271,30 +283,35 @@ if __name__ == "__main__":
                 pygame.display.flip()
         stringMove=listeCoups.__str__()
         stringDate=datetime.date.today().__str__()
-        c.execute("INSERT INTO games VALUES (5,?,?)",(stringDate,stringMove))
+        c.execute("INSERT INTO games VALUES (10,?,?)",(stringDate,stringMove))
         conn.commit()
         conn.close()
     elif(gameType==3):
-        gameId=3 #demander à l'utilisateur de choisir la partie qu'il veut regarder
+        gameId=10 #demander à l'utilisateur de choisir la partie qu'il veut regarder
         moveList=loadMoveList(gameId)
         waitingTime=1000 #temps d'attente entre 2 coups en millisecondes
+        pause=False
         while len(moveList)>0:
+            #rajouter affichage pause (pour comprendre que c'est pas buggé) + vitesse actuelle + pouvoir jouer coup par coup avec un clic quand on a mis le jeu en pause
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
                     forceQuit=True
                     break
                 if event.type == KEYDOWN and event.key==K_1:
-                    if(waitingTime==100):
+                    if(waitingTime==250):
                         waitingTime=1000
                     else:
                         waitingTime-=250
-            plateau.playMove(Move(vectori(moveList[0][0]),moveList[0][1]),False)
+                if event.type == KEYDOWN and event.key==K_2:
+                    pause=not pause
+            if( not pause):
+                plateau.playMove(Move(vectori(moveList[0][0]),moveList[0][1]),False)
+                moveList=moveList[1:]
             #constructeur move path + nb kills
-            moveList=moveList[1:]
             window.blit(fond,(0,0))
             plateau.display(window)
-            plateau.displayMovablePieces(moves,window)
+            pygame.display.flip()
             pygame.time.delay(waitingTime)
 
     pygame.quit()
