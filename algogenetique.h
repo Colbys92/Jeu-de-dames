@@ -21,14 +21,15 @@ class Individu{
     float centralWeight;
 public:
     Individu(int score1, float manWeight1, float kingWeight1, int depth1, float nbMoveWeight1, float advancementForwardWeight1, float centralWeight1);
+    ~Individu() {}
     Individu(const Individu& i):score(i.score),manWeight(i.manWeight),kingWeight(i.kingWeight),depth(i.depth),nbMoveWeight(i.nbMoveWeight),advancementForwardWeight(i.advancementForwardWeight),centralWeight(i.centralWeight){}
-    operator=(const Individu& i);
+    void operator=(const Individu& i);
     float getManWeight(){return manWeight;}
     void setManWeight(float newManWeight){manWeight=newManWeight;}
     float getKingWeight() {return kingWeight;}
     void setKingWeight(float newKingWeight){kingWeight=newKingWeight;}
     int getScore() {return score;}
-    int addToScore(int toAdd);
+    void addToScore(int toAdd);
     int getDepth(){return depth;}
     void setDepth(int newDepth){depth=newDepth;}
     float getNbMoveWeight(){return nbMoveWeight;}
@@ -37,7 +38,7 @@ public:
     void setAdvancementForwardWeight(float newAdvancementForwardWeight){advancementForwardWeight=newAdvancementForwardWeight;}
     float getCentralWeight(){return centralWeight;}
     void setCentralWeight(float newCentralWeight){centralWeight=newCentralWeight;}
-    operator<(Individu i2);
+    bool operator<(Individu i2);
     Move bestMoveAlphaBeta(Board& B,string color,float alpha, float beta );
 
 };
@@ -55,8 +56,8 @@ public:
     Individu getIend(){ return Iend; }
     int getScore() {return score;}
     Move bestMoveAlphaBeta(Board& B, string color, float alpha, float beta);
-    int addToScore(int toAdd);
+    void addToScore(int toAdd);
     void mutationPowerful(int proba);
-    operator<(PowerfulIndividu i){return score<i.score;}
+    bool operator<(PowerfulIndividu i){return score<i.score;}
 };
 

@@ -368,27 +368,6 @@ class King(Piece):
 King_swigregister = _arbre.King_swigregister
 King_swigregister(King)
 
-class Individu(_object):
-    __swig_setmethods__ = {}
-    __setattr__ = lambda self, name, value: _swig_setattr(self, Individu, name, value)
-    __swig_getmethods__ = {}
-    __getattr__ = lambda self, name: _swig_getattr(self, Individu, name)
-    __repr__ = _swig_repr
-
-    def __init__(self, score1, manWeight1, kingWeight1, depth1, nbMoveWeight1, advancementForwardWeight1, centralWeight1):
-        this = _arbre.new_Individu(score1, manWeight1, kingWeight1, depth1, nbMoveWeight1, advancementForwardWeight1, centralWeight1)
-        try:
-            self.this.append(this)
-        except __builtin__.Exception:
-            self.this = this
-
-    def bestMoveAlphaBeta(self, B, color, alpha, beta):
-        return _arbre.Individu_bestMoveAlphaBeta(self, B, color, alpha, beta)
-    __swig_destroy__ = _arbre.delete_Individu
-    __del__ = lambda self: None
-Individu_swigregister = _arbre.Individu_swigregister
-Individu_swigregister(Individu)
-
 
 def getSecond(A):
     return _arbre.getSecond(A)

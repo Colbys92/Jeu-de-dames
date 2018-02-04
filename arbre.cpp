@@ -13,6 +13,9 @@ Move::Move(const Move &m){
     }
     kills=m.kills;
 }
+bool Move::operator==(Move &m){
+    return(m.kills==kills && m.path == path);
+}
 Move Move::extendMove(Move m){
     if (getArrival()!=m.getStart()){
         throw(new invalid_argument("That move can't follow the first one"));

@@ -7,6 +7,7 @@ import sys
 import datetime
 import sqlite3
 from arbre import *
+from algogenetique import *
 from pygame.locals import *
 import pygame
 import matplotlib
@@ -287,9 +288,9 @@ if __name__ == "__main__":
             time.sleep(0.1)
             pygame.display.update()
             if compteur==1 :
-                move = Test(plateau.bestMoveAlphaBeta2(couleurs[compteur],4,1,1,0,0,0,True,-1000,1000))
+                move = getSecond(plateau.bestMoveAlphaBeta2(couleurs[compteur],4,1,1,0,0,0,True,-1000,1000))
             else :
-                move = Test(plateau.bestMoveAlphaBeta2(couleurs[compteur],6,1,1,0,0,0,True,-1000,1000))
+                move = getSecond(plateau.bestMoveAlphaBeta2(couleurs[compteur],6,1,1,0,0,0,True,-1000,1000))
             plateau.playMove(move,False)
             moves=plateau.playableMoves(couleurs[compteur])
             compteur=1-compteur
@@ -337,7 +338,7 @@ if __name__ == "__main__":
                             pygame.display.flip()
                             if(gameType==4):
                                 listeValeurs.append(plateau.evaluateBetter(1,5,0.1,0.3,0.2,"white"))
-                            move=Test(plateau.bestMoveAlphaBeta2(couleurs[1-compteur],6,5,10,0,0,0,True,-10000,10000))
+                            move=getSecond(plateau.bestMoveAlphaBeta2(couleurs[1-compteur],6,5,10,0,0,0,True,-10000,10000))
                             listeCoups.append(([move.getPath()[i] for i in range(len(move.getPath()))],move.getKills()))
                             plateau.playMove(move,False)
                             moves=plateau.playableMoves(couleurs[compteur])
