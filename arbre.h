@@ -90,6 +90,7 @@ public:
         kills = k;
     }
     void operator=(const Move& m);
+    bool operator==(Move& m);
     bool operator<(const Move& m) const;
     int getStart() {return path[0];}
     int getArrival() {return path[path.size()-1];}

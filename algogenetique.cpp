@@ -54,7 +54,7 @@ Move PowerfulIndividu::bestMoveAlphaBeta(Board &B, string color, float alpha, fl
 vector<Individu> genIndividu(int size){
     vector<Individu> individus;
     for(int i=0; i<size; i++){
-        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,4,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
+        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,2,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
     }
     return individus;
 }
@@ -69,6 +69,99 @@ vector<PowerfulIndividu> genPowerfulIndividu(int size){
     }
     return powerfulIndividus;
 }
+
+//==================================Retrouver la valeur d'une fonction donnée========================
+int matchCout(std::queue<Move>& game, Individu i1, Individu i2){
+    Board B;
+    Move m1,m2;
+    float val;
+    int compteur =0;
+    while(compteur<100){
+        if(B.playableMoves("white").size()>0){
+            m1=B.bestMoveAlphaBeta2("white",i1.getDepth(),i1.getManWeight(),i1.getKingWeight(),i1.getNbMoveWeight(),i1.getCentralWeight(),i1.getAdvancementForwardWeight(),true,-10000,10000).second;
+            B.playMove(m1);
+            game.push(m1);
+        }
+        else{
+            cout << "2 gagne" << endl;
+            return 2;
+        }
+        if(B.playableMoves("black").size()>0){
+            m2=B.bestMoveAlphaBeta2("black", i2.getDepth(), i2.getManWeight(),i2.getKingWeight(),i1.getNbMoveWeight(),i1.getCentralWeight(),i1.getAdvancementForwardWeight(),true, -10000,10000).second;
+            B.playMove(m2);
+            game.push(m2);
+        }
+        else{
+            cout << "1 gagne" << endl;
+            return 1;
+        }
+        compteur+=1;
+    }
+    return 0;
+}
+
+
+
+vector<Individu> genSample(Individu individu, int accuracy){
+    if (accuracy==1){
+        individu = Individu(0,0.5,0.5,4,0,0.5,0.5);
+    }
+    vector<Individu> sample;
+    for(int i=0;i<10;i++){
+        for(int j=0; j<10; j++){
+            for(int k=0; k<10; k++){
+                for(int l=0 ; l<10; l++){
+                    sample.push_back(Individu(0,individu.getManWeight()+(5-i)/10/accuracy,individu.getKingWeight()+(5-j)/10/accuracy, \
+                                              2,0,individu.getAdvancementForwardWeight()+(5-k)/10/accuracy,individu.getCentralWeight()+(5-l)/10/accuracy));
+                }
+            }
+        }
+    }
+    return sample;
+}
+
+
+
+void rankIndividu2(std::queue<Move> game, vector<Individu>& sampleTest, string color){
+    Board B;
+    Move m1,m2;
+    while(game.size()>0){
+        m1 = game.front();
+        if(color=="white"){
+            for(vector<Individu>::iterator it=sampleTest.begin(); it!=sampleTest.end(); it++){
+                if((*it).bestMoveAlphaBeta(B,color,-1000,1000)==m1){ (*it).addToScore(1);}
+            }
+        }
+        B.playMove(game.front());
+        game.pop();
+        m2=game.front();
+        if(color=="black"){
+            for(vector<Individu>::iterator it=sampleTest.begin(); it!=sampleTest.end(); it++){
+                if((*it).bestMoveAlphaBeta(B,color,-1000,1000)==m2){ (*it).addToScore(1);}
+            }
+        }
+        B.playMove(m2);
+        game.pop();
+    }
+}
+
+Individu compatibleIndividu(std::queue<Move> game, string color){
+    int accuracy = 1;
+    int compteur =0;
+    Individu approximateIndividu(0,0,0,0,0,0,0);
+    while(compteur<1){
+        vector<Individu> sampleTest = genSample(approximateIndividu,accuracy);
+        rankIndividu2(game,sampleTest,color);
+        sort(sampleTest.begin(),sampleTest.end());
+        approximateIndividu = sampleTest[sampleTest.size()-1];
+        sampleTest.clear();
+        accuracy=accuracy*10;
+        compteur+=1;
+    }
+    return approximateIndividu;
+}
+
+
 
 //==================================Méthode pour l'évaluation individu simple========================
 
@@ -260,7 +353,7 @@ void heredity2(vector<Individu>& individus, vector<Individu> chosenOnes){
     float dices;
     for(int i=0; i<chosenOnes.size();i++){
         maxScore += float(chosenOnes[i].getScore());
-        }
+    }
     vector<float> proba;
     proba.push_back(chosenOnes[0].getScore()/maxScore);
     for(int i=1;i<chosenOnes.size()-1;i++){
@@ -293,7 +386,7 @@ void heredityPowerful(vector<PowerfulIndividu>& individus, vector<PowerfulIndivi
     float dices1,dices2,dices3;
     for(int i=0; i<chosenOnes.size();i++){
         maxScore += float(chosenOnes[i].getScore());
-        }
+    }
     vector<float> proba;
     proba.push_back(chosenOnes[0].getScore()/maxScore);
     for(int i=1;i<chosenOnes.size()-1;i++){
@@ -350,7 +443,7 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
     float dices;
     for(int i=0; i<chosenOnes.size();i++){
         maxScore += float(chosenOnes[i].getScore());
-        }
+    }
     vector<float> proba;
     proba.push_back(chosenOnes[0].getScore()/maxScore);
     for(int i=1;i<chosenOnes.size()-1;i++){
@@ -382,48 +475,75 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
 
 //===============================Execution===============================
 int main(){
-//    Individu i1(0,2,5,4,0,0,0);
-//    Individu i2(0,5,20,4,0.1,1,1);
-//    cout << match2(i1,i2) << endl;
-//    vector<Individu> individus;
-//    vector<Individu> chosenOnes;
-//    for(int i=0; i<20; i++){
-//        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,4,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
-//    }
 
-//    for(int i=0; i<4;i++){
-//        cout << i << endl;
-//        evaluation(individus);
-//        chosenOnes = selection(individus,10);
+    //=====================Algo Génétique======================
+    //    Individu i1(0,2,5,4,0,0,0);
+    //    Individu i2(0,5,20,4,0.1,1,1);
+    //    cout << match2(i1,i2) << endl;
+    //    vector<Individu> individus;
+    //    vector<Individu> chosenOnes;
+    //    for(int i=0; i<20; i++){
+    //        individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,4,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
+    //    }
 
-//        heredity2(individus,chosenOnes);
-//        chosenOnes.clear();
-//    }
-//    std::sort(individus.begin(),individus.end());
-//    cout << "KingWeight : " <<individus.begin()->getKingWeight() << "ManWeight : "<<individus.begin()->getManWeight() << endl;
+    //    for(int i=0; i<4;i++){
+    //        cout << i << endl;
+    //        evaluation(individus);
+    //        chosenOnes = selection(individus,10);
 
-    vector<PowerfulIndividu> individus;
-    vector<PowerfulIndividu> chosenOnes;
-    individus=genPowerfulIndividu(50);
-    for(int i=0; i<2; i++){
-        cout << i << endl;
-        evaluationPowerfulIndividu(individus);
-        chosenOnes = selectionPowerful(individus,5);
-        heredityPowerful(individus,chosenOnes);
-        chosenOnes.clear();
-    }
-    evaluationPowerfulIndividu(individus);
-    std::sort(individus.begin(),individus.end());
-    PowerfulIndividu i = individus[individus.size()-1];
-    Individu i1 = i.getIbegin();
-    Individu i2 = i.getImiddle();
-    Individu i3 = i.getIend();
+    //        heredity2(individus,chosenOnes);
+    //        chosenOnes.clear();
+    //    }
+    //    std::sort(individus.begin(),individus.end());
+    //    cout << "KingWeight : " <<individus.begin()->getKingWeight() << "ManWeight : "<<individus.begin()->getManWeight() << endl;
+    //    srand(time(NULL));
+    //    vector<PowerfulIndividu> individus;
+    //    vector<PowerfulIndividu> chosenOnes;
+    //    individus=genPowerfulIndividu(70);
+    //    for(int i=0; i<5; i++){
+    //        cout << i << endl;
+    //        evaluationPowerfulIndividu(individus);
+    //        chosenOnes = selectionPowerful(individus,5);
+    //        heredityPowerful(individus,chosenOnes);
+    //        chosenOnes.clear();
+    //    }
+    //    evaluationPowerfulIndividu(individus);
+    //    std::sort(individus.begin(),individus.end());
+    //    PowerfulIndividu i = individus[individus.size()-1];
+    //    Individu i1 = i.getIbegin();
+    //    Individu i2 = i.getImiddle();
+    //    Individu i3 = i.getIend();
+    //    cout << "Man Weight : " << i1.getManWeight() << "King Weight : " << i1.getKingWeight() <<  "Advance Forward Weight" << i1.getAdvancementForwardWeight() \
+    //           << "Depth : " << i1.getDepth() << " Central Weight : " << i1.getCentralWeight() << " Number of possible move weight " << i1.getNbMoveWeight() << endl;
+    //    cout << "Man Weight : " << i2.getManWeight() << "King Weight : " << i2.getKingWeight() <<  "Advance Forward Weight" << i2.getAdvancementForwardWeight() \
+    //           << "Depth : " << i2.getDepth() << " Central Weight : " << i2.getCentralWeight() << " Number of possible move weight " << i2.getNbMoveWeight()<< endl;
+    //    cout << "Man Weight : " << i3.getManWeight() << "King Weight : " << i3.getKingWeight() <<  "Advance Forward Weight" << i3.getAdvancementForwardWeight() \
+    //           << "Depth : " << i3.getDepth() << " Central Weight : " << i3.getCentralWeight() << " Number of possible move weight " << i3.getNbMoveWeight()<< endl;
+    //================Test individu==================
+    //Individu i1(0,0.756,0.313,4,0.945,0.832,0.808);
+    //Individu i2(0,0.512,0.441,4,0.549,0.434,0.555);
+    //Individu i3(0,0.139,0.753,4,0.718,0.06,0.145);
+
+    ////    Individu i1(0,1,0.313,4,0.945,0.832,0.808);
+    ////    Individu i2(0,1,0.441,4,0.549,0.434,0.555);
+    ////    Individu i3(0,0.5,1,4,0.718,0,0.5);
+    //    PowerfulIndividu iref(i1,i2,i3);
+    //    Individu i4(0,0.388,0.1,4,0.146,0.400,0.044);
+    //    Individu i5(0,0.407,0.09,4,0.6,0.6,0.016);
+    //    Individu i6(0,0.643,0.681,4,0.142,0.4,0.3);
+    //    PowerfulIndividu ifight(i4,i5,i6);
+
+    //    cout << matchPowerfulIndividu(iref,ifight) << endl;
+    //    cout << matchPowerfulIndividu(ifight,iref)<<endl;
+
+
+    Individu itest(0,1,5,2,0,0,0);
+    Individu i2(0,1,0,2,0,0,0);
+
+    std::queue<Move> game;
+    cout << matchCout(game,itest,i2);
+    Individu i1= compatibleIndividu(game,"white");
     cout << "Man Weight : " << i1.getManWeight() << "King Weight : " << i1.getKingWeight() <<  "Advance Forward Weight" << i1.getAdvancementForwardWeight() \
-           << "Depth : " << i1.getDepth() << " Central Weight : " << i1.getCentralWeight() << " Number of possible move weight " << i1.getNbMoveWeight() << endl;
-    cout << "Man Weight : " << i2.getManWeight() << "King Weight : " << i2.getKingWeight() <<  "Advance Forward Weight" << i2.getAdvancementForwardWeight() \
-           << "Depth : " << i2.getDepth() << " Central Weight : " << i2.getCentralWeight() << " Number of possible move weight " << i2.getNbMoveWeight()<< endl;
-    cout << "Man Weight : " << i3.getManWeight() << "King Weight : " << i3.getKingWeight() <<  "Advance Forward Weight" << i3.getAdvancementForwardWeight() \
-           << "Depth : " << i3.getDepth() << " Central Weight : " << i3.getCentralWeight() << " Number of possible move weight " << i3.getNbMoveWeight()<< endl;
-
+         << "Depth : " << i1.getDepth() << " Central Weight : " << i1.getCentralWeight() << " Number of possible move weight " << i1.getNbMoveWeight() << endl;
 
 }
