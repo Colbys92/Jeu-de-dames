@@ -3007,33 +3007,34 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 /* -------- TYPES TABLE (BEGIN) -------- */
 
 #define SWIGTYPE_p_Board swig_types[0]
-#define SWIGTYPE_p_King swig_types[1]
-#define SWIGTYPE_p_Man swig_types[2]
-#define SWIGTYPE_p_Move swig_types[3]
-#define SWIGTYPE_p_Piece swig_types[4]
-#define SWIGTYPE_p_allocator_type swig_types[5]
-#define SWIGTYPE_p_char swig_types[6]
-#define SWIGTYPE_p_difference_type swig_types[7]
-#define SWIGTYPE_p_first_type swig_types[8]
-#define SWIGTYPE_p_key_type swig_types[9]
-#define SWIGTYPE_p_mapped_type swig_types[10]
-#define SWIGTYPE_p_p_PyObject swig_types[11]
-#define SWIGTYPE_p_second_type swig_types[12]
-#define SWIGTYPE_p_size_type swig_types[13]
-#define SWIGTYPE_p_std__allocatorT_Move_t swig_types[14]
-#define SWIGTYPE_p_std__allocatorT_int_t swig_types[15]
-#define SWIGTYPE_p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t swig_types[16]
-#define SWIGTYPE_p_std__invalid_argument swig_types[17]
-#define SWIGTYPE_p_std__lessT_int_t swig_types[18]
-#define SWIGTYPE_p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t swig_types[19]
-#define SWIGTYPE_p_std__pairT_float_Move_t swig_types[20]
-#define SWIGTYPE_p_std__vectorT_Move_std__allocatorT_Move_t_t swig_types[21]
-#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[22]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[23]
-#define SWIGTYPE_p_value_type swig_types[24]
-#define SWIGTYPE_p_vectorT_Move_t swig_types[25]
-static swig_type_info *swig_types[27];
-static swig_module_info swig_module = {swig_types, 26, 0, 0, 0, 0};
+#define SWIGTYPE_p_Individu swig_types[1]
+#define SWIGTYPE_p_King swig_types[2]
+#define SWIGTYPE_p_Man swig_types[3]
+#define SWIGTYPE_p_Move swig_types[4]
+#define SWIGTYPE_p_Piece swig_types[5]
+#define SWIGTYPE_p_allocator_type swig_types[6]
+#define SWIGTYPE_p_char swig_types[7]
+#define SWIGTYPE_p_difference_type swig_types[8]
+#define SWIGTYPE_p_first_type swig_types[9]
+#define SWIGTYPE_p_key_type swig_types[10]
+#define SWIGTYPE_p_mapped_type swig_types[11]
+#define SWIGTYPE_p_p_PyObject swig_types[12]
+#define SWIGTYPE_p_second_type swig_types[13]
+#define SWIGTYPE_p_size_type swig_types[14]
+#define SWIGTYPE_p_std__allocatorT_Move_t swig_types[15]
+#define SWIGTYPE_p_std__allocatorT_int_t swig_types[16]
+#define SWIGTYPE_p_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t swig_types[17]
+#define SWIGTYPE_p_std__invalid_argument swig_types[18]
+#define SWIGTYPE_p_std__lessT_int_t swig_types[19]
+#define SWIGTYPE_p_std__mapT_int_std__vectorT_Move_std__allocatorT_Move_t_t_std__lessT_int_t_std__allocatorT_std__pairT_int_const_std__vectorT_Move_std__allocatorT_Move_t_t_t_t_t swig_types[20]
+#define SWIGTYPE_p_std__pairT_float_Move_t swig_types[21]
+#define SWIGTYPE_p_std__vectorT_Move_std__allocatorT_Move_t_t swig_types[22]
+#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[23]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[24]
+#define SWIGTYPE_p_value_type swig_types[25]
+#define SWIGTYPE_p_vectorT_Move_t swig_types[26]
+static swig_type_info *swig_types[28];
+static swig_module_info swig_module = {swig_types, 27, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3657,6 +3658,7 @@ SWIG_AsVal_ptrdiff_t (PyObject * obj, ptrdiff_t *val)
 
 #define SWIG_FILE_WITH_INIT
 #include "arbre.h"
+#include "algogenetique.h"
 
 
 SWIGINTERNINLINE PyObject*
@@ -8564,7 +8566,174 @@ SWIGINTERN PyObject *King_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject 
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_Test(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_Individu(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  float arg2 ;
+  float arg3 ;
+  int arg4 ;
+  float arg5 ;
+  float arg6 ;
+  float arg7 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  float val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  float val5 ;
+  int ecode5 = 0 ;
+  float val6 ;
+  int ecode6 = 0 ;
+  float val7 ;
+  int ecode7 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  PyObject * obj6 = 0 ;
+  Individu *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOOO:new_Individu",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5,&obj6)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_Individu" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = static_cast< int >(val1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "new_Individu" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  ecode3 = SWIG_AsVal_float(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_Individu" "', argument " "3"" of type '" "float""'");
+  } 
+  arg3 = static_cast< float >(val3);
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_Individu" "', argument " "4"" of type '" "int""'");
+  } 
+  arg4 = static_cast< int >(val4);
+  ecode5 = SWIG_AsVal_float(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "new_Individu" "', argument " "5"" of type '" "float""'");
+  } 
+  arg5 = static_cast< float >(val5);
+  ecode6 = SWIG_AsVal_float(obj5, &val6);
+  if (!SWIG_IsOK(ecode6)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "new_Individu" "', argument " "6"" of type '" "float""'");
+  } 
+  arg6 = static_cast< float >(val6);
+  ecode7 = SWIG_AsVal_float(obj6, &val7);
+  if (!SWIG_IsOK(ecode7)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode7), "in method '" "new_Individu" "', argument " "7"" of type '" "float""'");
+  } 
+  arg7 = static_cast< float >(val7);
+  result = (Individu *)new Individu(arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Individu, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Individu_bestMoveAlphaBeta(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Individu *arg1 = (Individu *) 0 ;
+  Board *arg2 = 0 ;
+  std::string arg3 ;
+  float arg4 ;
+  float arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  float val4 ;
+  int ecode4 = 0 ;
+  float val5 ;
+  int ecode5 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  SwigValueWrapper< Move > result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOO:Individu_bestMoveAlphaBeta",&obj0,&obj1,&obj2,&obj3,&obj4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Individu, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Individu_bestMoveAlphaBeta" "', argument " "1"" of type '" "Individu *""'"); 
+  }
+  arg1 = reinterpret_cast< Individu * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2, SWIGTYPE_p_Board,  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "Individu_bestMoveAlphaBeta" "', argument " "2"" of type '" "Board &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Individu_bestMoveAlphaBeta" "', argument " "2"" of type '" "Board &""'"); 
+  }
+  arg2 = reinterpret_cast< Board * >(argp2);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(obj2, &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "Individu_bestMoveAlphaBeta" "', argument " "3"" of type '" "std::string""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode4 = SWIG_AsVal_float(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "Individu_bestMoveAlphaBeta" "', argument " "4"" of type '" "float""'");
+  } 
+  arg4 = static_cast< float >(val4);
+  ecode5 = SWIG_AsVal_float(obj4, &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "Individu_bestMoveAlphaBeta" "', argument " "5"" of type '" "float""'");
+  } 
+  arg5 = static_cast< float >(val5);
+  result = (arg1)->bestMoveAlphaBeta(*arg2,arg3,arg4,arg5);
+  resultobj = SWIG_NewPointerObj((new Move(static_cast< const Move& >(result))), SWIGTYPE_p_Move, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_Individu(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Individu *arg1 = (Individu *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_Individu",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Individu, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_Individu" "', argument " "1"" of type '" "Individu *""'"); 
+  }
+  arg1 = reinterpret_cast< Individu * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *Individu_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char *)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_Individu, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_getSecond(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   std::pair< float,Move > arg1 ;
   void *argp1 ;
@@ -8572,21 +8741,21 @@ SWIGINTERN PyObject *_wrap_Test(PyObject *SWIGUNUSEDPARM(self), PyObject *args) 
   PyObject * obj0 = 0 ;
   SwigValueWrapper< Move > result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:Test",&obj0)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"O:getSecond",&obj0)) SWIG_fail;
   {
     res1 = SWIG_ConvertPtr(obj0, &argp1, SWIGTYPE_p_std__pairT_float_Move_t,  0  | 0);
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Test" "', argument " "1"" of type '" "std::pair< float,Move >""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getSecond" "', argument " "1"" of type '" "std::pair< float,Move >""'"); 
     }  
     if (!argp1) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "Test" "', argument " "1"" of type '" "std::pair< float,Move >""'");
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "getSecond" "', argument " "1"" of type '" "std::pair< float,Move >""'");
     } else {
       std::pair< float,Move > * temp = reinterpret_cast< std::pair< float,Move > * >(argp1);
       arg1 = *temp;
       if (SWIG_IsNewObj(res1)) delete temp;
     }
   }
-  result = Test(arg1);
+  result = getSecond(arg1);
   resultobj = SWIG_NewPointerObj((new Move(static_cast< const Move& >(result))), SWIGTYPE_p_Move, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
@@ -13943,7 +14112,11 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"King_select", _wrap_King_select, METH_VARARGS, NULL},
 	 { (char *)"King_clone", _wrap_King_clone, METH_VARARGS, NULL},
 	 { (char *)"King_swigregister", King_swigregister, METH_VARARGS, NULL},
-	 { (char *)"Test", _wrap_Test, METH_VARARGS, NULL},
+	 { (char *)"new_Individu", _wrap_new_Individu, METH_VARARGS, NULL},
+	 { (char *)"Individu_bestMoveAlphaBeta", _wrap_Individu_bestMoveAlphaBeta, METH_VARARGS, NULL},
+	 { (char *)"delete_Individu", _wrap_delete_Individu, METH_VARARGS, NULL},
+	 { (char *)"Individu_swigregister", Individu_swigregister, METH_VARARGS, NULL},
+	 { (char *)"getSecond", _wrap_getSecond, METH_VARARGS, NULL},
 	 { (char *)"VectorMove_iterator", _wrap_VectorMove_iterator, METH_VARARGS, NULL},
 	 { (char *)"VectorMove___nonzero__", _wrap_VectorMove___nonzero__, METH_VARARGS, NULL},
 	 { (char *)"VectorMove___bool__", _wrap_VectorMove___bool__, METH_VARARGS, NULL},
@@ -14064,6 +14237,7 @@ static void *_p_KingTo_p_Piece(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((Piece *)  ((King *) x));
 }
 static swig_type_info _swigt__p_Board = {"_p_Board", "Board *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Individu = {"_p_Individu", "Individu *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_King = {"_p_King", "King *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Man = {"_p_Man", "Man *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Move = {"_p_Move", "std::vector< Move >::value_type *|Move *", 0, 0, (void*)0, 0};
@@ -14092,6 +14266,7 @@ static swig_type_info _swigt__p_vectorT_Move_t = {"_p_vectorT_Move_t", "vector< 
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_Board,
+  &_swigt__p_Individu,
   &_swigt__p_King,
   &_swigt__p_Man,
   &_swigt__p_Move,
@@ -14120,6 +14295,7 @@ static swig_type_info *swig_type_initial[] = {
 };
 
 static swig_cast_info _swigc__p_Board[] = {  {&_swigt__p_Board, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Individu[] = {  {&_swigt__p_Individu, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_King[] = {  {&_swigt__p_King, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Man[] = {  {&_swigt__p_Man, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Move[] = {  {&_swigt__p_Move, 0, 0, 0},{0, 0, 0, 0}};
@@ -14148,6 +14324,7 @@ static swig_cast_info _swigc__p_vectorT_Move_t[] = {  {&_swigt__p_vectorT_Move_t
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_Board,
+  _swigc__p_Individu,
   _swigc__p_King,
   _swigc__p_Man,
   _swigc__p_Move,
