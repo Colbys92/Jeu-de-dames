@@ -8,6 +8,7 @@
 %{
 #define SWIG_FILE_WITH_INIT
 #include "arbre.h"
+#include algogenetique.h
 %}
 
 struct Piece{
@@ -98,7 +99,23 @@ public:
 	virtual Piece* clone();
 
 };
-Move Test(std::pair<float, Move> A);
+
+struct Individu {
+private:
+	int score;
+    float manWeight;
+    float kingWeight;
+    int depth;
+    float nbMoveWeight;
+    float advancementForwardWeight;
+    float centralWeight;
+public:
+    Individu(int score1, float manWeight1, float kingWeight1, int depth1, float nbMoveWeight1, float advancementForwardWeight1, 
+    Move bestMoveAlphaBeta(Board& B,std::string color,float alpha, float beta );
+};
+
+
+Move getSecond(std::pair<float, Move> A);
 
 
 namespace std {

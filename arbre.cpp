@@ -783,6 +783,6 @@ int Board::timeMatch(){
 }
 
 
-Move Test(pair<float,Move> A){
+Move getSecond(pair<float,Move> A){
     return A.second;
 }

@@ -191,7 +191,7 @@ public :
 
 };
 
-Move Test(pair<float, Move> A );
+Move getSecond(pair<float, Move> A );
 
 
 
