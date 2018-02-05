@@ -5,7 +5,7 @@
 #include "tools.h"
 
 
-//enum Color { white, black };
+
 
 Move::Move(const Move &m){
     for(vector<int>::const_iterator it=m.path.begin(); it!=m.path.end(); it++){
@@ -78,7 +78,7 @@ void King::killFreeMove(Board& B, vector<Move>& possibleMoves){
     int currentPosition;
     int currentPositionValue;
     for(int i=0; i<4;i++){
-        // Diagonale :
+
         currentPosition = position;
         currentPositionValue= positionValue;
         onEdges = checkEdges(i, currentPosition);
@@ -87,7 +87,7 @@ void King::killFreeMove(Board& B, vector<Move>& possibleMoves){
         while (!isPiece && !onEdges){
             possibleMoves.push_back(Move(position,currentPosition+Orientation1[i]+currentPositionValue,0));
             currentPosition = currentPosition+Orientation1[i]+currentPositionValue;
-            currentPositionValue= (currentPositionValue+1)%2; // Changement de ligne de position
+            currentPositionValue= (currentPositionValue+1)%2;
             onEdges = checkEdges(i,currentPosition);
             isPiece = B.isPieceHere(currentPosition+Orientation1[i]+currentPositionValue);
         }
@@ -323,32 +323,6 @@ void Board::killAt(int pos) {
 }
 
 void Board::playMove(const Move &m, bool inSelect) {
-
-    {    //ca ne marche pas avec iterateur, pourquoi ?
-//    for(int i=0;i<m.getPath().size()-1;i++) {
-//        int depart=m.getPath()[i];
-//        int arrivee=m.getPath()[i+1];
-//        if(abs(depart-arrivee)>8) {
-//            int positionValue=0;
-//            if((depart)%10<5){
-//                positionValue=1;
-//            }
-//            if(arrivee==depart+NW2) {
-//                killAt(depart + NW+positionValue);
-//            }
-//            else if(arrivee==depart+NE2) {
-//                killAt(depart + NE +positionValue);
-//            }
-//            else if(arrivee==depart+SE2) {
-//                killAt(depart+SE+positionValue);
-//            }
-//            else if(arrivee==depart+SW2) {
-//                killAt(depart+SW+positionValue);
-//            }
-//        }
-//        pieces[index_man_here(depart)]->setPosition(arrivee);
-//    }
-}
     vector<int> orientation1;
     vector<int> orientation2;
     {orientation1.push_back(NW);
@@ -426,7 +400,7 @@ void Board::playMove(const Move &m, bool inSelect) {
                 else {
                     killAt(positionKill);
                     pieces[index_man_here(start)]->setPosition(arrival);
-                    break; // Voir le break si il est vraiment utile !
+                    break;
                 }
 
             }
@@ -458,13 +432,6 @@ map<int,vector<Move> > Board::playableMoves(string color) {
     vector<Move> possibleMoves;
     map<int,vector<Move> > playableMoves;
     int maxKills=0;
-//    version ci-dessous ne marche pas, pourquoi ?
-//    for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++) {
-//        cout<<"ici"<<endl;
-//        cout<<(*it)->getPosition()<<endl;
-//        (*it)->select(*this,possibleMoves);
-//        maxKills=max(maxKills,possibleMoves[possibleMoves.size()-1].getKills());
-//    }
     for(int i=0;i<pieces.size();i++) {
     	if(pieces[i]->Color()==color) {
         	pieces[i]->select(*this,possibleMoves);
@@ -482,21 +449,8 @@ map<int,vector<Move> > Board::playableMoves(string color) {
     return playableMoves;
 }
 
-float Board::evaluate(float manWeight, float kingWeight, string color) {
-    float value=0;
-    for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++) {
-        if((*it)->Color() == color){
-            value+=((*it)->isMan())?manWeight:kingWeight;
-        }
-        else {
-            value-=((*it)->isMan())?manWeight:kingWeight;
-        }
-    }
-    return value;
-}
 
 float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color){
-    // Tout factoriser dans l'itération sur les pièces. (ATTENTION, CENTRAL = COLONNE)
     float value=0;
 
     for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++) {
@@ -526,7 +480,6 @@ float Board::evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight
     }
 
     map<int,vector<Move> > playableMove = playableMoves((color=="white")?"black":"white");
-    // Problème avec cette partie de la fonction de coût ? comment gérer ?
     if (playableMove.size()!=0){
         for(map<int,vector<Move> >::iterator it=playableMove.begin(); it!=playableMove.end();it++){
             for(int i=0; i<(*it).second.size(); i++){
@@ -598,166 +551,8 @@ std::pair<float,Move> Board::bestMoveAlphaBeta2(string color,int depth, float ma
 }
 
 
-std::pair<float,Move> Board::bestMoveAlphaBeta(string color,int depth, float manWeight, float kingWeight, bool maxNode,float alpha, float beta ){
-    Board virtualBoard(*this);
-    pair<float,Move> move(0,Move());
-    pair<float,Move> currentMove;
-    map<int,vector<Move> > currentPlayableMove;
-
-    if(maxNode){
-        currentPlayableMove = virtualBoard.playableMoves(color);
-    }
-    else{
-        currentPlayableMove = virtualBoard.playableMoves((color=="white")?"black":"white");
-    }
-
-    if(currentPlayableMove.size()==0 || depth==0){
-        move.first = virtualBoard.evaluate(manWeight,kingWeight,color);
-        return move;
-    }
-    else{
-        if(!maxNode){
-            move.first=+10000000;
-            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
-                for(int i=0; i<(*it).second.size(); i++){
-                    currentMove.second=(*it).second[i];
-                    virtualBoard.playMove(currentMove.second);
-                    currentMove.first = virtualBoard.bestMoveAlphaBeta(color,depth-1,manWeight,kingWeight,true,alpha,beta).first;
-                    if(currentMove.first<move.first){
-                        move.first=currentMove.first;
-                        move.second=currentMove.second;
-                    }
-                    if(move.first<=alpha){
-                        return move;
-                    }
-                    beta = std::min<float>(beta,move.first);
-                    virtualBoard= *this;
-                }
-            }
-        }
-        else {
-            move.first=-10000000;
-            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
-                for(int i=0; i<(*it).second.size(); i++){
-                    currentMove.second=(*it).second[i];
-                    virtualBoard.playMove(currentMove.second);
-                    currentMove.first = virtualBoard.bestMoveAlphaBeta(color,depth-1,manWeight,kingWeight,false,alpha,beta).first;
-                    if(currentMove.first>move.first){
-                        move.first=currentMove.first;
-                        move.second=currentMove.second;
-                    }
-                    if(move.first>=beta){
-                        return move;
-                    }
-                    alpha=std::max<float>(alpha,move.first);
-                    virtualBoard= *this;
-                }
-            }
-        }
-        return move;
-    }
-}
-
-
-
-//std::pair<float,Move> Board::bestMove(string color, int depth,float manWeight, float kingWeight) {
-//    // Toujours prendre un depth %2
-//    if(depth==0 || playableMoves(color).size()==0 )
-//        return std::pair<float,Move>(evaluate(manWeight,kingWeight,color),Move());
-//    else {
-//        Board virtualBoard(*this);
-//        map<int,vector<Move> > movesToPlay=playableMoves(color);
-//        map<int,vector<Move> >::iterator it=movesToPlay.begin();
-//        Move currentMove=(*it).second[0];
-//        virtualBoard.playMove(currentMove);
-//        std::pair<float,Move> bestCoup(virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first,currentMove);
-//        if(depth%2==0) {
-//            for(;it!=movesToPlay.end();it++) {
-//                for(int i=0;i<(*it).second.size();i++) {
-//                    virtualBoard=*this;
-//                    virtualBoard.playMove((*it).second[i]);
-//                    std::pair<float,Move> currentCoup;
-//                    currentCoup.first=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first;
-//                    currentCoup.second=(*it).second[i];
-//                    if(currentCoup.first>bestCoup.first)
-//                        bestCoup=currentCoup;
-//                }
-//            }
-//            return bestCoup;
-//        }
-//        else {
-//            for(;it!=movesToPlay.end();it++) {
-//                for(int i=0;i<(*it).second.size();i++) {
-//                    virtualBoard=*this;
-//                    virtualBoard.playMove((*it).second[i]);
-//                    std::pair<float,Move> currentCoup;
-//                    currentCoup.first=virtualBoard.bestMove(color,depth-1,manWeight,kingWeight).first;
-//                    currentCoup.second=(*it).second[i];
-//                    if(currentCoup.first<bestCoup.first)
-//                        bestCoup=currentCoup;
-//                }
-//            }
-//            return bestCoup;
-//        }
-//    }
-//}
-
-
-
-
-std::pair<float,Move> Board::bestMove(string color, float manWeight, float kingWeight, bool maxNode, int depth){
-    Board virtualBoard(*this);
-    pair<float,Move> move(0,Move());
-    pair<float,Move> currentMove;
-    map<int,vector<Move> > currentPlayableMove;
-    if(maxNode){
-    currentPlayableMove = virtualBoard.playableMoves(color);
-    }
-    else{
-        currentPlayableMove = virtualBoard.playableMoves((color=="white")?"black":"white");
-    }
-    if(currentPlayableMove.size()==0 || depth==0){
-        move.first = virtualBoard.evaluate(manWeight,kingWeight,color);
-        return move;
-    }
-    else{
-        if(!maxNode){
-            move.first=+10000000;
-            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
-                for(int i=0; i<(*it).second.size(); i++){
-                    currentMove.second=(*it).second[i];
-                    virtualBoard.playMove(currentMove.second);
-                    currentMove.first = virtualBoard.bestMove(color,manWeight,kingWeight,true,depth-1).first;
-                    if(currentMove.first<move.first){
-                        move.first=currentMove.first;
-                        move.second=currentMove.second;
-                    }
-                    virtualBoard= *this;
-                }
-            }
-        }
-        else {
-            move.first=-10000000;
-            for(map<int,vector<Move> >::iterator it = currentPlayableMove.begin(); it!=currentPlayableMove.end(); it++){
-                for(int i=0; i<(*it).second.size(); i++){
-                    currentMove.second=(*it).second[i];
-                    virtualBoard.playMove(currentMove.second);
-                    currentMove.first = virtualBoard.bestMove(color,manWeight,kingWeight,false,depth-1).first;
-                    if(currentMove.first>move.first){
-                        move.first=currentMove.first;
-                        move.second=currentMove.second;
-                    }
-                    virtualBoard= *this;
-                }
-            }
-        }
-        return move;
-    }
-}
-
-
 int Board::endGame(){
-    // 0 égalité, 1 les blancs gagnent, 2 les noirs gagnent :: Attention, ne prends pas en compte le bloquage d'un individu qui peut plus jouer.
+
     bool white=false;
     bool black=false;
     int i=0;
@@ -786,6 +581,6 @@ int Board::timeMatch(){
 }
 
 
-Move Test(pair<float,Move> A){
+Move getSecond(pair<float,Move> A){
     return A.second;
 }

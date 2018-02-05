@@ -94,7 +94,6 @@ public:
     bool operator<(const Move& m) const;
     int getStart() {return path[0];}
     int getArrival() {return path[path.size()-1];}
-    //int getKills() {return kills;}
     int getKills() const {return kills;}
     vector<int> getPath() const {return path;}
     Move extendMove(Move m); //Can only extend with one elementary move (path.size()=2)
@@ -147,13 +146,11 @@ public :
         }
         return false;
     }
-
     bool isPieceHere(int pos){
         return(isKingHere(pos) || isManHere(pos));
     }
     void playMove(const Move& m, bool inSelect=false);
     void killAt(int pos);
-
     Piece* getPiece(int index){
         return pieces[index];
     }
@@ -161,13 +158,8 @@ public :
     int nbPieces() const{
         return pieces.size();
     }
-    float evaluate(float manWeight, float kingWeight, string color);
     float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color);
-    pair<float, Move> bestMove(string color, float manWeight, float kingWeight, bool maxNode, int depth);
-    std::pair<float,Move> bestMoveAlphaBeta(string color,int depth, float manWeight, float kingWeight, bool maxNode,float alpha, float beta );
     std::pair<float,Move> bestMoveAlphaBeta2(string color,int depth, float manWeight, float kingWeight,float nbMoveWeight, float centralWeight, float advanceWeight, bool maxNode,float alpha, float beta );
-    //Move bestMoveAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode=true, float alpha=-100000000, float beta=numeric_limits<float>::max());
-    float valueAlphaBeta(string color, int depth, float manWeight, float kingWeight, float nbMoveWeight, float advancementForwardWeight, float centralWeight, bool maxNode, float alpha, float beta);
     map<int,vector<Move> > playableMoves(string color);
     int endGame();
     int timeMatch();
@@ -188,7 +180,7 @@ public :
 
 };
 
-Move Test(pair<float, Move> A );
+Move getSecond(pair<float, Move> A );
 
 
 

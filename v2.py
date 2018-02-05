@@ -127,7 +127,7 @@ def displayTest(movestest):
 if __name__ == "__main__":
     #initialisation affichage
     pygame.init()
-    window=pygame.display.set_mode((1024,768))
+    window=pygame.display.set_mode((1424,768))
     textureBlackMan=pygame.image.load("textures/pion_noir_basique.png").convert_alpha()
     textureWhiteMan=pygame.image.load("textures/pion_blanc_basique.png").convert_alpha()
     textureBlackKing=pygame.image.load("textures/reine_noir_basique.png").convert_alpha()
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     #bots=[Individu(0,1,5,2,0,0,0),Individu(0,2,5,2,0.5,0.5,0.5),Individu(0,2,5,4,0.5,0.5,0.5)] #différents niveaux de difficulté
     
     #choix du type de partie : 0 pour 2 joueurs, 1 pour JvIA
-    gameType=1
+    gameType=4
     #choix de la difficulté (mode JvIA)
     difficulty=1
     
@@ -205,7 +205,7 @@ if __name__ == "__main__":
                             # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],1,5,True,4)),False)
 
                             # plateau.playMove(Test(plateau.bestMove(couleurs[1-compteur],2,1,1)),False)
-                            plateau.playMove(Test(plateau.bestMoveAlphaBeta2(couleurs[1-compteur],4,5,10,0,0,0,True,-10000,10000)),False)
+                            plateau.playMove(Test(plateau.bestMoveAlphaBeta2(couleurs[1-compteur],5,4,20,0,0,0,True,-10000,10000)),False)
 
                             moves=plateau.playableMoves(couleurs[compteur])
                         chosenPiece=-1
