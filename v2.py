@@ -94,7 +94,7 @@ class MainMenu():
                         if(self.state==3):
                             #learningMode
                             choiceMade=True
-                            return(LearningGameWindow(Individu(0,1,5,4,0,0,0)))
+                            return(LearningGameWindow(Individu(0,1,5,4,0.1,0.1,0.1)))
                         elif self.state==4:
                             possibleGameMod=[IAvPGameWindow(Individu(0,1,3,4,0.1,0.2,0.3)),IAvPGameWindow(Individu(0,1,5,6,0,0,0))]
                             return(possibleGameMod[self.difficulty])

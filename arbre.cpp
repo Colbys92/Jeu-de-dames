@@ -622,20 +622,7 @@ std::pair<float,Move> Board::bestMoveAlphaBeta2(string color,int depth, float ma
 }
 
 bool Board::endGame(){
-
-    bool white=false;
-    bool black=false;
-    int i=0;
-    while((!white || !black) && i<pieces.size()){
-        if(getPiece(i)->Color()=="white"){
-            white=true;
-        }
-        else{
-            black=true;
-        }
-    i+=1;
-    }
-    return(!white || !black);
+    return(playableMoves("black").size()==0 || playableMoves("white").size()==0);
 }
 
 int Board::timeMatch(){
