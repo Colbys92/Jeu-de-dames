@@ -26,7 +26,7 @@ const int NE2 = -9;
 const int SE2 = 11;
 const int SW2 = 9;
 
-// Déclaration des classes pour les utiliser après :
+//=======================Classes used=======================
 class Piece;
 class Man;
 class King;
@@ -94,7 +94,7 @@ public:
     int getArrival() {return path[path.size()-1];}
     int getKills() const {return kills;}
     vector<int> getPath() const {return path;}
-    Move extendMove(Move m); //Can only extend with one elementary move (path.size()=2)
+    Move extendMove(Move m);
 
 };
 

@@ -1,7 +1,7 @@
 #include "algogenetique.h"
 #include <iostream>
 #include <ctime>
-//===========================Les classes d'individus==================
+//===========================Individu's methods==================
 
 bool Individu::operator<(Individu i2){
     return(score<i2.getScore());
@@ -18,9 +18,7 @@ void Individu::operator=(const Individu& i){
 void Individu::addToScore(int toAdd){
     score+=toAdd;
 }
-void PowerfulIndividu::addToScore(int toAdd){
-    score+=toAdd;
-}
+
 Individu::Individu(int score1, float manWeight1, float kingWeight1, int depth1, float nbMoveWeight1, float advancementForwardWeight1, float centralWeight1){
     score = score1;
     manWeight=manWeight1;
@@ -34,6 +32,8 @@ Individu::Individu(int score1, float manWeight1, float kingWeight1, int depth1, 
 Move Individu::bestMoveAlphaBeta(Board & B,string color,float alpha, float beta ){
     return B.bestMoveAlphaBeta2(color,getDepth(),getManWeight(),getKingWeight(),getNbMoveWeight(),getCentralWeight(),getAdvancementForwardWeight(),true,alpha,beta).second;
 }
+//=========================PowerfulIndividu's methods==========================
+
 
 Move PowerfulIndividu::bestMoveAlphaBeta(Board &B, string color, float alpha, float beta){
     if(B.timeMatch()==2){
@@ -46,10 +46,17 @@ Move PowerfulIndividu::bestMoveAlphaBeta(Board &B, string color, float alpha, fl
         return Ibegin.bestMoveAlphaBeta(B,color,alpha,beta);
     }
 }
-//==================================Tools===========================================
+
+void PowerfulIndividu::addToScore(int toAdd){
+    score+=toAdd;
+}
+
+
+//==================================Random Generation===========================================
 
 
 vector<Individu> genIndividu(int size){
+    // Generation of random individuals :
     vector<Individu> individus;
     for(int i=0; i<size; i++){
         individus.push_back(Individu(0,std::rand()%1000/1000.,std::rand()%1000/1000.,2,std::rand()%1000/1000.,std::rand()%1000/1000.,std::rand()%1000/1000.));
@@ -59,6 +66,7 @@ vector<Individu> genIndividu(int size){
 
 
 vector<PowerfulIndividu> genPowerfulIndividu(int size){
+    // Generation of random powerful individuals :
     vector<PowerfulIndividu> powerfulIndividus;
     vector<Individu> individus;
     individus = genIndividu(3*size);
@@ -69,10 +77,10 @@ vector<PowerfulIndividu> genPowerfulIndividu(int size){
 }
 
 
-//==================================Méthode pour l'évaluation individu simple========================
+//==================================Evaluation========================
 
 int match(Individu i1, Individu i2){
-    // Renvoie 1 si le premier individu gagne; 2 si le second; 0 si personne ne gagne.
+    // Return 1 if the first individual wins, 2 if the second wins and 0 if even
     Board B;
     Move m1,m2;
     float val;
@@ -99,7 +107,7 @@ int match(Individu i1, Individu i2){
     return compteur;
 }
 int matchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
-    // Renvoie 1 si le premier individu gagne; 2 si le second; 0 si personne ne gagne.
+    // Return 1 if the first individual wins, 2 if the second wins and 0 if even
     Board B;
     Move m1,m2;
     int compteur =0;
@@ -124,8 +132,7 @@ int matchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
     return 0;
 }
 void resultsMatch(Individu& i1, Individu& i2){
-    // Si un individu gagne, on ajoute 2 points à son score, si il y a match nul on ajoute 1, 0 si il perd.
-    //int results = match1(i1,i2);
+    // If an individual win, 2 is added to its score, if the game is even, 1 is added to its score :
     int results = match(i1,i2);
     if (results==1){
         i1.addToScore(2);
@@ -139,7 +146,7 @@ void resultsMatch(Individu& i1, Individu& i2){
     }
 }
 void resultsMatchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
-    // Si un individu gagne, on ajoute 2 points à son score, si il y a match nul on ajoute 1, 0 si il perd.
+    // If an individual win, 2 is added to its score, if the game is even, 1 is added to its score :
     int results = matchPowerfulIndividu(i1,i2);
     if (results==1){
         i1.addToScore(2);
@@ -155,17 +162,14 @@ void resultsMatchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
 int evaluationPowerfulIndividu(vector<PowerfulIndividu>& individus){
     for(int i=0; i< individus.size(); i++){
         for(int j=i+1; j<individus.size(); j++){
-            cout<<"("<<i<<","<<j<<")"<<endl;
             resultsMatchPowerfulIndividu(individus[i],individus[j]);
             resultsMatchPowerfulIndividu(individus[j],individus[i]);
-            cout << "end " << endl;
         }
     }
 }
 int evaluation(vector<Individu>& individus){
     for(int i=0; i< individus.size(); i++){
         for(int j=i+1; j<individus.size(); j++){
-            cout<<"("<<i<<","<<j<<")"<<endl;
             resultsMatch(individus[i],individus[j]);
             resultsMatch(individus[j],individus[i]);
         }
@@ -174,6 +178,7 @@ int evaluation(vector<Individu>& individus){
 
 //=============================Best individual selection ===============================
 vector<Individu> selection(vector<Individu>& individus, int numberChosen){
+    // Selection of the best PowerfulIndividu
     std::sort(individus.begin(), individus.end());
     vector<Individu> chosenOnes;
     for(int i=individus.size()-1; i>individus.size()-numberChosen-1; i--){
@@ -183,6 +188,7 @@ vector<Individu> selection(vector<Individu>& individus, int numberChosen){
 }
 
 vector<PowerfulIndividu> selectionPowerful(vector<PowerfulIndividu>& individus, int numberChosen){
+    // Selection of the best PowerfulIndividu
     std::sort(individus.begin(), individus.end());
     vector<PowerfulIndividu> chosenOnes;
     for(int i=individus.size()-1; i>individus.size()-numberChosen-1; i--){
@@ -192,6 +198,7 @@ vector<PowerfulIndividu> selectionPowerful(vector<PowerfulIndividu>& individus, 
 }
 
 //============================= Mutations ==========================
+
 void mutation(Individu individu, int proba){
     if((std::rand()%100)<proba){
         individu.setKingWeight(std::rand()%1000/1000.);
@@ -209,6 +216,7 @@ void mutation(Individu individu, int proba){
         individu.setCentralWeight(std::rand()%1000/1000.);
     }
 }
+
 void PowerfulIndividu::mutationPowerful(int proba){
     mutation(Ibegin,proba);
     mutation(Imiddle,proba);
@@ -217,6 +225,7 @@ void PowerfulIndividu::mutationPowerful(int proba){
 
 //=======================Heredity==================================
 void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
+    // Passing the genetic legacy through generation for Individu
     int size =individus.size();
     individus.clear();
     float maxScore;
@@ -249,7 +258,9 @@ void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
         mutation(individus[k],10);
     }
 }
+
 void heredityPowerful(vector<PowerfulIndividu>& individus, vector<PowerfulIndividu> chosenOnes){
+    // Passing the genetic legacy through generation for PowerIndividu
     int size =individus.size();
     individus.clear();
     float maxScore;
