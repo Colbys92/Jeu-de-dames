@@ -621,7 +621,7 @@ std::pair<float,Move> Board::bestMoveAlphaBeta2(string color,int depth, float ma
     }
 }
 
-int Board::endGame(){
+bool Board::endGame(){
 
     bool white=false;
     bool black=false;

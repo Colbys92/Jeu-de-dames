@@ -118,7 +118,7 @@ public :
     float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color);
     std::pair<float,Move> bestMoveAlphaBeta2(string color,int depth, float manWeight, float kingWeight,float nbMoveWeight, float centralWeight, float advanceWeight, bool maxNode,float alpha, float beta );
     map<int,vector<Move> > playableMoves(string color);
-    int endGame();
+    bool endGame();
     int timeMatch();
 };
 
@@ -138,15 +138,4 @@ public :
 };
 
 Move getSecond(pair<float, Move> A );
-
-
-
-
-
-
-
-
-
-
-
 

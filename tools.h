@@ -27,4 +27,3 @@ bool checkEdges(int i, int position){
     return false;
 }
 
-

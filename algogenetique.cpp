@@ -6,6 +6,7 @@
 bool Individu::operator<(Individu i2){
     return(score<i2.getScore());
 }
+
 void Individu::operator=(const Individu& i){
     score = i.score;
     depth=i.depth;
@@ -15,6 +16,7 @@ void Individu::operator=(const Individu& i){
     centralWeight=i.centralWeight;
     advancementForwardWeight=i.advancementForwardWeight;
 }
+
 void Individu::addToScore(int toAdd){
     score+=toAdd;
 }
@@ -106,6 +108,7 @@ int match(Individu i1, Individu i2){
     }
     return compteur;
 }
+
 int matchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
     // Return 1 if the first individual wins, 2 if the second wins and 0 if even
     Board B;
@@ -131,6 +134,7 @@ int matchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
 
     return 0;
 }
+
 void resultsMatch(Individu& i1, Individu& i2){
     // If an individual win, 2 is added to its score, if the game is even, 1 is added to its score :
     int results = match(i1,i2);
@@ -145,6 +149,7 @@ void resultsMatch(Individu& i1, Individu& i2){
         i2.addToScore(1);
     }
 }
+
 void resultsMatchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
     // If an individual win, 2 is added to its score, if the game is even, 1 is added to its score :
     int results = matchPowerfulIndividu(i1,i2);
@@ -159,6 +164,7 @@ void resultsMatchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
         i2.addToScore(1);
     }
 }
+
 int evaluationPowerfulIndividu(vector<PowerfulIndividu>& individus){
     for(int i=0; i< individus.size(); i++){
         for(int j=i+1; j<individus.size(); j++){
@@ -167,6 +173,7 @@ int evaluationPowerfulIndividu(vector<PowerfulIndividu>& individus){
         }
     }
 }
+
 int evaluation(vector<Individu>& individus){
     for(int i=0; i< individus.size(); i++){
         for(int j=i+1; j<individus.size(); j++){
@@ -177,6 +184,7 @@ int evaluation(vector<Individu>& individus){
 }
 
 //=============================Best individual selection ===============================
+
 vector<Individu> selection(vector<Individu>& individus, int numberChosen){
     // Selection of the best PowerfulIndividu
     std::sort(individus.begin(), individus.end());
