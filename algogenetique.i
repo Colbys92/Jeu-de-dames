@@ -23,5 +23,11 @@ private:
     float centralWeight;
 public:
     Individu(int score1, float manWeight1, float kingWeight1, int depth1, float nbMoveWeight1, float advancementForwardWeight1, float centralWeight1);
+    float getAdvancementForwardWeight();
+    float getNbMoveWeight();
+    int getDepth();
+    float getKingWeight();
+    float getManWeight();
+    float getCentralWeight();
     Move bestMoveAlphaBeta(Board& B,std::string color,float alpha, float beta );
 };

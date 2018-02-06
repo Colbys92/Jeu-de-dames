@@ -4751,6 +4751,23 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 }
 
 
+  #define SWIG_From_double   PyFloat_FromDouble 
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_float  (float value)
+{    
+  return SWIG_From_double  (value);
+}
+
+
+SWIGINTERNINLINE PyObject*
+  SWIG_From_int  (int value)
+{
+  return PyInt_FromLong((long) value);
+}
+
+
 SWIGINTERN swig_type_info*
 SWIG_pchar_descriptor(void)
 {
@@ -5836,6 +5853,138 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_Individu_getAdvancementForwardWeight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Individu *arg1 = (Individu *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:Individu_getAdvancementForwardWeight",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Individu, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Individu_getAdvancementForwardWeight" "', argument " "1"" of type '" "Individu *""'"); 
+  }
+  arg1 = reinterpret_cast< Individu * >(argp1);
+  result = (float)(arg1)->getAdvancementForwardWeight();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Individu_getNbMoveWeight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Individu *arg1 = (Individu *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:Individu_getNbMoveWeight",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Individu, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Individu_getNbMoveWeight" "', argument " "1"" of type '" "Individu *""'"); 
+  }
+  arg1 = reinterpret_cast< Individu * >(argp1);
+  result = (float)(arg1)->getNbMoveWeight();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Individu_getDepth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Individu *arg1 = (Individu *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:Individu_getDepth",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Individu, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Individu_getDepth" "', argument " "1"" of type '" "Individu *""'"); 
+  }
+  arg1 = reinterpret_cast< Individu * >(argp1);
+  result = (int)(arg1)->getDepth();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Individu_getKingWeight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Individu *arg1 = (Individu *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:Individu_getKingWeight",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Individu, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Individu_getKingWeight" "', argument " "1"" of type '" "Individu *""'"); 
+  }
+  arg1 = reinterpret_cast< Individu * >(argp1);
+  result = (float)(arg1)->getKingWeight();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Individu_getManWeight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Individu *arg1 = (Individu *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:Individu_getManWeight",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Individu, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Individu_getManWeight" "', argument " "1"" of type '" "Individu *""'"); 
+  }
+  arg1 = reinterpret_cast< Individu * >(argp1);
+  result = (float)(arg1)->getManWeight();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_Individu_getCentralWeight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Individu *arg1 = (Individu *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:Individu_getCentralWeight",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Individu, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Individu_getCentralWeight" "', argument " "1"" of type '" "Individu *""'"); 
+  }
+  arg1 = reinterpret_cast< Individu * >(argp1);
+  result = (float)(arg1)->getCentralWeight();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_Individu_bestMoveAlphaBeta(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Individu *arg1 = (Individu *) 0 ;
@@ -5948,6 +6097,12 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SwigPyIterator___sub__", _wrap_SwigPyIterator___sub__, METH_VARARGS, NULL},
 	 { (char *)"SwigPyIterator_swigregister", SwigPyIterator_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_Individu", _wrap_new_Individu, METH_VARARGS, NULL},
+	 { (char *)"Individu_getAdvancementForwardWeight", _wrap_Individu_getAdvancementForwardWeight, METH_VARARGS, NULL},
+	 { (char *)"Individu_getNbMoveWeight", _wrap_Individu_getNbMoveWeight, METH_VARARGS, NULL},
+	 { (char *)"Individu_getDepth", _wrap_Individu_getDepth, METH_VARARGS, NULL},
+	 { (char *)"Individu_getKingWeight", _wrap_Individu_getKingWeight, METH_VARARGS, NULL},
+	 { (char *)"Individu_getManWeight", _wrap_Individu_getManWeight, METH_VARARGS, NULL},
+	 { (char *)"Individu_getCentralWeight", _wrap_Individu_getCentralWeight, METH_VARARGS, NULL},
 	 { (char *)"Individu_bestMoveAlphaBeta", _wrap_Individu_bestMoveAlphaBeta, METH_VARARGS, NULL},
 	 { (char *)"delete_Individu", _wrap_delete_Individu, METH_VARARGS, NULL},
 	 { (char *)"Individu_swigregister", Individu_swigregister, METH_VARARGS, NULL},

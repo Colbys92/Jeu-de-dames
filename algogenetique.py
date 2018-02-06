@@ -174,6 +174,24 @@ class Individu(_object):
         except __builtin__.Exception:
             self.this = this
 
+    def getAdvancementForwardWeight(self):
+        return _algogenetique.Individu_getAdvancementForwardWeight(self)
+
+    def getNbMoveWeight(self):
+        return _algogenetique.Individu_getNbMoveWeight(self)
+
+    def getDepth(self):
+        return _algogenetique.Individu_getDepth(self)
+
+    def getKingWeight(self):
+        return _algogenetique.Individu_getKingWeight(self)
+
+    def getManWeight(self):
+        return _algogenetique.Individu_getManWeight(self)
+
+    def getCentralWeight(self):
+        return _algogenetique.Individu_getCentralWeight(self)
+
     def bestMoveAlphaBeta(self, B, color, alpha, beta):
         return _algogenetique.Individu_bestMoveAlphaBeta(self, B, color, alpha, beta)
     __swig_destroy__ = _algogenetique.delete_Individu
