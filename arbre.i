@@ -10,6 +10,7 @@
 #include "arbre.h"
 %}
 
+
 struct Piece{
 public:
 	Piece(int,std::string);
@@ -50,6 +51,7 @@ private:
 public:
     Move(int , int , int );
     Move(const Move&);
+    Move(std::vector<int>, int);
     void operator=(const Move&);
     bool operator<(const Move&) const;
     int getStart();
@@ -73,12 +75,12 @@ public:
 	bool isPieceHere(int);
 	void playMove(const Move&, bool);
 	void killAt(int);
+	void turnToKing(int pos);
 	Piece* getPiece(int);
 	int nbPieces() const;
 	std::map<int, std::vector<Move> > playableMoves(std::string);
-	float evaluate(float , float , std::string );
-    std::pair<float, Move> bestMove(std::string , int, float , float);
-    std::pair<float, Move> bestMoveAlphaBeta(std::string, int , float, float, bool , float , float );
+	float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, std::string color);
+    std::pair<float,Move> bestMoveAlphaBeta2(std::string color,int depth, float manWeight, float kingWeight,float nbMoveWeight, float centralWeight, float advanceWeight, bool maxNode,float alpha, float beta );
     bool endGame();
 };
 
@@ -94,11 +96,15 @@ public:
 	virtual Piece* clone();
 
 };
-Move Test(std::pair<float, Move> A);
+
+
+Move getSecond(std::pair<float, Move> A);
 
 
 namespace std {
 	%template(VectorMove) vector<Move>;
+	%template(vectori) vector<int>;
 	%template(map_int_moves) map<int,vector<Move> >;
 	%template(pair_float_moves) pair<float,Move>;
 };
+
