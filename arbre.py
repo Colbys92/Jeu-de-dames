@@ -313,17 +313,8 @@ class Board(_object):
     def playableMoves(self, arg2):
         return _arbre.Board_playableMoves(self, arg2)
 
-    def evaluate(self, arg2, arg3, arg4):
-        return _arbre.Board_evaluate(self, arg2, arg3, arg4)
-
     def evaluateBetter(self, manWeight, kingWeight, nbMoveWeight, advancementForwardWeight, centralWeight, color):
         return _arbre.Board_evaluateBetter(self, manWeight, kingWeight, nbMoveWeight, advancementForwardWeight, centralWeight, color)
-
-    def bestMove(self, arg2, arg3, arg4, arg5, arg6):
-        return _arbre.Board_bestMove(self, arg2, arg3, arg4, arg5, arg6)
-
-    def bestMoveAlphaBeta(self, arg2, arg3, arg4, arg5, arg6, arg7, arg8):
-        return _arbre.Board_bestMoveAlphaBeta(self, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
 
     def bestMoveAlphaBeta2(self, color, depth, manWeight, kingWeight, nbMoveWeight, centralWeight, advanceWeight, maxNode, alpha, beta):
         return _arbre.Board_bestMoveAlphaBeta2(self, color, depth, manWeight, kingWeight, nbMoveWeight, centralWeight, advanceWeight, maxNode, alpha, beta)

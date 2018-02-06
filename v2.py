@@ -479,7 +479,7 @@ def loadMoveList(gameId):
     conn=sqlite3.connect('example.db')
     c=conn.cursor()
     for row in c.execute("SELECT listeCoups FROM games WHERE id=?",(gameId,)):
-        #on utilise la fonction eval... Qui peut conduire à des problèmes de sécurité.. ON s'autorise à le faire vu le cadre du projet.
+        #on utilise la fonction eval... Qui peut conduire à des problèmes de sécurité.. On s'autorise à le faire vu le cadre du projet.
         conn.close()
         return eval(row[0])
 
@@ -503,7 +503,7 @@ def drawGraph(window,fig,screen):
 
 if __name__ == "__main__":
     pygame.init()
-    window=pygame.display.set_mode((1024,768))
+    window=pygame.display.set_mode((1424,768))
     textureBlackMan=pygame.image.load("textures/pion_noir_basique.png").convert_alpha()
     textureWhiteMan=pygame.image.load("textures/pion_blanc_basique.png").convert_alpha()
     textureBlackKing=pygame.image.load("textures/reine_noir_basique.png").convert_alpha()
@@ -522,13 +522,14 @@ if __name__ == "__main__":
     stepButton=pygame.image.load("textures/buttons/step_button_V3.png").convert_alpha()
     helpButton=pygame.image.load("textures/buttons/help_button_V3.png").convert_alpha()
     
+
     colors=["white","black"]
-    
     menu=MainMenu()
     gamewindow=menu.run()
     if gamewindow!=None:
         gamewindow.run()
     
+
 
 
 

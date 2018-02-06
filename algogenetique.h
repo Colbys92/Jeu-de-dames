@@ -50,7 +50,7 @@ class PowerfulIndividu{
     Individu Imiddle;
     Individu Iend;
 public:
-    PowerfulIndividu(Individu i1,Individu i2, Individu i3):Ibegin(i1),Imiddle(i2),Iend(i3){}
+    PowerfulIndividu(Individu i1,Individu i2, Individu i3):Ibegin(i1),Imiddle(i2),Iend(i3){score=0;}
     Individu getIbegin(){ return Ibegin; }
     Individu getImiddle(){ return Imiddle; }
     Individu getIend(){ return Iend; }
