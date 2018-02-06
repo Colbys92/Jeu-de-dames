@@ -102,53 +102,19 @@ public:
 class Board{
     std::vector<Piece*> pieces;
 public :
-    Board() {
-        for(int i=0; i<20; i++){
-            pieces.push_back(new Man(i,"black"));
-        }
-        for(int i=30; i<50;i++){
-            pieces.push_back(new Man(i,"white"));
-        }
-    }
-    ~Board() {
-        for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++)
-            delete *it;
-        pieces.clear();
-    }
+    Board();
+    ~Board();
     Board(const Board& b);
     void operator=(const Board& b);
-    int index_man_here(int pos){
-
-        for(int i=0; i<pieces.size(); i++){
-            if (pieces[i]->getPosition()==pos)   return i;
-        }
-        cerr<<"No piece found at position "<<pos<<endl;
-        return -1;
-    }
-    bool isManHere(int pos){
-        for(int i=0; i<pieces.size(); i++){
-            if (pieces[i]->getPosition()==pos && pieces[i]->isMan())   return true;
-        }
-        return false;
-    }
-    bool isKingHere(int pos){
-        for(int i=0; i<pieces.size(); i++){
-            if (pieces[i]->getPosition()==pos && pieces[i]->isKing())   return true;
-        }
-        return false;
-    }
-    bool isPieceHere(int pos){
-        return(isKingHere(pos) || isManHere(pos));
-    }
+    int index_man_here(int pos);
+    bool isManHere(int pos);
+    bool isKingHere(int pos);
+    bool isPieceHere(int pos);
     void playMove(const Move& m, bool inSelect=false);
     void killAt(int pos);
-    Piece* getPiece(int index){
-        return pieces[index];
-    }
+    Piece* getPiece(int index){return pieces[index];}
     void turnToKing(int pos);
-    int nbPieces() const{
-        return pieces.size();
-    }
+    int nbPieces() const{return pieces.size();}
     float evaluateBetter(float manWeight, float kingWeight,float nbMoveWeight, float advancementForwardWeight, float centralWeight, string color);
     std::pair<float,Move> bestMoveAlphaBeta2(string color,int depth, float manWeight, float kingWeight,float nbMoveWeight, float centralWeight, float advanceWeight, bool maxNode,float alpha, float beta );
     map<int,vector<Move> > playableMoves(string color);
@@ -160,7 +126,7 @@ public :
 
 class King : public Piece {
 public :
-        ~King();
+        ~King(){}
         virtual bool isMan() const {return false;}
         King(int pos, std::string col) : Piece(pos,col){}
         King(const King& k) : Piece(k.position, k.color){}

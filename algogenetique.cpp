@@ -172,7 +172,7 @@ int evaluation(vector<Individu>& individus){
     }
 }
 
-//=============================Selection des meilleurs individus ===============================
+//=============================Best individual selection ===============================
 vector<Individu> selection(vector<Individu>& individus, int numberChosen){
     std::sort(individus.begin(), individus.end());
     vector<Individu> chosenOnes;
@@ -191,7 +191,7 @@ vector<PowerfulIndividu> selectionPowerful(vector<PowerfulIndividu>& individus, 
     return chosenOnes;
 }
 
-//============================= mutations ==========================
+//============================= Mutations ==========================
 void mutation(Individu individu, int proba){
     if((std::rand()%100)<proba){
         individu.setKingWeight(std::rand()%1000/1000.);
@@ -311,11 +311,11 @@ void heredityPowerful(vector<PowerfulIndividu>& individus, vector<PowerfulIndivi
 
 
 
-//===============================Execution===============================
+
+//=====================Execution of the Genetic Algorithm======================
 
 int main(){
 
-    //=====================Algo Génétique======================
 
         srand(time(NULL));
         vector<PowerfulIndividu> individus;
