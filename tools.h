@@ -26,7 +26,4 @@ bool checkEdges(int i, int position){
     return false;
 }
 
-int opposedDirection(int orientation){
-    return (orientation+2)%4;
-}
 

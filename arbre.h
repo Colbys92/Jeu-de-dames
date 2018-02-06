@@ -50,9 +50,7 @@ public:
         position = p.position;
         color = p.color;
     }
-    int getPosition(){
-        return position;
-    }
+    int getPosition(){return position;}
     void setPosition(int pos){position = pos;}
     std::string Color(){return color;}
     virtual bool isMan() const =0;
@@ -112,13 +110,6 @@ public :
             pieces.push_back(new Man(i,"white"));
         }
     }
-    Board(bool lol) {
-        pieces.push_back(new Man(47,"white"));
-        pieces.push_back(new Man(41,"white"));
-        pieces.push_back(new Man(42,"black"));
-        pieces.push_back(new Man(36,"black"));
-
-    }
     ~Board() {
         for(vector<Piece*>::iterator it=pieces.begin();it!=pieces.end();it++)
             delete *it;
@@ -169,14 +160,14 @@ public :
 
 class King : public Piece {
 public :
-      ~King();
-      virtual bool isMan() const {return false;}
-      King(int pos, std::string col) : Piece(pos,col){}
-      King(const King& k) : Piece(k.position, k.color){}
-      virtual void killFreeMove(Board& B,vector<Move> &possibleMoves);
-      virtual void killingMove(Board& B, vector<Move> &possibleMoves);
-      virtual Piece* clone();
-      virtual void select(Board& b, vector<Move> &possibleMoves);
+        ~King();
+        virtual bool isMan() const {return false;}
+        King(int pos, std::string col) : Piece(pos,col){}
+        King(const King& k) : Piece(k.position, k.color){}
+        virtual void killFreeMove(Board& B,vector<Move> &possibleMoves);
+        virtual void killingMove(Board& B, vector<Move> &possibleMoves);
+        virtual Piece* clone();
+        virtual void select(Board& b, vector<Move> &possibleMoves);
 
 };
 

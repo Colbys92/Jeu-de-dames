@@ -3,8 +3,6 @@
 #include <ctime>
 //===========================Les classes d'individus==================
 
-
-
 bool Individu::operator<(Individu i2){
     return(score<i2.getScore());
 }
@@ -73,7 +71,7 @@ vector<PowerfulIndividu> genPowerfulIndividu(int size){
 
 //==================================Méthode pour l'évaluation individu simple========================
 
-int match2(Individu i1, Individu i2){
+int match(Individu i1, Individu i2){
     // Renvoie 1 si le premier individu gagne; 2 si le second; 0 si personne ne gagne.
     Board B;
     Move m1,m2;
@@ -102,7 +100,6 @@ int match2(Individu i1, Individu i2){
 }
 int matchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
     // Renvoie 1 si le premier individu gagne; 2 si le second; 0 si personne ne gagne.
-
     Board B;
     Move m1,m2;
     int compteur =0;
@@ -129,7 +126,7 @@ int matchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
 void resultsMatch(Individu& i1, Individu& i2){
     // Si un individu gagne, on ajoute 2 points à son score, si il y a match nul on ajoute 1, 0 si il perd.
     //int results = match1(i1,i2);
-    int results = match2(i1,i2);
+    int results = match(i1,i2);
     if (results==1){
         i1.addToScore(2);
     }
@@ -143,7 +140,6 @@ void resultsMatch(Individu& i1, Individu& i2){
 }
 void resultsMatchPowerfulIndividu(PowerfulIndividu i1, PowerfulIndividu i2){
     // Si un individu gagne, on ajoute 2 points à son score, si il y a match nul on ajoute 1, 0 si il perd.
-    //int results = match1(i1,i2);
     int results = matchPowerfulIndividu(i1,i2);
     if (results==1){
         i1.addToScore(2);
@@ -196,7 +192,7 @@ vector<PowerfulIndividu> selectionPowerful(vector<PowerfulIndividu>& individus, 
 }
 
 //============================= mutations ==========================
-void mutation2(Individu individu, int proba){
+void mutation(Individu individu, int proba){
     if((std::rand()%100)<proba){
         individu.setKingWeight(std::rand()%1000/1000.);
     }
@@ -214,13 +210,13 @@ void mutation2(Individu individu, int proba){
     }
 }
 void PowerfulIndividu::mutationPowerful(int proba){
-    mutation2(Ibegin,proba);
-    mutation2(Imiddle,proba);
-    mutation2(Iend,proba);
+    mutation(Ibegin,proba);
+    mutation(Imiddle,proba);
+    mutation(Iend,proba);
 }
 
 //=======================Heredity==================================
-void heredity2(vector<Individu>& individus, vector<Individu> chosenOnes){
+void heredity(vector<Individu>& individus, vector<Individu> chosenOnes){
     int size =individus.size();
     individus.clear();
     float maxScore;
@@ -250,7 +246,7 @@ void heredity2(vector<Individu>& individus, vector<Individu> chosenOnes){
         }
         compteur = compteur%10;
         individus.push_back(chosenOnes.at(compteur));
-        mutation2(individus[k],10);
+        mutation(individus[k],10);
     }
 }
 void heredityPowerful(vector<PowerfulIndividu>& individus, vector<PowerfulIndividu> chosenOnes){
