@@ -14,6 +14,7 @@ import random
 
 
 def drawKing(king,window):
+    #draw a king at its position on the board
     increment=0
     position=king.getPosition()
     if(position%10<5):
@@ -24,6 +25,7 @@ def drawKing(king,window):
         window.blit(textureBlackKing,(262+increment+100*(position%5)-5,109+50*(position//5)+20))
 
 def drawMan(man,window):
+    #draw a man at its position on the board
     increment=0
     position=man.getPosition()
     if(position%10<5):
@@ -35,6 +37,7 @@ def drawMan(man,window):
 
 
 class PyBoard(Board):
+    #python class for the board
     def __init__(self):
         super().__init__()
     def playTurn(self,window,color):
@@ -50,6 +53,7 @@ class PyBoard(Board):
                 for square in moves[pos]:
                     highlightSquare(square.getArrival(),(0,0,255),window)
     def displayMovablePieces(self,m,window):
+        #show a player which pieces he can move. m is a map<int, vector<Move>> that indicates which links to each position the moves available
         for pos in m.keys():
             currentPiece=self.getPiece(self.index_man_here(pos))
             if(currentPiece.isMan()):
@@ -58,6 +62,7 @@ class PyBoard(Board):
                 highlightKing(pos,currentPiece.Color(),window)
         
     def display(self,window):
+        #draw the pieces on the board
         for i in range(self.nbPieces()):
             if(self.getPiece(i).isMan()):
                 drawMan(self.getPiece(i),window)
@@ -65,12 +70,13 @@ class PyBoard(Board):
                 drawKing(self.getPiece(i),window)
 
 class MainMenu():
+    #fixed positions for the buttons location (3 buttons)
     buttonWidth=610
     buttonHeight=155
     buttonAbs=207
-    buttonOrd1=72
-    buttonOrd2=310
-    buttonOrd3=542
+    buttonOrd1=72 #top button
+    buttonOrd2=310 #mid button
+    buttonOrd3=542 #bot button
     def __init__(self):
         self.state=1 #1 for gameMode selection, 2 for number of players selection, 3 for difficulty
         self.window=pygame.display.set_mode((1024,768))
@@ -79,6 +85,7 @@ class MainMenu():
         self.textureMenu3=pygame.image.load("textures/menu/menu_1.1.2.png").convert_alpha()
         self.textureMenu4=pygame.image.load("textures/menu/menu_choix-pions_V1.png")
     def run(self):
+        #let the user chose the gamemode and the parameters of the game
         choiceMade=False
         while(not choiceMade):
             for event in pygame.event.get():
@@ -147,6 +154,7 @@ class MainMenu():
             if not choiceMade:                    #choix de la couleur alléatoire
                 self.display()
     def display(self):
+        #display the menu depending on which step the user currently is
         if(self.state==1):
             self.window.blit(self.textureMenu1,(0,0))
         elif(self.state==2):
@@ -172,6 +180,7 @@ class GameWindow():
         self.board.display(self.window)
     
     def playSmooth(self,move):
+        #play slowlya a move to show the elementary moves its composed of
         self.moveList.append(([move.getPath()[i] for i in range(len(move.getPath()))],move.getKills())) #we save the played move. we'll later store it in our database
         piece=self.board.index_man_here(move.getPath()[0])
         #play slowly the move to make clear how the move goes
@@ -182,6 +191,7 @@ class GameWindow():
                 self.display()
                 pygame.display.flip()
         self.board.getPiece(piece).setPosition(move.getPath()[0])
+        #play the move for real on the board, with the kills
         self.board.playMove(move,False)
         self.display()
         pygame.display.flip()
@@ -210,6 +220,7 @@ class GameWindow():
             self.moveChosen=True
     
     def saveGame(self):
+        #store the game in the database
         conn=sqlite3.connect('example.db')
         c=conn.cursor()
         stringMove=self.moveList.__str__()
@@ -238,6 +249,8 @@ class GameWindow():
                     self.display()
                     self.highlightPossibleMoves(event)
                 pygame.display.flip()
+                
+#we create a class for each gamemode that inherit from GameWindow. We define the run method according to how each gamemode is played out and the display method to show all the information we want to give in the gamemode
 
 class SpectatorWindow(GameWindow):
     def __init__(self,gameID):
@@ -420,13 +433,14 @@ class LearningGameWindow(IAvPGameWindow):
                 self.moves=self.board.playableMoves(colors[self.player])
         pygame.quit()
 
-
+#a few auxiliary methods used in the classes
 def coordInRect(pos,rect):
     #check whether pos is within the rectangle rect
     return not (pos[0]<rect[0] or pos[0]>rect[0]+rect[2] or pos[1]<rect[1] or pos[1]>rect[1]+rect[3])
 
 
 def coordToPos(x,y):
+    #give the board position linked to a window position
     i=(x-262)//50
     j=(y-109-25)//50
     if (i+j)%2==1:
@@ -434,6 +448,7 @@ def coordToPos(x,y):
     else: return -1
 
 def highlightSquare(position,color,window):
+    #highlight a square at given position with a given color
     increment=0
     if(position%10<5):
         increment+=50
@@ -484,6 +499,7 @@ def loadMoveList(gameId):
         return eval(row[0])
 
 def updateGraphSize(valueList,ax):
+    #for learninggamemode
     if ax.get_ylim()[0]>valueList[-1]:
             ax.set_ylim(ax.get_ylim()[0]-10,ax.get_ylim()[1])
     if ax.get_ylim()[1]<valueList[-1]:
@@ -503,6 +519,7 @@ def drawGraph(window,fig,screen):
 
 if __name__ == "__main__":
     pygame.init()
+    #load the textures
     window=pygame.display.set_mode((1424,768))
     textureBlackMan=pygame.image.load("textures/pion_noir_basique.png").convert_alpha()
     textureWhiteMan=pygame.image.load("textures/pion_blanc_basique.png").convert_alpha()
@@ -524,9 +541,12 @@ if __name__ == "__main__":
     
 
     colors=["white","black"]
+    #create a menu
     menu=MainMenu()
+    #select a gamemod
     gamewindow=menu.run()
     if gamewindow!=None:
+        #run the gamemod
         gamewindow.run()
     
 
