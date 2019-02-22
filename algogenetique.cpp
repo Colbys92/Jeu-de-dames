@@ -5,8 +5,12 @@
 
 
 
-bool Individu::operator<(Individu i2){
+bool Individu::operator<(const Individu i2) const{
     return(score<i2.getScore());
+}
+
+bool PowerfulIndividu::operator<(const PowerfulIndividu i) const {
+    return(score<i.getScore());
 }
 
 

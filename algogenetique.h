@@ -28,7 +28,7 @@ public:
     void setManWeight(float newManWeight){manWeight=newManWeight;}
     float getKingWeight() {return kingWeight;}
     void setKingWeight(float newKingWeight){kingWeight=newKingWeight;}
-    int getScore() {return score;}
+    int getScore() const {return score;}
     void addToScore(int toAdd);
     int getDepth(){return depth;}
     void setDepth(int newDepth){depth=newDepth;}
@@ -38,7 +38,7 @@ public:
     void setAdvancementForwardWeight(float newAdvancementForwardWeight){advancementForwardWeight=newAdvancementForwardWeight;}
     float getCentralWeight(){return centralWeight;}
     void setCentralWeight(float newCentralWeight){centralWeight=newCentralWeight;}
-    bool operator<(Individu i2);
+    bool operator<(const Individu i2) const;
     Move bestMoveAlphaBeta(Board& B,string color,float alpha, float beta );
 
 };
@@ -54,10 +54,10 @@ public:
     Individu getIbegin(){ return Ibegin; }
     Individu getImiddle(){ return Imiddle; }
     Individu getIend(){ return Iend; }
-    int getScore() {return score;}
+    int getScore() const{return score;}
     Move bestMoveAlphaBeta(Board& B, string color, float alpha, float beta);
     void addToScore(int toAdd);
     void mutationPowerful(int proba);
-    bool operator<(PowerfulIndividu i){return score<i.score;}
+    bool operator<(const PowerfulIndividu i) const;
 };
 
